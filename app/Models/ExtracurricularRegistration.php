@@ -12,8 +12,7 @@ class ExtracurricularRegistration extends Model
     protected $fillable = [
         'extracurricular_id',
         'student_id',
-        'status',   // pending, approved, rejected
-        'notes',
+        'status',   // pending, approved
     ];
 
     public function extracurricular()

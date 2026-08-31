@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'SMK Bisa - Sistem Informasi Sekolah')</title>
+    <title>@yield('title', 'Sistem Informasi SMKN 1 KATAPANG')</title>
 
     <!-- Vite CSS and JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

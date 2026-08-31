@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Profil & Jurusan - SMK Nusantara')
+@section('title', 'Profil & Jurusan - SMKN 1 KATAPANG')
 
 @section('content')
     <div class="bg-blue-800 text-white py-12">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">Profil & Jurusan</h1>
-            <p class="text-blue-200 max-w-2xl mx-auto text-lg">Mengenal lebih dekat SMK Nusantara dan pilihan kompetensi keahlian unggulan kami.</p>
+            <p class="text-blue-200 max-w-2xl mx-auto text-lg">Mengenal lebih dekat SMKN 1 KATAPANG dan pilihan kompetensi keahlian unggulan kami.</p>
         </div>
     </div>
 
@@ -15,12 +15,12 @@
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row gap-12 items-center">
                 <div class="w-full md:w-1/2">
-                    <img src="https://via.placeholder.com/600x400?text=Gedung+Sekolah" alt="Gedung SMK Nusantara" class="rounded-xl shadow-lg w-full">
+                    <img src="https://via.placeholder.com/600x400?text=Gedung+Sekolah" alt="Gedung SMKN 1 KATAPANG" class="rounded-xl shadow-lg w-full">
                 </div>
                 <div class="w-full md:w-1/2">
                     <h2 class="text-3xl font-bold text-gray-900 mb-6">Sejarah & Visi Misi</h2>
                     <p class="text-gray-600 mb-4 leading-relaxed">
-                        Berdiri sejak tahun 1998, SMK Nusantara telah meluluskan ribuan alumni yang kini sukses berkarir di berbagai industri nasional dan multinasional. Kami berkomitmen untuk terus beradaptasi dengan perkembangan teknologi.
+                        Berdiri sejak tahun 1998, SMKN 1 KATAPANG telah meluluskan ribuan alumni yang kini sukses berkarir di berbagai industri nasional dan multinasional. Kami berkomitmen untuk terus beradaptasi dengan perkembangan teknologi.
                     </p>
                     <div class="mt-6">
                         <h3 class="font-bold text-xl text-blue-700 mb-2">Visi</h3>

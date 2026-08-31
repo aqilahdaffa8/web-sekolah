@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Admin - SMK Nusantara</title>
+    <title>Login Admin - SMKN 1 KATAPANG</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 h-screen flex items-center justify-center font-sans">
@@ -13,7 +13,7 @@
             <div class="w-16 h-16 bg-blue-700 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 shadow-lg">
                 S
             </div>
-            <h1 class="text-2xl font-bold text-gray-900">Sistem Informasi SMK</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Sistem Informasi SMKN 1 KATAPANG</h1>
             <p class="text-gray-500 mt-2">Login ke Dashboard Admin</p>
         </div>
 
@@ -54,7 +54,7 @@
         </div>
         
         <p class="text-center text-sm text-gray-500 mt-6">
-            &copy; {{ date('Y') }} SMK Nusantara.
+            &copy; {{ date('Y') }} SMKN 1 KATAPANG.
         </p>
     </div>
 

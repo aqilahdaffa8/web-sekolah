@@ -17,7 +17,7 @@
 
     <!-- Footer -->
     <div class="p-4 border-t border-gray-200 text-xs text-center text-gray-500 sidebar-text">
-        &copy; {{ date('Y') }} SMK Nusantara
+        &copy; {{ date('Y') }} SMKN 1 KATAPANG
     </div>
 </aside>
 

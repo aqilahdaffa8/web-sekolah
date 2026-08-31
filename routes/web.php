@@ -47,7 +47,7 @@ Route::get('/login', function () {
 // Dashboard Shell (Router)
 // Note: Actual routing based on role will be handled in frontend JS (SPA-like inside the dashboard)
 // or we can map direct URLs for easier reloading.
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('dashboard.index');
     });

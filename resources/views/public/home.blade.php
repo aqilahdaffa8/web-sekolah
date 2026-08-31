@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Beranda - SMK Nusantara')
+@section('title', 'Beranda - SMKN 1 KATAPANG')
 
 @section('content')
     <!-- Hero Slider -->

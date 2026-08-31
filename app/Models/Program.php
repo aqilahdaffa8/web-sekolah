@@ -9,7 +9,7 @@ class Program extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['program_name', 'description', 'image'];
+    protected $fillable = ['program_name', 'description'];
 
     public function classes()
     {

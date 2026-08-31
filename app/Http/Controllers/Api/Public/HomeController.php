@@ -18,18 +18,17 @@ class HomeController extends Controller
     public function index(): JsonResponse
     {
         return response()->json([
-            'banners' => Banner::where('is_active', true)->orderBy('order')->get(),
+            'banners' => Banner::orderBy('sort_order')->get(),
             'news' => Post::with('category')
                 ->where('status', 'published')
-                ->latest('published_at')
+                ->latest()
                 ->take(5)
                 ->get(),
-            'events' => Event::where('status', 'published')
-                ->where('start_date', '>=', now())
-                ->orderBy('start_date')
+            'events' => Event::where('event_date', '>=', now()->toDateString())
+                ->orderBy('event_date')
                 ->take(5)
                 ->get(),
-            'products' => TefaProduct::where('is_featured', true)->take(6)->get(),
+            'products' => TefaProduct::where('stock', '>', 0)->latest()->take(6)->get(),
         ]);
     }
 }

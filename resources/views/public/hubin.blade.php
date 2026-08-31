@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Hubin & BKK - SMK Nusantara')
+@section('title', 'Hubin & BKK - SMKN 1 KATAPANG')
 
 @section('content')
     <div class="bg-blue-800 text-white py-12">
@@ -30,7 +30,7 @@
             <div class="flex justify-between items-end mb-8">
                 <div>
                     <h2 class="section-title mb-2">Lowongan Kerja (BKK)</h2>
-                    <p class="text-gray-600">Peluang karir eksklusif untuk alumni SMK Nusantara.</p>
+                    <p class="text-gray-600">Peluang karir eksklusif untuk alumni SMKN 1 KATAPANG.</p>
                 </div>
                 <div class="flex gap-2">
                     <button class="btn btn-sm btn-primary">Semua</button>

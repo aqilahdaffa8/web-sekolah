@@ -7,7 +7,7 @@
                     S
                 </div>
                 <div>
-                    <h1 class="font-bold text-xl tracking-wide">SMK Nusantara</h1>
+                    <h1 class="font-bold text-xl tracking-wide">SMKN 1 KATAPANG</h1>
                     <p class="text-xs text-blue-200">Bisa & Hebat</p>
                 </div>
             </a>

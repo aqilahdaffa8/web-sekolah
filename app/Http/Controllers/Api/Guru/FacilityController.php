@@ -20,9 +20,8 @@ class FacilityController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'string'],
+            'facility_name' => ['required', 'string', 'max:255'],
+            'image_url' => ['nullable', 'string'],
             'program_id' => ['nullable', 'integer', 'exists:programs,id'],
         ]);
 
@@ -40,9 +39,8 @@ class FacilityController extends Controller
     public function update(Request $request, Facility $facility): JsonResponse
     {
         $data = $request->validate([
-            'name' => ['sometimes', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'string'],
+            'facility_name' => ['sometimes', 'string', 'max:255'],
+            'image_url' => ['nullable', 'string'],
             'program_id' => ['nullable', 'integer', 'exists:programs,id'],
         ]);
 

@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Kontak Kami - SMK Nusantara')
+@section('title', 'Kontak Kami - SMKN 1 KATAPANG')
 
 @section('content')
     <div class="bg-blue-800 text-white py-12">

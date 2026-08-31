@@ -6,7 +6,7 @@
                     <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-blue-800 font-bold">
                         S
                     </div>
-                    <h2 class="font-bold text-xl text-white">SMK Nusantara</h2>
+                    <h2 class="font-bold text-xl text-white">SMKN 1 KATAPANG</h2>
                 </div>
                 <p class="text-sm text-gray-400 mb-4">Mencetak generasi bangsa yang unggul, berkarakter, dan siap kerja di dunia industri.</p>
             </div>
@@ -51,7 +51,7 @@
         </div>
         
         <div class="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500 flex flex-col md:flex-row justify-between items-center">
-            <p>&copy; {{ date('Y') }} SMK Nusantara. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} SMKN 1 KATAPANG. All rights reserved.</p>
             <div class="flex space-x-4 mt-4 md:mt-0">
                 <a href="#" class="hover:text-white transition">Facebook</a>
                 <a href="#" class="hover:text-white transition">Instagram</a>

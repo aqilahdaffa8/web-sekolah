@@ -19,7 +19,7 @@ class TefaPublicController extends Controller
     {
         return response()->json(
             TefaProduct::where('stock', '>', 0)
-                ->when($request->search, fn ($q) => $q->where('name', 'like', "%{$request->search}%"))
+                ->when($request->search, fn ($q) => $q->where('product_name', 'like', "%{$request->search}%"))
                 ->paginate(12)
         );
     }
