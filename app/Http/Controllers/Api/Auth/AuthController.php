@@ -19,7 +19,7 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -32,8 +32,8 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Invalid credentials.',
-                'errors'  => $e->errors(),
-                'code'    => 422,
+                'errors' => $e->errors(),
+                'code' => 422,
             ], 422);
         }
 
@@ -42,12 +42,12 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login successful.',
-            'token'   => $result['token'],
-            'user'    => [
-                'id'          => $user->id,
-                'name'        => $user->name,
-                'email'       => $user->email,
-                'roles'       => $user->roles->pluck('role_name'),
+            'token' => $result['token'],
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->roles->pluck('role_name'),
                 'permissions' => $user->allPermissions(),
             ],
         ]);
@@ -71,10 +71,10 @@ class AuthController extends Controller
         $user = $request->user()->loadMissing('roles.permissions');
 
         return response()->json([
-            'id'          => $user->id,
-            'name'        => $user->name,
-            'email'       => $user->email,
-            'roles'       => $user->roles->pluck('role_name'),
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'roles' => $user->roles->pluck('role_name'),
             'permissions' => $user->allPermissions(),
         ]);
     }

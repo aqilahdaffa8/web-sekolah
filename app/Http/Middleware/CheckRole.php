@@ -22,7 +22,7 @@ class CheckRole
         if (! $user) {
             return response()->json([
                 'message' => 'Unauthenticated.',
-                'code'    => 401,
+                'code' => 401,
             ], 401);
         }
 
@@ -36,8 +36,8 @@ class CheckRole
         }
 
         return response()->json([
-            'message' => 'Forbidden. Required role: ' . implode(' or ', $roles),
-            'code'    => 403,
+            'message' => 'Forbidden. Required role: '.implode(' or ', $roles),
+            'code' => 403,
         ], 403);
     }
 }

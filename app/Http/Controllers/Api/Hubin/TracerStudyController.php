@@ -25,9 +25,9 @@ class TracerStudyController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'student_id'             => ['required', 'integer', 'exists:students,id'],
-            'graduation_year'        => ['required', 'integer', 'min:2000', 'max:2100'],
-            'current_status'         => ['required', 'in:Kerja,Kuliah,Wirausaha'],
+            'student_id' => ['required', 'integer', 'exists:students,id'],
+            'graduation_year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            'current_status' => ['required', 'in:Kerja,Kuliah,Wirausaha'],
             'company_or_campus_name' => ['nullable', 'string'],
         ]);
 
@@ -45,8 +45,8 @@ class TracerStudyController extends Controller
     public function update(Request $request, TracerStudy $tracerStudy): JsonResponse
     {
         $data = $request->validate([
-            'graduation_year'        => ['sometimes', 'integer'],
-            'current_status'         => ['sometimes', 'in:Kerja,Kuliah,Wirausaha'],
+            'graduation_year' => ['sometimes', 'integer'],
+            'current_status' => ['sometimes', 'in:Kerja,Kuliah,Wirausaha'],
             'company_or_campus_name' => ['nullable', 'string'],
         ]);
 

@@ -13,7 +13,7 @@ class HubinPublicController extends Controller
     public function index(Request $request): JsonResponse
     {
         return response()->json([
-            'partners'  => DudiPartner::when($request->search, fn ($q) => $q->where('company_name', 'like', "%{$request->search}%"))
+            'partners' => DudiPartner::when($request->search, fn ($q) => $q->where('company_name', 'like', "%{$request->search}%"))
                 ->paginate(12),
             'vacancies' => JobVacancy::with('dudiPartner')
                 ->where('status', 'open')

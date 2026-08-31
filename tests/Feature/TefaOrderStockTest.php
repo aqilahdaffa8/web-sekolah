@@ -23,7 +23,7 @@ class TefaOrderStockTest extends TestCase
 
         $response = $this->postJson('/api/public/orders', [
             'buyer_name' => 'Budi Santoso',
-            'items'      => [
+            'items' => [
                 ['product_id' => $product->id, 'quantity' => 3],
             ],
         ]);
@@ -41,7 +41,7 @@ class TefaOrderStockTest extends TestCase
 
         $response = $this->postJson('/api/public/orders', [
             'buyer_name' => 'Siti Rahayu',
-            'items'      => [
+            'items' => [
                 ['product_id' => $product->id, 'quantity' => 1],
             ],
         ]);
@@ -58,7 +58,7 @@ class TefaOrderStockTest extends TestCase
 
         $response = $this->postJson('/api/public/orders', [
             'buyer_name' => 'Ahmad Fauzi',
-            'items'      => [
+            'items' => [
                 ['product_id' => $product->id, 'quantity' => 10],
             ],
         ]);
@@ -70,12 +70,12 @@ class TefaOrderStockTest extends TestCase
     /** Multi-item order where one item fails rolls back all stock changes */
     public function test_partial_failure_rolls_back_all_stock(): void
     {
-        $okProduct  = TefaProduct::factory()->inStock(5)->create(['price' => 10000]);
+        $okProduct = TefaProduct::factory()->inStock(5)->create(['price' => 10000]);
         $oosProduct = TefaProduct::factory()->outOfStock()->create(['price' => 20000]);
 
         $response = $this->postJson('/api/public/orders', [
             'buyer_name' => 'Dewi Lestari',
-            'items'      => [
+            'items' => [
                 ['product_id' => $okProduct->id,  'quantity' => 2],
                 ['product_id' => $oosProduct->id, 'quantity' => 1],
             ],

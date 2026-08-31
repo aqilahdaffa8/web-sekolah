@@ -27,16 +27,16 @@ class PostController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'title'       => ['required', 'string', 'max:255'],
-            'content'     => ['required', 'string'],
-            'image_url'   => ['nullable', 'string'],
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string'],
+            'image_url' => ['nullable', 'string'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
-            'status'      => ['in:draft,published'],
+            'status' => ['in:draft,published'],
         ]);
 
         $data['author_id'] = $request->user()->id;
-        $data['slug']      = Str::slug($data['title']) . '-' . uniqid();
-        $data['status']    = $data['status'] ?? 'draft';
+        $data['slug'] = Str::slug($data['title']).'-'.uniqid();
+        $data['status'] = $data['status'] ?? 'draft';
 
         $post = Post::create($data);
         $this->logger->log($request->user()->id, 'created', 'posts');
@@ -52,15 +52,15 @@ class PostController extends Controller
     public function update(Request $request, Post $post): JsonResponse
     {
         $data = $request->validate([
-            'title'       => ['sometimes', 'string', 'max:255'],
-            'content'     => ['sometimes', 'string'],
-            'image_url'   => ['nullable', 'string'],
+            'title' => ['sometimes', 'string', 'max:255'],
+            'content' => ['sometimes', 'string'],
+            'image_url' => ['nullable', 'string'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
-            'status'      => ['in:draft,published'],
+            'status' => ['in:draft,published'],
         ]);
 
         if (isset($data['title'])) {
-            $data['slug'] = Str::slug($data['title']) . '-' . $post->id;
+            $data['slug'] = Str::slug($data['title']).'-'.$post->id;
         }
 
         $post->update($data);

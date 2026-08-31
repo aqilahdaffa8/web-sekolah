@@ -20,8 +20,8 @@ class BannerController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'image_url'  => ['required', 'string'],
-            'link_url'   => ['nullable', 'url'],
+            'image_url' => ['required', 'string'],
+            'link_url' => ['nullable', 'url'],
             'sort_order' => ['integer'],
         ]);
 
@@ -39,8 +39,8 @@ class BannerController extends Controller
     public function update(Request $request, Banner $banner): JsonResponse
     {
         $data = $request->validate([
-            'image_url'  => ['sometimes', 'string'],
-            'link_url'   => ['nullable', 'url'],
+            'image_url' => ['sometimes', 'string'],
+            'link_url' => ['nullable', 'url'],
             'sort_order' => ['integer'],
         ]);
 

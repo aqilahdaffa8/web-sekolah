@@ -25,9 +25,9 @@ class AchievementController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'title'              => ['required', 'string', 'max:255'],
-            'description'        => ['nullable', 'string'],
-            'image_url'          => ['nullable', 'string'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'image_url' => ['nullable', 'string'],
             'extracurricular_id' => ['nullable', 'integer', 'exists:extracurriculars,id'],
         ]);
 
@@ -45,9 +45,9 @@ class AchievementController extends Controller
     public function update(Request $request, Achievement $achievement): JsonResponse
     {
         $data = $request->validate([
-            'title'              => ['sometimes', 'string', 'max:255'],
-            'description'        => ['nullable', 'string'],
-            'image_url'          => ['nullable', 'string'],
+            'title' => ['sometimes', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'image_url' => ['nullable', 'string'],
             'extracurricular_id' => ['nullable', 'integer', 'exists:extracurriculars,id'],
         ]);
 

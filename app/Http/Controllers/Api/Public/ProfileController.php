@@ -16,8 +16,8 @@ class ProfileController extends Controller
     public function index(): JsonResponse
     {
         return response()->json([
-            'school'     => SiteSetting::whereIn('group', ['school', 'general'])->pluck('value', 'key'),
-            'programs'   => Program::with('classes')->get(),
+            'school' => SiteSetting::whereIn('group', ['school', 'general'])->pluck('value', 'key'),
+            'programs' => Program::with('classes')->get(),
             'facilities' => Facility::with('program')->get(),
         ]);
     }

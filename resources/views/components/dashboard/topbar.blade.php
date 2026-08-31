@@ -7,16 +7,9 @@
     </div>
 
     <div class="flex items-center gap-4">
-        <!-- Back to site -->
-        <a href="/" class="text-sm text-gray-500 hover:text-blue-600 hidden sm:block" title="Kembali ke Website">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        </a>
-        
-        <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
-
-        <!-- User Dropdown (Simulated via JS) -->
+        <!-- User Dropdown -->
         <div class="relative">
-            <button id="user-menu-btn" class="flex items-center gap-2 focus:outline-none">
+            <button id="user-menu-btn" class="flex items-center gap-2 focus:outline-none hover:opacity-80 transition">
                 <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200" id="user-avatar-initials">
                     U
                 </div>
@@ -33,7 +26,6 @@
                     <p class="text-sm font-medium text-gray-700" id="user-name-mobile">User Name</p>
                     <p class="text-xs text-gray-500" id="user-role-mobile">Role</p>
                 </div>
-                <!-- Profile is not explicitly required in dashboard, but good to have -->
                 <button id="btn-logout" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>
             </div>
         </div>

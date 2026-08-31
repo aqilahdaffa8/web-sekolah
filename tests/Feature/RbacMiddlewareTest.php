@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
 use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +20,9 @@ class RbacMiddlewareTest extends TestCase
     use RefreshDatabase;
 
     private User $superAdmin;
+
     private User $guruUser;
+
     private User $eskulUser;
 
     protected function setUp(): void

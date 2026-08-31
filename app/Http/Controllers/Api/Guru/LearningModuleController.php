@@ -28,11 +28,11 @@ class LearningModuleController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'title'       => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'file_path'   => ['nullable', 'string'],
-            'class_id'    => ['required', 'integer', 'exists:classes,id'],
-            'subject_id'  => ['required', 'integer', 'exists:subjects,id'],
+            'file_path' => ['nullable', 'string'],
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
+            'subject_id' => ['required', 'integer', 'exists:subjects,id'],
         ]);
 
         $data['teacher_id'] = $request->user()->id;
@@ -53,9 +53,9 @@ class LearningModuleController extends Controller
         $this->authorize('update', $learningModule, $request->user());
 
         $data = $request->validate([
-            'title'       => ['sometimes', 'string', 'max:255'],
+            'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'file_path'   => ['nullable', 'string'],
+            'file_path' => ['nullable', 'string'],
         ]);
 
         $learningModule->update($data);

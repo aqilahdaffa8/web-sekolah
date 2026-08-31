@@ -13,10 +13,10 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         return [
-            'nis'      => fake()->unique()->numerify('##########'),
-            'name'     => fake()->name(),
+            'nis' => fake()->unique()->numerify('##########'),
+            'name' => fake()->name(),
             'class_id' => ClassRoom::factory(),
-            'status'   => 'aktif',
+            'status' => 'aktif',
         ];
     }
 }

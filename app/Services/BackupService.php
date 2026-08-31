@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class BackupService
@@ -11,14 +10,15 @@ class BackupService
     /**
      * Run mysqldump and store the file in storage/app/backups/.
      *
-     * @return string  Absolute path to the .sql.gz file
+     * @return string Absolute path to the .sql.gz file
+     *
      * @throws \RuntimeException on failure
      */
     public function create(): string
     {
-        $db       = config('database.connections.mysql');
-        $filename = 'backup_' . now()->format('Y-m-d_His') . '.sql.gz';
-        $path     = storage_path('app/backups/' . $filename);
+        $db = config('database.connections.mysql');
+        $filename = 'backup_'.now()->format('Y-m-d_His').'.sql.gz';
+        $path = storage_path('app/backups/'.$filename);
 
         // Ensure directory exists
         if (! is_dir(dirname($path))) {
@@ -41,7 +41,7 @@ class BackupService
 
         if (! $process->isSuccessful()) {
             throw new \RuntimeException(
-                'mysqldump failed: ' . $process->getErrorOutput()
+                'mysqldump failed: '.$process->getErrorOutput()
             );
         }
 
@@ -53,14 +53,14 @@ class BackupService
      */
     public function list(): array
     {
-        $dir   = storage_path('app/backups/');
-        $files = glob($dir . '*.sql.gz') ?: [];
+        $dir = storage_path('app/backups/');
+        $files = glob($dir.'*.sql.gz') ?: [];
         usort($files, fn ($a, $b) => filemtime($b) - filemtime($a));
 
         return array_map(fn ($f) => [
             'filename' => basename($f),
-            'size'     => filesize($f),
-            'created'  => date('Y-m-d H:i:s', filemtime($f)),
+            'size' => filesize($f),
+            'created' => date('Y-m-d H:i:s', filemtime($f)),
         ], $files);
     }
 }

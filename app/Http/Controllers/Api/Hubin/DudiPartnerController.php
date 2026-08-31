@@ -23,10 +23,10 @@ class DudiPartnerController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'company_name'   => ['required', 'string', 'max:255'],
+            'company_name' => ['required', 'string', 'max:255'],
             'industry_field' => ['nullable', 'string'],
-            'logo_url'       => ['nullable', 'string'],
-            'mou_document'   => ['nullable', 'string'],
+            'logo_url' => ['nullable', 'string'],
+            'mou_document' => ['nullable', 'string'],
         ]);
 
         $partner = DudiPartner::create($data);
@@ -43,10 +43,10 @@ class DudiPartnerController extends Controller
     public function update(Request $request, DudiPartner $dudiPartner): JsonResponse
     {
         $data = $request->validate([
-            'company_name'   => ['sometimes', 'string', 'max:255'],
+            'company_name' => ['sometimes', 'string', 'max:255'],
             'industry_field' => ['nullable', 'string'],
-            'logo_url'       => ['nullable', 'string'],
-            'mou_document'   => ['nullable', 'string'],
+            'logo_url' => ['nullable', 'string'],
+            'mou_document' => ['nullable', 'string'],
         ]);
 
         $dudiPartner->update($data);
