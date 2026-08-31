@@ -17,9 +17,9 @@ class LearningModuleController extends Controller
         $teacher = $request->user();
 
         return response()->json(
-            LearningModule::with(['program'])
+            LearningModule::with(['subject', 'classRoom'])
                 ->where('teacher_id', $teacher->id)
-                ->when($request->program_id, fn ($q) => $q->where('program_id', $request->program_id))
+                ->when($request->subject_id, fn ($q) => $q->where('subject_id', $request->subject_id))
                 ->latest()
                 ->paginate(15)
         );
@@ -29,8 +29,10 @@ class LearningModuleController extends Controller
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'file_url' => ['required', 'string'],
-            'program_id' => ['required', 'integer', 'exists:programs,id'],
+            'description' => ['nullable', 'string'],
+            'file_path' => ['nullable', 'string'],
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
+            'subject_id' => ['required', 'integer', 'exists:subjects,id'],
         ]);
 
         $data['teacher_id'] = $request->user()->id;
@@ -38,12 +40,12 @@ class LearningModuleController extends Controller
         $module = LearningModule::create($data);
         $this->logger->log($request->user()->id, 'created', 'learning_modules', $module->id);
 
-        return response()->json(['message' => 'Module created.', 'module' => $module->load('program')], 201);
+        return response()->json(['message' => 'Module created.', 'module' => $module->load('subject', 'classRoom')], 201);
     }
 
     public function show(LearningModule $learningModule): JsonResponse
     {
-        return response()->json($learningModule->load('program', 'teacher'));
+        return response()->json($learningModule->load('subject', 'classRoom', 'teacher'));
     }
 
     public function update(Request $request, LearningModule $learningModule): JsonResponse
@@ -52,8 +54,8 @@ class LearningModuleController extends Controller
 
         $data = $request->validate([
             'title' => ['sometimes', 'string', 'max:255'],
-            'file_url' => ['sometimes', 'string'],
-            'program_id' => ['sometimes', 'integer', 'exists:programs,id'],
+            'description' => ['nullable', 'string'],
+            'file_path' => ['nullable', 'string'],
         ]);
 
         $learningModule->update($data);

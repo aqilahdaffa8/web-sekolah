@@ -26,7 +26,8 @@ class RegistrationController extends Controller
     public function updateStatus(Request $request, ExtracurricularRegistration $registration): JsonResponse
     {
         $data = $request->validate([
-            'status' => ['required', 'in:pending,approved'],
+            'status' => ['required', 'in:approved,rejected'],
+            'notes' => ['nullable', 'string'],
         ]);
 
         $registration->update($data);

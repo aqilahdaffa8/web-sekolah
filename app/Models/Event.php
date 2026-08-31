@@ -12,11 +12,15 @@ class Event extends Model
     protected $fillable = [
         'title',
         'description',
-        'event_date',
-        'created_by',
+        'image',
+        'location',
+        'start_date',
+        'end_date',
+        'status',
     ];
 
     protected $casts = [
-        'event_date' => 'date',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 }

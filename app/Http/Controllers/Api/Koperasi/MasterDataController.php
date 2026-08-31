@@ -11,7 +11,7 @@ class MasterDataController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $programs = DB::table('programs')->select('id', 'program_name as name')->orderBy('program_name')->get();
+        $programs = DB::table('programs')->select('id', 'name')->orderBy('name')->get();
 
         return response()->json([
             'programs' => $programs,

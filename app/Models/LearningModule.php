@@ -11,9 +11,11 @@ class LearningModule extends Model
 
     protected $fillable = [
         'title',
-        'file_url',
-        'program_id',
+        'description',
+        'file_path',
         'teacher_id',
+        'class_id',
+        'subject_id',
     ];
 
     public function teacher()
@@ -21,8 +23,13 @@ class LearningModule extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    public function program()
+    public function classRoom()
     {
-        return $this->belongsTo(Program::class, 'program_id');
+        return $this->belongsTo(ClassRoom::class, 'class_id');
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
 }

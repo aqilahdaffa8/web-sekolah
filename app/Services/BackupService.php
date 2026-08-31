@@ -26,16 +26,16 @@ class BackupService
         }
 
         $command = sprintf(
-            'mysqldump --host=%s --port=%s --user=%s %s | gzip > %s',
+            'mysqldump --host=%s --port=%s --user=%s --password=%s %s | gzip > %s',
             escapeshellarg($db['host']),
             escapeshellarg($db['port']),
             escapeshellarg($db['username']),
+            escapeshellarg($db['password']),
             escapeshellarg($db['database']),
             escapeshellarg($path)
         );
 
         $process = Process::fromShellCommandline($command);
-        $process->setEnv(['MYSQL_PWD' => $db['password']]);
         $process->setTimeout(300);
         $process->run();
 
