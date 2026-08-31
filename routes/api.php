@@ -91,7 +91,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Content management
         Route::apiResource('/banners',       BannerController::class);
         Route::apiResource('/menus',         MenuController::class)->except('show');
-        Route::get('/menus/{menu}',          [MenuController::class, 'index']); // not needed but consistent
         Route::get('/site-settings',         [SiteSettingController::class, 'index']);
         Route::post('/site-settings',        [SiteSettingController::class, 'upsert']);
         Route::apiResource('/posts',         PostController::class);
@@ -122,6 +121,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── GURU & AKADEMIK ───────────────────────────────────────────────────────
     Route::prefix('guru')->middleware('role:Guru,Super Admin')->group(function () {
+        Route::get('/master-data',  [\App\Http\Controllers\Api\Guru\MasterDataController::class, 'index']);
         Route::apiResource('/learning-modules', LearningModuleController::class);
         Route::get('/grades',       [GradeController::class, 'index']);
         Route::post('/grades',      [GradeController::class, 'upsert']);
