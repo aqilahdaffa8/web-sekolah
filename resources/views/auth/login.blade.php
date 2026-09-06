@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin — SMK</title>
@@ -95,164 +94,119 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // Helper to determine destination route from roles
+    function getDestination(roles = []) {
+        if (roles.includes('Super Admin')) return '/dashboard';
+        if (roles.includes('Hubin'))      return '/dashboard/hubin/mitra';
+        if (roles.includes('Koperasi'))   return '/dashboard/koperasi/produk';
+        if (roles.includes('Guru'))       return '/dashboard/guru/nilai';
+        if (roles.includes('Eskul'))      return '/dashboard/eskul/kelola';
+        return '/dashboard';
+    }
+
     // Redirect if already logged in
-    if (localStorage.getItem('smk_token')) {
-        window.location.href = window.auth.getDashboardRoute();
+    const existingToken = localStorage.getItem('smk_token');
+    if (existingToken) {
+        try {
+            const roles = JSON.parse(localStorage.getItem('smk_roles') || '[]');
+            window.location.href = getDestination(roles);
+            return;
+        } catch (_) {
+            window.location.href = '/dashboard';
+            return;
+        }
     }
 
     // Password toggle
-    document.getElementById('toggle-password').addEventListener('click', () => {
-        const input = document.getElementById('password');
-        const isText = input.type === 'text';
-        input.type = isText ? 'password' : 'text';
-    });
+    const toggleBtn = document.getElementById('toggle-password');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const input = document.getElementById('password');
+            const isText = input.type === 'text';
+            input.type = isText ? 'password' : 'text';
+        });
+    }
 
     // Login form
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const btn   = document.getElementById('btn-login');
-        const alert = document.getElementById('login-alert');
-        const email    = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+            const btn   = document.getElementById('btn-login');
+            const alert = document.getElementById('login-alert');
+            const alertText = document.getElementById('login-alert-text');
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
 
-        alert.classList.add('hidden');
+            alert.classList.add('hidden');
 
-        if (!email || !password) {
-            document.getElementById('login-alert-text').textContent = 'Email dan kata sandi wajib diisi.';
-            alert.classList.remove('hidden');
-            return;
-        }
+            if (!email || !password) {
+                alertText.textContent = 'Email dan kata sandi wajib diisi.';
+                alert.classList.remove('hidden');
+                return;
+            }
 
-        try {
-            window.utils.setButtonLoading(btn, true, 'Memverifikasi...');
-            // login() stores session & redirects; execution won't reach below on success
-            await window.auth.login(email, password);
-        } catch (err) {
-            const msg = err.message
-                || err.errors?.email?.[0]
-                || err.errors?.password?.[0]
-                || 'Email atau kata sandi salah.';
-            document.getElementById('login-alert-text').textContent = msg;
-            alert.classList.remove('hidden');
-            window.utils.setButtonLoading(btn, false, 'Masuk ke Dashboard');
-        }
-    });
+            // Safe button loading state
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="w-4 h-4 animate-spin inline-block mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Memverifikasi...
+            `;
+
+            try {
+                // If window.auth.login is available, use it
+                if (window.auth && typeof window.auth.login === 'function') {
+                    await window.auth.login(email, password);
+                    return;
+                }
+
+                // Resilient direct fetch fallback
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const msg = data.message
+                        || data.errors?.email?.[0]
+                        || data.errors?.password?.[0]
+                        || 'Email atau kata sandi salah.';
+                    throw new Error(msg);
+                }
+
+                // Save session
+                const rawRoles = data.roles || data.user?.roles || [];
+                const roles = rawRoles.map(r => (typeof r === 'object' ? (r.role_name || r.name) : r));
+                const permissions = data.permissions || data.user?.permissions || [];
+
+                localStorage.setItem('smk_token', data.token || data.access_token);
+                localStorage.setItem('smk_user', JSON.stringify(data.user));
+                localStorage.setItem('smk_roles', JSON.stringify(roles));
+                localStorage.setItem('smk_permissions', JSON.stringify(permissions));
+
+                // Redirect to role dashboard
+                window.location.href = getDestination(roles);
+            } catch (err) {
+                alertText.textContent = err.message || 'Email atau kata sandi salah.';
+                alert.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = originalText || 'Masuk ke Dashboard';
+            }
+        });
+    }
 });
 </script>
-=======
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Admin - SMKN 1 KATAPANG</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 h-screen flex items-center justify-center font-sans">
-
-    <div class="max-w-md w-full px-6">
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-blue-700 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 shadow-lg">
-                S
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900">Sistem Informasi SMKN 1 KATAPANG</h1>
-            <p class="text-gray-500 mt-2">Login ke Dashboard Admin</p>
-        </div>
-
-        <div class="card p-8 shadow-xl border-t-4 border-blue-700">
-            <form id="login-form">
-                <x-ui.form-input 
-                    type="email" 
-                    name="email" 
-                    label="Email Address" 
-                    required="true" 
-                    placeholder="admin@smknusantara.sch.id" 
-                />
-                
-                <div class="mb-6">
-                    <label for="password" class="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        id="password" 
-                        required 
-                        class="form-input" 
-                        placeholder="••••••••"
-                    />
-                    <div id="password-error" class="form-error hidden"></div>
-                </div>
-                
-                <div class="flex items-center justify-between mb-6">
-                    <label class="flex items-center">
-                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
-                        <span class="ml-2 text-sm text-gray-600">Ingat Saya</span>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-full py-2.5 text-base" id="btn-login">
-                    Masuk ke Dashboard
-                </button>
-            </form>
-        </div>
-        
-        <p class="text-center text-sm text-gray-500 mt-6">
-            &copy; {{ date('Y') }} SMKN 1 KATAPANG.
-        </p>
-    </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col items-end"></div>
-
-    <script type="module">
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('login-form');
-            const btn = document.getElementById('btn-login');
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = form.email.value;
-                const password = form.password.value;
-
-                // Reset errors
-                document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
-                document.querySelectorAll('.form-error').forEach(el => el.classList.add('hidden'));
-
-                btn.disabled = true;
-                btn.innerHTML = 'Loading...';
-
-                try {
-                    // Call the auth module we created
-                    const response = await window.auth.login(email, password);
-                    
-                    window.showToast('Login berhasil! Mengalihkan...', 'success');
-                    
-                    // Redirect based on role (or just to dashboard router)
-                    setTimeout(() => {
-                        window.location.href = '/dashboard';
-                    }, 1000);
-
-                } catch (error) {
-                    btn.disabled = false;
-                    btn.innerHTML = 'Masuk ke Dashboard';
-                    
-                    if (error.status === 422 && error.errors) {
-                        // Validation errors
-                        Object.keys(error.errors).forEach(key => {
-                            const input = document.getElementById(key);
-                            const errDiv = document.getElementById(`${key}-error`);
-                            if (input && errDiv) {
-                                input.classList.add('error');
-                                errDiv.textContent = error.errors[key][0];
-                                errDiv.classList.remove('hidden');
-                            }
-                        });
-                    } else if (error.status === 429) {
-                        window.showToast('Terlalu banyak percobaan. Coba lagi nanti.', 'error');
-                    } else {
-                        window.showToast(error.message || 'Login gagal. Periksa kredensial Anda.', 'error');
-                    }
-                }
-            });
-        });
-    </script>
->>>>>>> dbce877d0f289c11f00a4851f99f3a28482b2d43
 </body>
 </html>

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * Utility functions — formatting, DOM helpers, debounce
  */
@@ -396,28 +395,8 @@ export function statusBadge(status) {
     const s = STATUS_MAP[status?.toLowerCase()] || { cls: 'badge-gray', label: status };
     return `<span class="${s.cls}">${s.label}</span>`;
 }
-=======
-// resources/js/utils.js
 
-export const formatDate = (dateString) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    }).format(date);
-};
-
-export const formatRupiah = (amount) => {
-    if (amount === null || amount === undefined) return '-';
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount);
-};
+export const formatRupiah = formatCurrency;
 
 export const showToast = (message, type = 'success') => {
     const event = new CustomEvent('toast-message', {
@@ -425,4 +404,3 @@ export const showToast = (message, type = 'success') => {
     });
     window.dispatchEvent(event);
 };
->>>>>>> dbce877d0f289c11f00a4851f99f3a28482b2d43

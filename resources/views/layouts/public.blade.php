@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -253,32 +252,5 @@
 <div id="toast-container" class="fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
 
 @stack('scripts')
-=======
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Sistem Informasi SMKN 1 KATAPANG')</title>
-
-    <!-- Vite CSS and JS -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased min-h-screen flex flex-col">
-
-    <!-- Navbar -->
-    <x-public.navbar />
-
-    <!-- Main Content -->
-    <main class="flex-grow">
-        @yield('content')
-    </main>
-
-    <!-- Footer -->
-    <x-public.footer />
-
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col items-end"></div>
-
->>>>>>> dbce877d0f289c11f00a4851f99f3a28482b2d43
 </body>
 </html>

@@ -84,27 +84,15 @@ class HomeController extends Controller
         ];
 
         return response()->json([
-<<<<<<< HEAD
             'banners'           => $banners,
             'stats'             => $stats,
             'latest_news'       => $latestNews,
             'upcoming_events'   => $upcomingEvents,
             'featured_products' => $featuredProducts,
             'extracurriculars'  => $extracurriculars,
-=======
-            'banners' => Banner::where('is_active', true)->orderBy('order')->get(),
-            'news' => Post::with('category')
-                ->where('status', 'published')
-                ->latest('published_at')
-                ->take(5)
-                ->get(),
-            'events' => Event::where('status', 'published')
-                ->where('start_date', '>=', now())
-                ->orderBy('start_date')
-                ->take(5)
-                ->get(),
-            'products' => TefaProduct::where('is_featured', true)->take(6)->get(),
->>>>>>> dbce877d0f289c11f00a4851f99f3a28482b2d43
+            'news'              => $latestNews,
+            'events'            => $upcomingEvents,
+            'products'          => $featuredProducts,
         ]);
     }
 }
