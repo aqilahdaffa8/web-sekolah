@@ -34,8 +34,8 @@ class NewsController extends Controller
     public function events(Request $request): JsonResponse
     {
         return response()->json(
-            Event::when($request->upcoming, fn ($q) => $q->where('start_date', '>=', now()))
-                ->latest()
+            Event::when($request->upcoming, fn ($q) => $q->where('event_date', '>=', now()->toDateString()))
+                ->orderBy('event_date', 'asc')
                 ->paginate(10)
         );
     }

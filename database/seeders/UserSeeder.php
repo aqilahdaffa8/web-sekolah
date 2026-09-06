@@ -11,19 +11,52 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $superAdmin = User::firstOrCreate(
-            ['email' => 'superadmin@smk.sch.id'],
+        $users = [
             [
                 'name' => 'Super Admin',
-                // CHANGE THIS PASSWORD immediately after first login/seed.
-                'password' => Hash::make('ChangeMe!12345'),
-            ]
-        );
+                'email' => 'superadmin@smk.sch.id',
+                'password' => 'ChangeMe!12345',
+                'role' => 'Super Admin'
+            ],
+            [
+                'name' => 'Admin Hubin',
+                'email' => 'hubin@smk.sch.id',
+                'password' => 'password123',
+                'role' => 'Hubin'
+            ],
+            [
+                'name' => 'Admin Koperasi',
+                'email' => 'koperasi@smk.sch.id',
+                'password' => 'password123',
+                'role' => 'Koperasi'
+            ],
+            [
+                'name' => 'Bapak Guru',
+                'email' => 'guru@smk.sch.id',
+                'password' => 'password123',
+                'role' => 'Guru'
+            ],
+            [
+                'name' => 'Pembina Eskul',
+                'email' => 'eskul@smk.sch.id',
+                'password' => 'password123',
+                'role' => 'Eskul'
+            ],
+        ];
 
-        $role = Role::where('role_name', 'Super Admin')->first();
+        foreach ($users as $userData) {
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'name' => $userData['name'],
+                    'password' => Hash::make($userData['password']),
+                ]
+            );
 
-        if ($role) {
-            $superAdmin->roles()->syncWithoutDetaching([$role->id]);
+            $role = Role::where('role_name', $userData['role'])->first();
+            if ($role) {
+                $user->roles()->syncWithoutDetaching([$role->id]);
+            }
         }
     }
 }

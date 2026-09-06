@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Public\HubinPublicController;
 use App\Http\Controllers\Api\Public\TefaPublicController;
 use App\Http\Controllers\Api\Public\NewsController;
 use App\Http\Controllers\Api\Public\ContactController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\Public\EskulPublicController;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -64,6 +65,8 @@ Route::prefix('auth')->group(function () {
 // PROTECTED ENDPOINTS
 // ─────────────────────────────────────────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
     // ── SUPER ADMIN ──────────────────────────────────────────────────────────
     Route::prefix('admin')->middleware('role:Super Admin')->group(function () {

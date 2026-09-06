@@ -14,7 +14,11 @@ class AcademicMasterSeeder extends Seeder
         $programs = [
             'Rekayasa Perangkat Lunak' => ['RPL 1', 'RPL 2'],
             'Teknik Komputer dan Jaringan' => ['TKJ 1', 'TKJ 2'],
-            'Akuntansi' => ['AK 1'],
+            'Teknik Elektronika' => ['TE 1', 'TE 2'],
+            'Teknik Mesin' => ['TM 1', 'TM 2'],
+            'Teknik Otomotif' => ['TO 1', 'TO 2'],
+            'Teknik Penyempurnaan Tekstil' => ['TPT 1', 'TPT 2'],
+            'Broadcasting Perfilman' => ['BP 1', 'BP 2'],
         ];
 
         foreach ($programs as $programName => $classes) {
