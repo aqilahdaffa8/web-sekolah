@@ -54,10 +54,10 @@ class GradeService
         $this->authorizeTeacher($teacher, $data['student_id'], $data['subject_id']);
 
         $scores = array_filter([
-            'theory_score'   => $data['theory_score']   ?? null,
+            'theory_score' => $data['theory_score'] ?? null,
             'practice_score' => $data['practice_score'] ?? null,
-            'ukk_score'      => $data['ukk_score']      ?? null,
-            'pkl_score'      => $data['pkl_score']       ?? null,
+            'ukk_score' => $data['ukk_score'] ?? null,
+            'pkl_score' => $data['pkl_score'] ?? null,
         ], fn ($v) => $v !== null);
 
         $this->validateScores($scores);

@@ -20,10 +20,10 @@ class ExtracurricularController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'schedule'    => ['nullable', 'string'],
-            'coach_id'    => ['nullable', 'integer', 'exists:users,id'],
+            'schedule' => ['nullable', 'string'],
+            'coach_id' => ['nullable', 'integer', 'exists:users,id'],
         ]);
 
         $eskul = Extracurricular::create($data);
@@ -40,10 +40,10 @@ class ExtracurricularController extends Controller
     public function update(Request $request, Extracurricular $extracurricular): JsonResponse
     {
         $data = $request->validate([
-            'name'        => ['sometimes', 'string', 'max:255'],
+            'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'schedule'    => ['nullable', 'string'],
-            'coach_id'    => ['nullable', 'integer', 'exists:users,id'],
+            'schedule' => ['nullable', 'string'],
+            'coach_id' => ['nullable', 'integer', 'exists:users,id'],
         ]);
 
         $extracurricular->update($data);

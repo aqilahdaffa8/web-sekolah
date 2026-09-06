@@ -12,10 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('label');
             $table->string('url');
-            $table->integer('sort_order')->default(0);
+            $table->foreignId('parent_id')->nullable()->constrained('menus')->nullOnDelete();
+            $table->integer('order')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->index('sort_order');
+            $table->index('order');
         });
     }
 

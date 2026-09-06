@@ -26,11 +26,11 @@ class BackupController extends Controller
             $this->logger->log($request->user()->id, 'backup_created', 'database', null, basename($path));
 
             return response()->json([
-                'message'  => 'Backup created successfully.',
+                'message' => 'Backup created successfully.',
                 'filename' => basename($path),
             ]);
         } catch (\RuntimeException $e) {
-            return response()->json(['message' => 'Backup failed: ' . $e->getMessage(), 'code' => 500], 500);
+            return response()->json(['message' => 'Backup failed: '.$e->getMessage(), 'code' => 500], 500);
         }
     }
 
@@ -45,11 +45,11 @@ class BackupController extends Controller
     /**
      * GET /api/admin/backup/{filename} — download a backup file
      */
-    public function download(string $filename): BinaryFileResponse|\Illuminate\Http\JsonResponse
+    public function download(string $filename): BinaryFileResponse|JsonResponse
     {
         // Prevent directory traversal
         $filename = basename($filename);
-        $path     = storage_path('app/backups/' . $filename);
+        $path = storage_path('app/backups/'.$filename);
 
         if (! file_exists($path)) {
             return response()->json(['message' => 'File not found.', 'code' => 404], 404);

@@ -38,7 +38,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role): JsonResponse
     {
         $data = $request->validate([
-            'role_name' => ['required', 'string', 'unique:roles,role_name,' . $role->id],
+            'role_name' => ['required', 'string', 'unique:roles,role_name,'.$role->id],
         ]);
 
         $role->update($data);

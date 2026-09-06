@@ -24,8 +24,11 @@ class StudentGradeTest extends TestCase
     use RefreshDatabase;
 
     private User $teacher;
+
     private Student $student;
+
     private Subject $subject;
+
     private ClassRoom $classRoom;
 
     protected function setUp(): void
@@ -34,18 +37,18 @@ class StudentGradeTest extends TestCase
 
         $this->seed(RoleSeeder::class);
 
-        $program         = Program::factory()->create(['program_name' => 'RPL']);
+        $program = Program::factory()->create(['program_name' => 'RPL']);
         $this->classRoom = ClassRoom::factory()->create(['program_id' => $program->id, 'class_name' => 'RPL 1']);
-        $this->subject   = Subject::factory()->create(['subject_name' => 'Pemrograman Web']);
-        $this->student   = Student::factory()->create(['class_id' => $this->classRoom->id]);
-        $this->teacher   = User::factory()->create();
+        $this->subject = Subject::factory()->create(['subject_name' => 'Pemrograman Web']);
+        $this->student = Student::factory()->create(['class_id' => $this->classRoom->id]);
+        $this->teacher = User::factory()->create();
 
         $this->teacher->roles()->attach(Role::where('role_name', 'Guru')->first());
 
         // Assign teacher to the class + subject
         TeacherClassSubject::create([
             'teacher_id' => $this->teacher->id,
-            'class_id'   => $this->classRoom->id,
+            'class_id' => $this->classRoom->id,
             'subject_id' => $this->subject->id,
         ]);
     }
@@ -55,8 +58,8 @@ class StudentGradeTest extends TestCase
     {
         $response = $this->actingAs($this->teacher, 'sanctum')
             ->postJson('/api/guru/grades', [
-                'student_id'   => $this->student->id,
-                'subject_id'   => $this->subject->id,
+                'student_id' => $this->student->id,
+                'subject_id' => $this->subject->id,
                 'theory_score' => 85.0,
             ]);
 
@@ -71,8 +74,8 @@ class StudentGradeTest extends TestCase
 
         $response = $this->actingAs($this->teacher, 'sanctum')
             ->postJson('/api/guru/grades', [
-                'student_id'   => $this->student->id,
-                'subject_id'   => $otherSubject->id,
+                'student_id' => $this->student->id,
+                'subject_id' => $otherSubject->id,
                 'theory_score' => 90.0,
             ]);
 
@@ -84,8 +87,8 @@ class StudentGradeTest extends TestCase
     {
         $response = $this->actingAs($this->teacher, 'sanctum')
             ->postJson('/api/guru/grades', [
-                'student_id'   => $this->student->id,
-                'subject_id'   => $this->subject->id,
+                'student_id' => $this->student->id,
+                'subject_id' => $this->subject->id,
                 'theory_score' => 105.0,
             ]);
 
@@ -97,8 +100,8 @@ class StudentGradeTest extends TestCase
     {
         $response = $this->actingAs($this->teacher, 'sanctum')
             ->postJson('/api/guru/grades', [
-                'student_id'   => $this->student->id,
-                'subject_id'   => $this->subject->id,
+                'student_id' => $this->student->id,
+                'subject_id' => $this->subject->id,
                 'theory_score' => -5.0,
             ]);
 

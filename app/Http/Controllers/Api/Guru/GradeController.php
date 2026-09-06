@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\StudentGrade;
 use App\Services\ActivityLogService;
 use App\Services\GradeService;
-use App\Models\StudentGrade;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -33,12 +33,12 @@ class GradeController extends Controller
     public function upsert(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'student_id'     => ['required', 'integer', 'exists:students,id'],
-            'subject_id'     => ['required', 'integer', 'exists:subjects,id'],
-            'theory_score'   => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'student_id' => ['required', 'integer', 'exists:students,id'],
+            'subject_id' => ['required', 'integer', 'exists:subjects,id'],
+            'theory_score' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'practice_score' => ['nullable', 'numeric', 'min:0', 'max:100'],
-            'ukk_score'      => ['nullable', 'numeric', 'min:0', 'max:100'],
-            'pkl_score'      => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'ukk_score' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'pkl_score' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
 
         $grade = $this->gradeService->upsert($request->user(), $data);

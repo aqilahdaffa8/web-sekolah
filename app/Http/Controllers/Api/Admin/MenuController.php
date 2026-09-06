@@ -22,10 +22,10 @@ class MenuController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'label'     => ['required', 'string', 'max:100'],
-            'url'       => ['required', 'string'],
+            'label' => ['required', 'string', 'max:100'],
+            'url' => ['required', 'string'],
             'parent_id' => ['nullable', 'integer', 'exists:menus,id'],
-            'order'     => ['integer'],
+            'order' => ['integer'],
             'is_active' => ['boolean'],
         ]);
 
@@ -38,10 +38,10 @@ class MenuController extends Controller
     public function update(Request $request, Menu $menu): JsonResponse
     {
         $data = $request->validate([
-            'label'     => ['sometimes', 'string', 'max:100'],
-            'url'       => ['sometimes', 'string'],
+            'label' => ['sometimes', 'string', 'max:100'],
+            'url' => ['sometimes', 'string'],
             'parent_id' => ['nullable', 'integer', 'exists:menus,id'],
-            'order'     => ['integer'],
+            'order' => ['integer'],
             'is_active' => ['boolean'],
         ]);
 

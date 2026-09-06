@@ -27,7 +27,7 @@ class RegistrationController extends Controller
     {
         $data = $request->validate([
             'status' => ['required', 'in:approved,rejected'],
-            'notes'  => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
         ]);
 
         $registration->update($data);

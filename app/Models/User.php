@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -28,7 +29,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 
@@ -43,7 +44,7 @@ class User extends Authenticatable
      * Collect all permissions through the user's roles.
      * Cached per-request to avoid N+1 on every middleware check.
      */
-    public function allPermissions(): \Illuminate\Support\Collection
+    public function allPermissions(): Collection
     {
         return $this->roles
             ->flatMap(fn ($role) => $role->permissions)

@@ -22,7 +22,7 @@ class CheckPermission
         if (! $user) {
             return response()->json([
                 'message' => 'Unauthenticated.',
-                'code'    => 401,
+                'code' => 401,
             ], 401);
         }
 
@@ -35,8 +35,8 @@ class CheckPermission
         }
 
         return response()->json([
-            'message' => 'Forbidden. Required permission: ' . implode(' or ', $permissions),
-            'code'    => 403,
+            'message' => 'Forbidden. Required permission: '.implode(' or ', $permissions),
+            'code' => 403,
         ], 403);
     }
 }

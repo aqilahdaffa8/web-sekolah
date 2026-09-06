@@ -14,11 +14,11 @@ class TefaProductFactory extends Factory
     {
         return [
             'product_name' => fake()->words(3, true),
-            'description'  => fake()->sentence(),
-            'price'        => fake()->numberBetween(5000, 500000),
-            'stock'        => fake()->numberBetween(1, 100),
-            'image_url'    => null,
-            'program_id'   => Program::factory(),
+            'description' => fake()->sentence(),
+            'price' => fake()->numberBetween(5000, 500000),
+            'stock' => fake()->numberBetween(1, 100),
+            'image_url' => null,
+            'program_id' => Program::factory(),
         ];
     }
 

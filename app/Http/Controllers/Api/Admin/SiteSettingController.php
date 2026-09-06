@@ -20,8 +20,8 @@ class SiteSettingController extends Controller
     public function upsert(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'settings'         => ['required', 'array'],
-            'settings.*.key'   => ['required', 'string'],
+            'settings' => ['required', 'array'],
+            'settings.*.key' => ['required', 'string'],
             'settings.*.value' => ['nullable', 'string'],
             'settings.*.group' => ['nullable', 'string'],
         ]);

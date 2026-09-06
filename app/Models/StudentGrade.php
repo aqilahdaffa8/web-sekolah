@@ -20,10 +20,10 @@ class StudentGrade extends Model
     ];
 
     protected $casts = [
-        'theory_score'   => 'float',
+        'theory_score' => 'float',
         'practice_score' => 'float',
-        'ukk_score'      => 'float',
-        'pkl_score'      => 'float',
+        'ukk_score' => 'float',
+        'pkl_score' => 'float',
     ];
 
     public function student()

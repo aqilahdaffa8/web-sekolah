@@ -25,10 +25,10 @@ class JobVacancyController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'dudi_id'     => ['required', 'integer', 'exists:dudi_partners,id'],
-            'job_title'   => ['required', 'string', 'max:255'],
+            'dudi_id' => ['required', 'integer', 'exists:dudi_partners,id'],
+            'job_title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'status'      => ['in:open,closed'],
+            'status' => ['in:open,closed'],
         ]);
 
         $vacancy = JobVacancy::create($data);
@@ -45,10 +45,10 @@ class JobVacancyController extends Controller
     public function update(Request $request, JobVacancy $jobVacancy): JsonResponse
     {
         $data = $request->validate([
-            'dudi_id'     => ['sometimes', 'integer', 'exists:dudi_partners,id'],
-            'job_title'   => ['sometimes', 'string', 'max:255'],
+            'dudi_id' => ['sometimes', 'integer', 'exists:dudi_partners,id'],
+            'job_title' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'status'      => ['in:open,closed'],
+            'status' => ['in:open,closed'],
         ]);
 
         $jobVacancy->update($data);

@@ -25,11 +25,11 @@ class TefaProductController extends Controller
     {
         $data = $request->validate([
             'product_name' => ['required', 'string', 'max:255'],
-            'description'  => ['nullable', 'string'],
-            'price'        => ['required', 'numeric', 'min:0'],
-            'stock'        => ['required', 'integer', 'min:0'],
-            'image_url'    => ['nullable', 'string'],
-            'program_id'   => ['required', 'integer', 'exists:programs,id'],
+            'description' => ['nullable', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'image_url' => ['nullable', 'string'],
+            'program_id' => ['required', 'integer', 'exists:programs,id'],
         ]);
 
         $product = TefaProduct::create($data);
@@ -47,11 +47,11 @@ class TefaProductController extends Controller
     {
         $data = $request->validate([
             'product_name' => ['sometimes', 'string', 'max:255'],
-            'description'  => ['nullable', 'string'],
-            'price'        => ['sometimes', 'numeric', 'min:0'],
-            'stock'        => ['sometimes', 'integer', 'min:0'],
-            'image_url'    => ['nullable', 'string'],
-            'program_id'   => ['sometimes', 'integer', 'exists:programs,id'],
+            'description' => ['nullable', 'string'],
+            'price' => ['sometimes', 'numeric', 'min:0'],
+            'stock' => ['sometimes', 'integer', 'min:0'],
+            'image_url' => ['nullable', 'string'],
+            'program_id' => ['sometimes', 'integer', 'exists:programs,id'],
         ]);
 
         $tefaProduct->update($data);
