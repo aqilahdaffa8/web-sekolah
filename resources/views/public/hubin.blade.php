@@ -138,7 +138,7 @@
             </div>
 
             <div class="text-center mt-8">
-                <a href="{{ route('contact') }}" class="btn-primary btn-lg">
+                <a href="{{ route('contact') }}" class="btn btn-primary btn-lg">
                     Hubungi Tim Hubin
                 </a>
             </div>
@@ -210,7 +210,7 @@ function renderJobs(jobs) {
                 </div>
             </div>
             ${j.apply_url && j.status === 'open' ? `
-                <a href="${j.apply_url}" target="_blank" class="btn-primary btn-sm flex-shrink-0">
+                <a href="${j.apply_url}" target="_blank" class="btn btn-primary btn-sm flex-shrink-0">
                     Lamar
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />

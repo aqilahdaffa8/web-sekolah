@@ -95,8 +95,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button data-modal-close class="btn-ghost">Batal</button>
-            <button id="btn-register" onclick="submitRegistration()" class="btn-primary">Daftar Sekarang</button>
+            <button data-modal-close class="btn btn-ghost">Batal</button>
+            <button id="btn-register" onclick="submitRegistration()" class="btn btn-primary">Daftar Sekarang</button>
         </div>
     </div>
 </div>
@@ -183,7 +183,7 @@ function renderEskul(eskul) {
                 ${e.member_count !== undefined ? `<span class="badge-brand">👥 ${e.member_count} anggota</span>` : ''}
             </div>
             <button onclick="openRegister(${JSON.stringify(e).replace(/"/g, '&quot;')})"
-                    class="btn-primary w-full btn-sm"
+                    class="btn btn-primary w-full btn-sm"
                     ${e.status === 'closed' ? 'disabled' : ''}>
                 ${e.status === 'closed' ? 'Pendaftaran Ditutup' : 'Daftar Sekarang'}
             </button>

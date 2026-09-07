@@ -7,7 +7,11 @@
         <p class="text-gray-500 mt-1">Kelola papan loker untuk alumni SMK.</p>
     </div>
     <button onclick="openJobModal()" class="btn btn-primary">
+<<<<<<< HEAD
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+=======
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         Tambah Loker
     </button>
 </div>
@@ -48,7 +52,11 @@
             <div class="sm:col-span-2"><label class="form-label">Deskripsi</label><textarea id="j-desc" class="form-input h-28 resize-none" placeholder="Deskripsi pekerjaan dan kualifikasi..."></textarea></div>
             <div class="sm:col-span-2"><label class="form-label">Link Lamaran</label><input type="url" id="j-apply" class="form-input" placeholder="https://apply.example.com"></div>
         </div>
+<<<<<<< HEAD
         <div class="modal-footer"><button type="button" data-modal-close class="btn-ghost">Batal</button><button type="button" id="btn-save-job" onclick="saveJob()" class="btn btn-primary btn-save">Simpan</button></div>
+=======
+        <div class="modal-footer"><button data-modal-close class="btn btn-ghost">Batal</button><button id="btn-save-job" onclick="saveJob()" class="btn btn-primary">Simpan</button></div>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
     </div>
 </div>
 @endsection
@@ -91,8 +99,8 @@ function renderGrid(jobs) {
                 </div>
                 <p class="text-sm text-gray-600 mt-2">${j.description}</p>
                 <div class="mt-4 flex gap-2">
-                    <button onclick='editJob(${JSON.stringify(j).replace(/'/g, "&apos;")})' class="btn-secondary btn-sm">Edit</button>
-                    <button onclick="deleteJob(${j.id})" class="btn-danger btn-sm">Hapus</button>
+                    <button onclick='editJob(${JSON.stringify(j).replace(/'/g, "&apos;")})' class="btn btn-secondary btn-sm">Edit</button>
+                    <button onclick="deleteJob(${j.id})" class="btn btn-danger btn-sm">Hapus</button>
                 </div>
             </div>
         </div>

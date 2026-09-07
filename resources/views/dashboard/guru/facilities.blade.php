@@ -13,8 +13,13 @@
         <p class="text-gray-500 mt-1">Daftar laboratorium, bengkel praktik, dan fasilitas sekolah.</p>
     </div>
     <button onclick="openCreateModal()" class="btn btn-primary">
+<<<<<<< HEAD
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+=======
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         </svg>
         Tambah Fasilitas
     </button>
@@ -58,8 +63,13 @@
             </div>
         </div>
         <div class="modal-footer">
+<<<<<<< HEAD
             <button data-modal-close class="btn-secondary">Batal</button>
             <button type="button" id="btn-save-facility" onclick="saveFacility()" class="btn btn-primary btn-save">Simpan</button>
+=======
+            <button data-modal-close class="btn btn-secondary">Batal</button>
+            <button id="btn-save-facility" onclick="saveFacility()" class="btn btn-primary">Simpan</button>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         </div>
     </div>
 </div>

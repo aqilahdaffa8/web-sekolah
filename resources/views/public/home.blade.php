@@ -26,6 +26,7 @@
                         Program keahlian terdepan, fasilitas industri mutakhir, dan ekosistem vokasi yang mendorong setiap siswa menjadi talenta berdaya saing global.
                     </p>
                     <div class="flex flex-wrap gap-4">
+<<<<<<< HEAD
                         <a href="{{ route('profile') }}" class="btn-gold btn-lg">
                             <span class="inline-flex items-center gap-2">
                                 <span>Kenali Sekolah Kami</span>
@@ -33,6 +34,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                 </svg>
                             </span>
+=======
+                        <a href="{{ route('profile') }}" class="btn btn-gold btn-lg">
+                            Kenali Sekolah Kami
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
                         </a>
                         <a href="{{ route('tefa') }}" class="glass btn btn-lg text-white hover:bg-white/20">
                             Lihat Katalog TeFA
@@ -86,9 +94,15 @@
                 <p class="text-gold-600 font-semibold text-sm uppercase tracking-wider mb-2">Terkini</p>
                 <h2 class="section-title mb-0">Berita & Pengumuman</h2>
             </div>
+<<<<<<< HEAD
             <a href="{{ route('news') }}" class="btn-secondary btn-sm group inline-flex items-center justify-center gap-2">
                 <span>Lihat Semua</span>
                 <svg class="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+=======
+            <a href="{{ route('news') }}" class="btn btn-secondary btn-sm group">
+                Lihat Semua
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
             </a>
@@ -127,8 +141,13 @@
                 <p class="section-subtitle text-base mb-6">
                     Jadwal kegiatan akademik, penerimaan siswa baru, dan event sekolah terbaru.
                 </p>
+<<<<<<< HEAD
                 <a href="{{ route('news') }}#agenda" class="btn-primary inline-flex w-full items-center justify-center rounded-xl px-5 py-3 sm:w-auto">
                     <span>Lihat Semua Agenda</span>
+=======
+                <a href="{{ route('news') }}#agenda" class="btn btn-primary">
+                    Lihat Semua Agenda
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
                 </a>
             </div>
 
@@ -177,9 +196,15 @@
         <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 hidden"></div>
 
         <div class="text-center mt-10">
+<<<<<<< HEAD
             <a href="{{ route('tefa') }}" class="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 sm:w-auto">
                 <span>Lihat Semua Produk</span>
                 <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+=======
+            <a href="{{ route('tefa') }}" class="btn btn-gold btn-lg">
+                Lihat Semua Produk
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
             </a>
@@ -209,8 +234,13 @@
         </div>
 
         <div class="text-center">
+<<<<<<< HEAD
             <a href="{{ route('eskul') }}" class="btn-primary inline-flex w-full items-center justify-center rounded-xl px-5 py-3 sm:w-auto">
                 <span>Lihat Semua Ekstrakurikuler</span>
+=======
+            <a href="{{ route('eskul') }}" class="btn btn-secondary">
+                Lihat Semua Ekstrakurikuler
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
             </a>
         </div>
     </div>
@@ -259,7 +289,7 @@ function initSlider(banners) {
                         ${b.title}
                     </h2>
                     ${b.subtitle ? `<p class="text-lg text-white/80 mb-8 max-w-2xl">${b.subtitle}</p>` : ''}
-                    ${b.link ? `<a href="${b.link}" class="btn-gold btn-lg">Selengkapnya</a>` : ''}
+                    ${b.link ? `<a href="${b.link}" class="btn btn-gold btn-lg">Selengkapnya</a>` : ''}
                 </div>
             </div>
         `;

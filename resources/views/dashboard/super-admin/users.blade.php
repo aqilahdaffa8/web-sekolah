@@ -19,7 +19,13 @@
         <p class="text-gray-500 mt-1">Kelola akun pengguna dan hak akses sistem.</p>
     </div>
     <button onclick="openCreateUserModal()" class="btn btn-primary">
+<<<<<<< HEAD
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+=======
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         Tambah User
     </button>
 </div>
@@ -118,8 +124,13 @@
             </div>
         </div>
         <div class="modal-footer">
+<<<<<<< HEAD
             <button type="button" data-modal-close class="btn-ghost">Batal</button>
             <button type="button" id="btn-save-user" onclick="saveUser()" class="btn btn-primary btn-save">Simpan</button>
+=======
+            <button data-modal-close class="btn btn-ghost">Batal</button>
+            <button id="btn-save-user" onclick="saveUser()" class="btn btn-primary">Simpan</button>
+>>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         </div>
     </div>
 </div>
@@ -137,8 +148,8 @@
             <p class="text-sm text-gray-500 mb-6">Tindakan ini tidak dapat diurungkan. Data user akan dihapus permanen.</p>
             <input type="hidden" id="delete-user-id">
             <div class="flex gap-3">
-                <button data-modal-close class="btn-ghost flex-1">Batal</button>
-                <button onclick="confirmDeleteUser()" id="btn-confirm-delete" class="btn-danger flex-1">Hapus</button>
+                <button data-modal-close class="btn btn-ghost flex-1">Batal</button>
+                <button onclick="confirmDeleteUser()" id="btn-confirm-delete" class="btn btn-danger flex-1">Hapus</button>
             </div>
         </div>
     </div>

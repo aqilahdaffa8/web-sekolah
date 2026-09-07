@@ -70,7 +70,7 @@
                     </div>
                 </div>
 
-                <button type="submit" id="btn-login" class="btn-primary w-full btn-lg">
+                <button type="submit" id="btn-login" class="btn btn-primary w-full btn-lg">
                     Masuk ke Dashboard
                 </button>
             </form>

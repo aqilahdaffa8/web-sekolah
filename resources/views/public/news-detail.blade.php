@@ -72,7 +72,7 @@ async function loadDetail() {
         document.getElementById('article-content').innerHTML = `
             <div class="text-center py-10">
                 <p class="text-gray-500 mb-6">Maaf, berita yang Anda cari tidak ditemukan atau telah dihapus.</p>
-                <a href="/berita" class="btn-primary inline-flex">Kembali ke Daftar Berita</a>
+                <a href="/berita" class="btn btn-primary inline-flex">Kembali ke Daftar Berita</a>
             </div>
         `;
     }
