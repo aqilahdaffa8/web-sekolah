@@ -81,7 +81,7 @@
         </div>
         <div class="modal-body" id="order-detail-body"></div>
         <div class="modal-footer">
-            <button data-modal-close class="btn-ghost">Tutup</button>
+            <button data-modal-close class="btn btn-ghost">Tutup</button>
             <select id="order-status-select" class="form-select w-auto text-sm py-1.5">
                 <option value="pending">Pending</option>
                 <option value="paid">Dibayar</option>
@@ -89,7 +89,7 @@
                 <option value="completed">Selesai</option>
                 <option value="cancelled">Dibatalkan</option>
             </select>
-            <button onclick="updateOrderStatus()" class="btn-primary btn-sm">Update Status</button>
+            <button onclick="updateOrderStatus()" class="btn btn-primary btn-sm">Update Status</button>
         </div>
     </div>
 </div>

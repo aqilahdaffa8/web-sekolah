@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-black text-gray-900">Lowongan Kerja Alumni</h1>
         <p class="text-gray-500 mt-1">Kelola papan loker untuk alumni SMK.</p>
     </div>
-    <button onclick="openJobModal()" class="btn-primary">
+    <button onclick="openJobModal()" class="btn btn-primary">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
         Tambah Loker
     </button>
@@ -48,7 +48,7 @@
             <div class="sm:col-span-2"><label class="form-label">Deskripsi</label><textarea id="j-desc" class="form-input h-28 resize-none" placeholder="Deskripsi pekerjaan dan kualifikasi..."></textarea></div>
             <div class="sm:col-span-2"><label class="form-label">Link Lamaran</label><input type="url" id="j-apply" class="form-input" placeholder="https://apply.example.com"></div>
         </div>
-        <div class="modal-footer"><button data-modal-close class="btn-ghost">Batal</button><button id="btn-save-job" onclick="saveJob()" class="btn-primary">Simpan</button></div>
+        <div class="modal-footer"><button data-modal-close class="btn btn-ghost">Batal</button><button id="btn-save-job" onclick="saveJob()" class="btn btn-primary">Simpan</button></div>
     </div>
 </div>
 @endsection
@@ -91,8 +91,8 @@ function renderGrid(jobs) {
                 </div>
                 <p class="text-sm text-gray-600 mt-2">${j.description}</p>
                 <div class="mt-4 flex gap-2">
-                    <button onclick='editJob(${JSON.stringify(j).replace(/'/g, "&apos;")})' class="btn-secondary btn-sm">Edit</button>
-                    <button onclick="deleteJob(${j.id})" class="btn-danger btn-sm">Hapus</button>
+                    <button onclick='editJob(${JSON.stringify(j).replace(/'/g, "&apos;")})' class="btn btn-secondary btn-sm">Edit</button>
+                    <button onclick="deleteJob(${j.id})" class="btn btn-danger btn-sm">Hapus</button>
                 </div>
             </div>
         </div>

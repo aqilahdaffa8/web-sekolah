@@ -49,7 +49,7 @@
                             <label class="form-label" for="c-message">Pesan <span class="text-danger">*</span></label>
                             <textarea id="c-message" name="message" class="form-input h-32 resize-none" placeholder="Tulis pesan Anda..." required></textarea>
                         </div>
-                        <button type="submit" id="btn-send" class="btn-primary w-full">
+                        <button type="submit" id="btn-send" class="btn btn-primary w-full">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
                             </svg>

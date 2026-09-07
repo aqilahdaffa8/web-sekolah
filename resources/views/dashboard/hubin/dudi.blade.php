@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-black text-gray-900">Mitra DUDI</h1>
         <p class="text-gray-500 mt-1">Kelola daftar mitra dunia usaha dan industri.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
+    <button onclick="openCreateModal()" class="btn btn-primary">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
         Tambah Mitra
     </button>
@@ -47,8 +47,8 @@
             <div><label class="form-label">Logo</label><input type="file" id="d-logo" class="form-input" accept="image/*"></div>
         </div>
         <div class="modal-footer">
-            <button data-modal-close class="btn-ghost">Batal</button>
-            <button id="btn-save-dudi" onclick="saveDudi()" class="btn-primary">Simpan</button>
+            <button data-modal-close class="btn btn-ghost">Batal</button>
+            <button id="btn-save-dudi" onclick="saveDudi()" class="btn btn-primary">Simpan</button>
         </div>
     </div>
 </div>

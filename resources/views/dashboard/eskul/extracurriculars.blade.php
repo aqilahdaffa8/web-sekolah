@@ -12,7 +12,7 @@
         <h1 class="text-2xl font-black text-gray-900">Kelola Ekstrakurikuler</h1>
         <p class="text-gray-500 mt-1">Daftar kegiatan ekstrakurikuler SMKN 1 Katapang.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
+    <button onclick="openCreateModal()" class="btn btn-primary">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
         </svg>
@@ -77,8 +77,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-eskul" onclick="saveEskul()" class="btn-primary">Simpan</button>
+            <button data-modal-close class="btn btn-secondary">Batal</button>
+            <button id="btn-save-eskul" onclick="saveEskul()" class="btn btn-primary">Simpan</button>
         </div>
     </div>
 </div>

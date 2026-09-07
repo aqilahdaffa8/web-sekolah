@@ -29,7 +29,7 @@
                         Program keahlian terdepan, fasilitas industri mutakhir, dan ekosistem vokasi yang mendorong setiap siswa menjadi talenta berdaya saing global.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <a href="{{ route('profile') }}" class="btn-gold btn-lg">
+                        <a href="{{ route('profile') }}" class="btn btn-gold btn-lg">
                             Kenali Sekolah Kami
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -108,7 +108,7 @@
                 <p class="text-gold-600 font-semibold text-sm uppercase tracking-wider mb-2">Terkini</p>
                 <h2 class="section-title mb-0">Berita & Pengumuman</h2>
             </div>
-            <a href="{{ route('news') }}" class="btn-secondary btn-sm group">
+            <a href="{{ route('news') }}" class="btn btn-secondary btn-sm group">
                 Lihat Semua
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -149,7 +149,7 @@
                 <p class="section-subtitle text-base mb-6">
                     Jadwal kegiatan akademik, penerimaan siswa baru, dan event sekolah terbaru.
                 </p>
-                <a href="{{ route('news') }}#agenda" class="btn-primary">
+                <a href="{{ route('news') }}#agenda" class="btn btn-primary">
                     Lihat Semua Agenda
                 </a>
             </div>
@@ -199,7 +199,7 @@
         <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 hidden"></div>
 
         <div class="text-center mt-10">
-            <a href="{{ route('tefa') }}" class="btn-gold btn-lg">
+            <a href="{{ route('tefa') }}" class="btn btn-gold btn-lg">
                 Lihat Semua Produk
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -232,7 +232,7 @@
         </div>
 
         <div class="text-center">
-            <a href="{{ route('eskul') }}" class="btn-secondary">
+            <a href="{{ route('eskul') }}" class="btn btn-secondary">
                 Lihat Semua Ekstrakurikuler
             </a>
         </div>
@@ -282,7 +282,7 @@ function initSlider(banners) {
                         ${b.title}
                     </h2>
                     ${b.subtitle ? `<p class="text-lg text-white/80 mb-8 max-w-2xl">${b.subtitle}</p>` : ''}
-                    ${b.link ? `<a href="${b.link}" class="btn-gold btn-lg">Selengkapnya</a>` : ''}
+                    ${b.link ? `<a href="${b.link}" class="btn btn-gold btn-lg">Selengkapnya</a>` : ''}
                 </div>
             </div>
         `;

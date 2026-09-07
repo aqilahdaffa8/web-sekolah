@@ -6,7 +6,7 @@
     <select id="g-class" class="form-select w-auto text-sm py-2"><option value="">Semua Kelas</option></select>
     <select id="g-subject" class="form-select w-auto text-sm py-2"><option value="">Semua Mata Pelajaran</option></select>
     <input type="search" id="g-search" class="form-input py-2 text-sm flex-1 min-w-[200px]" placeholder="Cari siswa...">
-    <button onclick="openGradeModal()" class="btn-primary btn-sm">Input Nilai</button>
+    <button onclick="openGradeModal()" class="btn btn-primary btn-sm">Input Nilai</button>
 </div>
 <div class="card">
     <div class="overflow-x-auto">
@@ -33,7 +33,7 @@
                 <div><label class="form-label">Semester</label><select id="g-semester" class="form-select"><option value="1">Ganjil</option><option value="2">Genap</option></select></div>
             </div>
         </div>
-        <div class="modal-footer"><button data-modal-close class="btn-ghost">Batal</button><button id="btn-save-grade" onclick="saveGrade()" class="btn-primary">Simpan</button></div>
+        <div class="modal-footer"><button data-modal-close class="btn btn-ghost">Batal</button><button id="btn-save-grade" onclick="saveGrade()" class="btn btn-primary">Simpan</button></div>
     </div>
 </div>
 @endsection
@@ -49,7 +49,7 @@ async function loadGrades(page=1) {
             <tr><td class="font-medium">${g.student_name}</td><td>${g.class}</td><td>${g.subject}</td>
             <td>${g.task_score ?? '-'}</td><td>${g.uts_score ?? '-'}</td><td>${g.uas_score ?? '-'}</td>
             <td class="font-bold text-brand-700">${g.final_score ?? '-'}</td>
-            <td><button onclick="editGrade(${JSON.stringify(g).replace(/"/g,'&quot;')})" class="btn-secondary btn-sm">Edit</button></td></tr>
+            <td><button onclick="editGrade(${JSON.stringify(g).replace(/"/g,'&quot;')})" class="btn btn-secondary btn-sm">Edit</button></td></tr>
         `).join('') : '<tr><td colspan="8" class="text-center py-12 text-gray-400">Belum ada data nilai.</td></tr>';
         window.utils.renderPagination('grades-pagination', res.meta, loadGrades);
     } catch(err) { window.toast.apiError(err); }
