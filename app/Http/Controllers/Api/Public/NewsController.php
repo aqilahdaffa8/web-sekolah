@@ -39,4 +39,9 @@ class NewsController extends Controller
                 ->paginate(10)
         );
     }
+
+    public function agenda(Request $request): JsonResponse
+    {
+        return $this->events($request);
+    }
 }

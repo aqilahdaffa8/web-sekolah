@@ -12,9 +12,9 @@
         <h1 class="text-2xl font-black text-gray-900">Modul Ajar & Materi</h1>
         <p class="text-gray-500 mt-1">Kelola modul pembelajaran, materi ajar, dan silabus.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+    <button onclick="openCreateModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
         Tambah Modul
     </button>
@@ -65,14 +65,14 @@
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="form-label">Mata Pelajaran</label>
-                    <input type="text" id="m-subject" class="form-input" placeholder="Pemrograman Web">
+                    <select id="m-subject" class="form-select">
+                        <option value="">Pilih mata pelajaran...</option>
+                    </select>
                 </div>
                 <div>
                     <label class="form-label">Tingkat Kelas</label>
                     <select id="m-grade" class="form-select">
-                        <option value="X">Kelas X</option>
-                        <option value="XI">Kelas XI</option>
-                        <option value="XII">Kelas XII</option>
+                        <option value="">Pilih kelas...</option>
                     </select>
                 </div>
             </div>
@@ -83,23 +83,38 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-module" onclick="saveModule()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-module" onclick="saveModule()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 let allModules = [];
+let masterData = { subjects: [], classes: [] };
+
+async function loadMasterData() {
+    const data = await window.api.get('/guru/master-data');
+    masterData = data;
+
+    document.getElementById('m-subject').innerHTML = '<option value="">Pilih mata pelajaran...</option>' +
+        (masterData.subjects || []).map(subject => `<option value="${subject.id}">${subject.name}</option>`).join('');
+    document.getElementById('m-grade').innerHTML = '<option value="">Pilih kelas...</option>' +
+        (masterData.classes || []).map(classRoom => `<option value="${classRoom.id}">${classRoom.name}</option>`).join('');
+}
 
 async function loadModules() {
+    const loading = document.getElementById('module-count');
+    loading.classList.remove('hidden');
+    loading.textContent = 'Memuat data...';
     try {
         const res = await window.guruApi.learningModules();
         allModules = res.data || res || [];
         renderTable(allModules);
     } catch(err) {
+        loading.classList.add('hidden');
         window.toast.apiError(err);
     }
 }
@@ -107,7 +122,7 @@ async function loadModules() {
 function renderTable(list) {
     const query = document.getElementById('module-search').value.toLowerCase();
     const filtered = list.filter(m => (m.title||m.module_name||'').toLowerCase().includes(query) || (m.subject_name||'').toLowerCase().includes(query));
-    document.getElementById('module-count').textContent = `Total: ${filtered.length} Modul`;
+    document.getElementById('module-count').classList.add('hidden');
 
     const tbody = document.getElementById('module-tbody');
     if (!filtered.length) {
@@ -147,8 +162,8 @@ window.editModule = (m) => {
     document.getElementById('module-modal-title').textContent = 'Edit Modul Ajar';
     document.getElementById('m-id').value = m.id;
     document.getElementById('m-title').value = m.title || m.module_name;
-    document.getElementById('m-subject').value = m.subject?.subject_name || m.subject_name || '';
-    document.getElementById('m-grade').value = m.target_grade || 'XI';
+    document.getElementById('m-subject').value = m.subject_id || m.subject?.id || '';
+    document.getElementById('m-grade').value = m.class_id || m.class_room?.id || '';
     document.getElementById('m-desc').value = m.description || '';
     window.openModal(document.getElementById('module-modal'));
 };
@@ -163,10 +178,15 @@ window.saveModule = async () => {
     const payload = {
         title: title,
         module_name: title,
-        subject_name: document.getElementById('m-subject').value.trim() || 'Umum',
-        target_grade: document.getElementById('m-grade').value,
+        subject_id: document.getElementById('m-subject').value,
+        class_id: document.getElementById('m-grade').value,
         description: document.getElementById('m-desc').value.trim(),
     };
+
+    if (!payload.subject_id || !payload.class_id) {
+        window.toast.error('Mata pelajaran dan kelas wajib dipilih.');
+        return;
+    }
     try {
         window.utils.setButtonLoading(btn, true);
         if (editingId) {
@@ -198,6 +218,6 @@ window.deleteModule = async (id) => {
 
 document.getElementById('module-search').addEventListener('input', () => renderTable(allModules));
 
-loadModules();
+Promise.all([loadMasterData(), loadModules()]).catch(err => window.toast.apiError(err));
 </script>
 @endpush

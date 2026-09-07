@@ -140,12 +140,18 @@ function initModals() {
         });
     });
 
-    // Close modal via data-modal-close
-    document.querySelectorAll('[data-modal-close]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const modal = btn.closest('[data-modal]');
-            closeModal(modal);
-        });
+    // Close modal via data-modal-close. Delegation also covers dynamically rendered modal content.
+    document.addEventListener('click', event => {
+        const button = event.target.closest('[data-modal-close]');
+        if (!button) return;
+
+        event.preventDefault();
+        const modalId = button.dataset.modalClose;
+        const modal = modalId
+            ? document.getElementById(modalId)
+            : button.closest('[data-modal]');
+
+        closeModal(modal);
     });
 
     // Close on overlay click

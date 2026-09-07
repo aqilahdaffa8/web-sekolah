@@ -12,9 +12,9 @@
         <h1 class="text-2xl font-black text-gray-900">Produk & Jasa TeFA</h1>
         <p class="text-gray-500 mt-1">Kelola etalase karya siswa dan unit produksi sekolah.</p>
     </div>
-    <button onclick="openProductModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+    <button onclick="openProductModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
         Tambah Produk
     </button>
@@ -73,14 +73,14 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-prod" onclick="saveProduct()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-prod" onclick="saveProduct()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 let allProducts = [];
 
@@ -92,11 +92,20 @@ const fallbackImgs = [
 ];
 
 async function load() {
+    const loading = document.getElementById('prod-count');
+    loading.classList.remove('hidden');
+    loading.textContent = 'Memuat data...';
     try {
         const res = await window.koperasiApi.products();
         allProducts = res.data || res || [];
         render(allProducts);
     } catch(err) {
+        loading.classList.add('hidden');
+        document.getElementById('products-grid').innerHTML = `
+            <div class="col-span-full card p-12 text-center text-danger">
+                <p class="font-semibold">Data produk gagal dimuat.</p>
+                <p class="mt-1 text-sm text-gray-500">Periksa sesi login atau koneksi API, lalu muat ulang halaman.</p>
+            </div>`;
         window.toast.apiError(err);
     }
 }
@@ -104,7 +113,7 @@ async function load() {
 function render(products) {
     const query = document.getElementById('prod-search').value.toLowerCase();
     const filtered = products.filter(p => (p.product_name || p.name || '').toLowerCase().includes(query));
-    document.getElementById('prod-count').textContent = `Total: ${filtered.length} Produk`;
+    document.getElementById('prod-count').classList.add('hidden');
 
     if (!filtered.length) {
         document.getElementById('products-grid').innerHTML = `

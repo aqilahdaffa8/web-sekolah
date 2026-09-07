@@ -12,9 +12,9 @@
         <h1 class="text-2xl font-black text-gray-900">Galeri Prestasi</h1>
         <p class="text-gray-500 mt-1">Kelola daftar penghargaan dan prestasi kejuaraan siswa.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+    <button onclick="openCreateModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
         Tambah Prestasi
     </button>
@@ -64,14 +64,14 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-achieve" onclick="saveAchieve()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-achieve" onclick="saveAchieve()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 
 async function loadAchievements() {

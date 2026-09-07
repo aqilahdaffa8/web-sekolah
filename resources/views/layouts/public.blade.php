@@ -237,12 +237,9 @@
     </div>
 
     <div class="border-t border-white/10">
-        <div class="section-container py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div class="section-container py-4 flex items-center justify-center text-center">
             <p class="text-xs text-gray-500">
                 &copy; {{ date('Y') }} SMKN 1 Katapang. Semua hak dilindungi.
-            </p>
-            <p class="text-xs text-gray-600">
-                Dibuat dengan ❤️ oleh Tim Teknologi SMK
             </p>
         </div>
     </div>

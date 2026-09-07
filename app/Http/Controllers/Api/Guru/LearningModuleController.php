@@ -18,7 +18,7 @@ class LearningModuleController extends Controller
 
         return response()->json(
             LearningModule::with(['subject', 'classRoom'])
-                ->where('teacher_id', $teacher->id)
+                ->when(! $teacher->hasRole('Super Admin'), fn ($q) => $q->where('teacher_id', $teacher->id))
                 ->when($request->subject_id, fn ($q) => $q->where('subject_id', $request->subject_id))
                 ->latest()
                 ->paginate(15)

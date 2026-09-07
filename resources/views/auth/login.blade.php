@@ -11,8 +11,7 @@
 <body class="min-h-screen bg-hero-gradient flex items-center justify-center p-4">
 
 {{-- Background pattern --}}
-<div class="absolute inset-0 opacity-10"
-     style="background-image: url('/images/pattern-dots.svg'); background-size: 28px;"></div>
+<div class="absolute inset-0 bg-[url('/images/pattern-dots.svg')] bg-[length:28px] opacity-20"></div>
 
 <div class="relative z-10 w-full max-w-md">
 

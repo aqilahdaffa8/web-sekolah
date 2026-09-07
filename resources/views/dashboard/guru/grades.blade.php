@@ -33,12 +33,12 @@
                 <div><label class="form-label">Semester</label><select id="g-semester" class="form-select"><option value="1">Ganjil</option><option value="2">Genap</option></select></div>
             </div>
         </div>
-        <div class="modal-footer"><button data-modal-close class="btn-ghost">Batal</button><button id="btn-save-grade" onclick="saveGrade()" class="btn-primary">Simpan</button></div>
+        <div class="modal-footer"><button type="button" data-modal-close class="btn-ghost">Batal</button><button type="button" id="btn-save-grade" onclick="saveGrade()" class="btn btn-primary btn-save">Simpan</button></div>
     </div>
 </div>
 @endsection
 @push('scripts')
-<script>
+<script type="module">
 document.addEventListener('DOMContentLoaded', () => {
 
 async function loadGrades(page=1) {

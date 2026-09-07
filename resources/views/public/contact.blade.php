@@ -49,11 +49,13 @@
                             <label class="form-label" for="c-message">Pesan <span class="text-danger">*</span></label>
                             <textarea id="c-message" name="message" class="form-input h-32 resize-none" placeholder="Tulis pesan Anda..." required></textarea>
                         </div>
-                        <button type="submit" id="btn-send" class="btn-primary w-full">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
-                            </svg>
-                            Kirim Pesan
+                        <button type="submit" id="btn-send" class="btn-primary inline-flex w-full items-center justify-center gap-2">
+                            <span class="inline-flex items-center gap-2">
+                                <span>Kirim Pesan</span>
+                                <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+                                </svg>
+                            </span>
                         </button>
                     </form>
                 </div>
@@ -81,10 +83,17 @@
                 <div class="card p-5">
                     <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Ikuti Kami</p>
                     <div class="flex gap-3">
-                        @foreach(['Facebook', 'Instagram', 'Twitter', 'YouTube'] as $social)
-                        <a href="#" class="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center hover:bg-brand-600 hover:text-white transition-colors text-brand-700 text-sm font-bold"
-                           aria-label="{{ $social }}">
-                            {{ substr($social, 0, 2) }}
+                        @foreach([
+                            ['label' => 'Facebook', 'path' => 'M14 8h3V4h-3c-3.314 0-6 2.686-6 6v2H5v4h3v8h4v-8h3l1-4h-4v-2c0-1.105.895-2 2-2z'],
+                            ['label' => 'Instagram', 'path' => 'M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7zm5 3.5A4.5 4.5 0 1112 16.5 4.5 4.5 0 0112 7.5zm0 2A2.5 2.5 0 1014.5 12 2.5 2.5 0 0012 9.5zm5.25-3a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z'],
+                            ['label' => 'Twitter', 'path' => 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.214-6.817-5.963 6.817H1.684l7.73-8.835L1.254 2.25h6.826l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z'],
+                            ['label' => 'YouTube', 'path' => 'M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.376.55A3.016 3.016 0 00.502 6.186 31.247 31.247 0 000 12a31.247 31.247 0 00.502 5.814 3.016 3.016 0 002.122 2.136c1.871.55 9.376.55 9.376.55s7.505 0 9.376-.55a3.016 3.016 0 002.122-2.136A31.247 31.247 0 0024 12a31.247 31.247 0 00-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z'],
+                        ] as $social)
+                        <a href="#" class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700 transition-colors hover:bg-brand-600 hover:text-white"
+                           aria-label="{{ $social['label'] }}">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="{{ $social['path'] }}"/>
+                            </svg>
                         </a>
                         @endforeach
                     </div>

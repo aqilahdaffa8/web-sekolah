@@ -8,7 +8,6 @@
 <div class="bg-hero-gradient pt-28 pb-16">
     <div class="section-container">
         <div class="max-w-2xl">
-            <span class="badge-brand mb-4 inline-block">TeFA & Koperasi</span>
             <h1 class="text-4xl md:text-5xl font-black text-white mb-4">Katalog Produk & Jasa</h1>
             <p class="text-white/70 mb-6">Temukan produk berkualitas karya siswa. Setiap pembelian mendukung pembelajaran vokasi nyata.</p>
             <div class="relative max-w-md">
@@ -266,15 +265,15 @@ window.submitOrder = async () => {
     const form = document.getElementById('order-form');
 
     const payload = {
-        product_id:       document.getElementById('order-product-id').value,
-        customer_name:    document.getElementById('order-name').value,
-        customer_phone:   document.getElementById('order-phone').value,
-        quantity:         parseInt(document.getElementById('order-qty').value),
-        delivery_address: document.getElementById('order-address').value,
-        notes:            document.getElementById('order-note').value,
+        buyer_name:       document.getElementById('order-name').value,
+        buyer_contact:    document.getElementById('order-phone').value,
+        items: [{
+            product_id: document.getElementById('order-product-id').value,
+            quantity: parseInt(document.getElementById('order-qty').value),
+        }],
     };
 
-    if (!payload.customer_name || !payload.customer_phone || !payload.delivery_address) {
+    if (!payload.buyer_name || !payload.buyer_contact) {
         toast.warning('Harap lengkapi semua field yang wajib diisi.');
         return;
     }
@@ -283,7 +282,7 @@ window.submitOrder = async () => {
         setButtonLoading(btn, true, 'Memproses...');
         const data = await publicApi.placeOrder(payload);
         closeModal(document.getElementById('product-modal'));
-        document.getElementById('order-code').textContent = data.order?.code || data.code || '-';
+        document.getElementById('order-code').textContent = data.order_code || data.order?.order_code || data.order?.code || data.code || '-';
         form.reset();
         openModal(document.getElementById('success-modal'));
     } catch (err) {
@@ -298,7 +297,7 @@ window.submitOrder = async () => {
 document.getElementById('product-search').addEventListener('input', debounce(e => {
     const q = e.target.value.toLowerCase();
     const filtered = allProducts.filter(p =>
-        p.name.toLowerCase().includes(q) ||
+        (p.product_name || p.name || '').toLowerCase().includes(q) ||
         (p.category?.name || '').toLowerCase().includes(q)
     );
     renderProducts(filtered);

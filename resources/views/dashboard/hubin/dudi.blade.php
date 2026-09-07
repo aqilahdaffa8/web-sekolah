@@ -6,8 +6,8 @@
         <h1 class="text-2xl font-black text-gray-900">Mitra DUDI</h1>
         <p class="text-gray-500 mt-1">Kelola daftar mitra dunia usaha dan industri.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    <button onclick="openCreateModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah Mitra
     </button>
 </div>
@@ -48,21 +48,26 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-ghost">Batal</button>
-            <button id="btn-save-dudi" onclick="saveDudi()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-dudi" onclick="saveDudi()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 let allPartners = [];
 
 async function loadDudi() {
     try {
         const res = await window.hubinApi.dudiPartners();
-        allPartners = res.data || res || [];
+        allPartners = (res.data || res || []).map(partner => ({
+            ...partner,
+            name: partner.name || partner.company_name,
+            industry: partner.industry || partner.industry_field,
+            logo: partner.logo || partner.logo_url,
+        }));
         renderGrid(allPartners);
     } catch (err) { window.toast.apiError(err); }
 }
@@ -72,7 +77,7 @@ function renderGrid(partners) {
         <div class="card p-5 flex gap-4 items-start">
             <div class="w-14 h-14 flex-shrink-0 rounded-xl bg-gray-100 overflow-hidden flex items-center justify-center">
                 ${p.logo ? `<img src="${window.utils.storageUrl(p.logo)}" alt="${p.name}" class="w-full h-full object-contain">` :
-                `<span class="text-2xl font-black text-gray-400">${p.name[0]}</span>`}
+                `<span class="text-2xl font-black text-gray-400">${(p.name || '?')[0]}</span>`}
             </div>
             <div class="flex-1 min-w-0">
                 <h3 class="font-bold text-gray-900 truncate">${p.name}</h3>

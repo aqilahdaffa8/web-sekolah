@@ -12,9 +12,9 @@
         <h1 class="text-2xl font-black text-gray-900">Fasilitas & Sarpras</h1>
         <p class="text-gray-500 mt-1">Daftar laboratorium, bengkel praktik, dan fasilitas sekolah.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+    <button onclick="openCreateModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
         Tambah Fasilitas
     </button>
@@ -59,14 +59,14 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-facility" onclick="saveFacility()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-facility" onclick="saveFacility()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 
 async function loadFacilities() {
@@ -95,7 +95,7 @@ function renderList(list) {
     grid.innerHTML = list.map((f, idx) => `
         <div class="card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group">
             <div class="h-44 overflow-hidden relative bg-gray-100">
-                <img src="${f.image_url || defaultImgs[idx % defaultImgs.length]}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                <img src="${f.image || f.image_url || defaultImgs[idx % defaultImgs.length]}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.src='${defaultImgs[idx % defaultImgs.length]}'">
                 <span class="absolute top-3 right-3 badge-brand font-semibold text-xs shadow-sm">${f.capacity ? f.capacity + ' Siswa' : 'Fasilitas'}</span>
             </div>
             <div class="p-5 flex-1 flex flex-col justify-between">

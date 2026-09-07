@@ -9,7 +9,7 @@
         <p class="text-sm text-gray-500 mt-1">Kelola gambar banner yang tampil di halaman utama web.</p>
     </div>
     <button class="btn btn-primary" id="btn-add-banner">
-        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Tambah Banner
     </button>
 </div>
@@ -27,9 +27,9 @@
         <x-ui.form-input type="text" name="image_url" label="URL Gambar" required="true" placeholder="https://example.com/gambar.jpg" />
         <x-ui.form-input type="text" name="link_url" label="URL Link (Opsional)" placeholder="https://example.com/halaman-tujuan" />
         <x-ui.form-input type="number" name="sort_order" label="Urutan Tampil" placeholder="1" />
-        <div class="mt-6 flex justify-end gap-3">
+        <div class="crud-modal-actions">
             <button type="button" class="btn btn-secondary" data-modal-close="banner-modal">Batal</button>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </form>
 </x-ui.modal>

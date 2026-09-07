@@ -12,10 +12,8 @@
         <h1 class="text-2xl font-black text-gray-900">Tracer Study Alumni</h1>
         <p class="text-gray-500 mt-1">Pantau keterserapan alumni di DUDI, Perguruan Tinggi, dan Wirausaha.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-        </svg>
+    <button onclick="openCreateModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah Data Alumni
     </button>
 </div>
@@ -92,28 +90,32 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-tracer" onclick="saveTracer()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-tracer" onclick="saveTracer()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 let allTracer = [];
 
 async function loadTracer(page=1) {
     const status = document.getElementById('filter-status').value;
+    const loading = document.getElementById('tracer-count');
+    loading.classList.remove('hidden');
+    loading.textContent = 'Memuat data...';
     try {
         const res = await window.hubinApi.tracerStudies({ page, status });
         allTracer = res.data || res || [];
-        document.getElementById('tracer-count').textContent = `Total: ${allTracer.length} Data`;
+        loading.classList.add('hidden');
         renderTable(allTracer);
         if (res.meta) {
             window.utils.renderPagination('tracer-pagination', res.meta, loadTracer);
         }
     } catch(err) {
+        loading.classList.add('hidden');
         window.toast.apiError(err);
     }
 }

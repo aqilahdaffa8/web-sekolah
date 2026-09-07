@@ -12,9 +12,9 @@
         <h1 class="text-2xl font-black text-gray-900">Kelola Ekstrakurikuler</h1>
         <p class="text-gray-500 mt-1">Daftar kegiatan ekstrakurikuler SMKN 1 Katapang.</p>
     </div>
-    <button onclick="openCreateModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+    <button onclick="openCreateModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
         Tambah Eskul
     </button>
@@ -78,23 +78,27 @@
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn-secondary">Batal</button>
-            <button id="btn-save-eskul" onclick="saveEskul()" class="btn-primary">Simpan</button>
+            <button type="button" id="btn-save-eskul" onclick="saveEskul()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 let allEskul = [];
 
 async function loadEskul() {
+    const loading = document.getElementById('total-count');
+    loading.classList.remove('hidden');
+    loading.textContent = 'Memuat data...';
     try {
         const res = await window.eskulApi.extracurriculars();
         allEskul = res.data || res || [];
         renderEskul(allEskul);
     } catch(err) {
+        loading.classList.add('hidden');
         window.toast.apiError(err);
     }
 }
@@ -102,7 +106,7 @@ async function loadEskul() {
 function renderEskul(list) {
     const query = document.getElementById('eskul-search').value.toLowerCase();
     const filtered = list.filter(e => e.name.toLowerCase().includes(query) || (e.description||'').toLowerCase().includes(query));
-    document.getElementById('total-count').textContent = `Total: ${filtered.length} Ekstrakurikuler`;
+    document.getElementById('total-count').classList.add('hidden');
 
     if (!filtered.length) {
         document.getElementById('eskul-grid').innerHTML = `

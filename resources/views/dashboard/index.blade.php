@@ -32,7 +32,7 @@
 </div>
 
 {{-- Main grid --}}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 gap-6">
 
     {{-- Latest Orders --}}
     <div class="lg:col-span-2">
@@ -56,40 +56,12 @@
         </div>
     </div>
 
-    {{-- Quick Links --}}
-    <div class="space-y-4">
-        <div class="card p-5">
-            <h2 class="font-bold text-gray-900 mb-4">Akses Cepat</h2>
-            <div class="space-y-2" id="quick-links">
-                {{-- Filled by JS based on role --}}
-            </div>
-        </div>
-
-        {{-- School info --}}
-        <div class="card p-5">
-            <h2 class="font-bold text-gray-900 mb-3 text-sm">Info Server</h2>
-            <div class="space-y-2 text-sm">
-                <div class="flex justify-between text-gray-600">
-                    <span>Versi PHP</span>
-                    <span class="font-medium text-gray-900">{{ PHP_VERSION }}</span>
-                </div>
-                <div class="flex justify-between text-gray-600">
-                    <span>Laravel</span>
-                    <span class="font-medium text-gray-900">{{ app()->version() }}</span>
-                </div>
-                <div class="flex justify-between text-gray-600">
-                    <span>Tanggal</span>
-                    <span class="font-medium text-gray-900">{{ now()->translatedFormat('d M Y') }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 const user  = window.auth.getUser();
 const roles = window.auth.getRoles();
 
@@ -121,7 +93,7 @@ loadStats();
 // Recent orders
 async function loadRecentOrders() {
     try {
-        const res = await window.api.get('/admin/koperasi/orders?per_page=5');
+        const res = await window.api.get('/koperasi/orders', { per_page: 5 });
         const orders = res.data?.data || res.data || [];
         document.getElementById('recent-orders').innerHTML = orders.length ? orders.map(o => `
             <div class="px-5 py-4 flex items-center gap-3">
@@ -140,43 +112,7 @@ async function loadRecentOrders() {
     } catch (_) {}
 }
 
-// Quick links based on role
-function renderQuickLinks() {
-    const links = [
-        { href: '/dashboard', label: 'Dashboard', icon: '🏠', always: true },
-    ];
-
-    if (window.auth.hasRole('Super Admin')) {
-        links.push(
-            { href: '/dashboard/admin/users',  label: 'Manajemen User' },
-            { href: '/dashboard/admin/konten', label: 'Kelola Konten' },
-        );
-    }
-    if (window.auth.hasRole('Hubin') || window.auth.hasRole('Super Admin')) {
-        links.push({ href: '/dashboard/hubin/loker', label: 'Kelola Loker' });
-    }
-    if (window.auth.hasRole('Koperasi') || window.auth.hasRole('Super Admin')) {
-        links.push({ href: '/dashboard/koperasi/pesanan', label: 'Pesanan Masuk' });
-    }
-    if (window.auth.hasRole('Guru') || window.auth.hasRole('Super Admin')) {
-        links.push({ href: '/dashboard/guru/nilai', label: 'Input Nilai' });
-    }
-
-    document.getElementById('quick-links').innerHTML = links.map(l => `
-        <a href="${l.href}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm
-                  hover:bg-brand-50 hover:text-brand-700 text-gray-700 transition-colors group">
-            <span class="text-base">${l.icon ?? '→'}</span>
-            <span class="font-medium">${l.label}</span>
-            <svg class="w-4 h-4 ml-auto text-gray-300 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-            </svg>
-        </a>
-    `).join('');
-}
-
-loadStats();
 loadRecentOrders();
-renderQuickLinks();
 </script>
 @endpush
 

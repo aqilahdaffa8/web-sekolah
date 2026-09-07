@@ -19,9 +19,6 @@
                  style="background-image: url('/images/pattern-dots.svg'); background-size: 30px;"></div>
             <div class="relative z-10 section-container h-full flex flex-col justify-center pt-20 pb-16">
                 <div class="max-w-3xl">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-gold-300 font-semibold text-xs sm:text-sm mb-4">
-                        🏫 SMKN 1 Katapang &bull; Sekolah Pusat Keunggulan {{ date('Y') }}
-                    </span>
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 text-balance">
                         Cetak <span class="text-gold-400">Generasi</span> Unggul<br>Siap Industri 4.0
                     </h1>
@@ -30,10 +27,12 @@
                     </p>
                     <div class="flex flex-wrap gap-4">
                         <a href="{{ route('profile') }}" class="btn-gold btn-lg">
-                            Kenali Sekolah Kami
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
+                            <span class="inline-flex items-center gap-2">
+                                <span>Kenali Sekolah Kami</span>
+                                <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </span>
                         </a>
                         <a href="{{ route('tefa') }}" class="glass btn btn-lg text-white hover:bg-white/20">
                             Lihat Katalog TeFA
@@ -46,30 +45,9 @@
         {{-- Dynamic slides inserted by JS --}}
     </div>
 
-    {{-- Slider Controls --}}
-    <button id="slider-prev" aria-label="Slide sebelumnya"
-            class="absolute left-4 top-1/2 -translate-y-1/2 z-20 btn-icon glass text-white
-                   hover:bg-white/30 transition-all hidden md:flex">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
-    </button>
-    <button id="slider-next" aria-label="Slide berikutnya"
-            class="absolute right-4 top-1/2 -translate-y-1/2 z-20 btn-icon glass text-white
-                   hover:bg-white/30 transition-all hidden md:flex">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-    </button>
-
     {{-- Dots --}}
     <div id="slider-dots" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2"></div>
 
-    {{-- Scroll hint --}}
-    <div class="absolute bottom-8 right-8 z-20 hidden lg:flex flex-col items-center gap-1 text-white/60">
-        <span class="text-xs tracking-widest uppercase">Scroll</span>
-        <div class="w-px h-12 bg-white/30"></div>
-    </div>
 </section>
 
 {{-- ══════════════════════════════════════════════
@@ -108,9 +86,9 @@
                 <p class="text-gold-600 font-semibold text-sm uppercase tracking-wider mb-2">Terkini</p>
                 <h2 class="section-title mb-0">Berita & Pengumuman</h2>
             </div>
-            <a href="{{ route('news') }}" class="btn-secondary btn-sm group">
-                Lihat Semua
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <a href="{{ route('news') }}" class="btn-secondary btn-sm group inline-flex items-center justify-center gap-2">
+                <span>Lihat Semua</span>
+                <svg class="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
             </a>
@@ -149,8 +127,8 @@
                 <p class="section-subtitle text-base mb-6">
                     Jadwal kegiatan akademik, penerimaan siswa baru, dan event sekolah terbaru.
                 </p>
-                <a href="{{ route('news') }}#agenda" class="btn-primary">
-                    Lihat Semua Agenda
+                <a href="{{ route('news') }}#agenda" class="btn-primary inline-flex w-full items-center justify-center rounded-xl px-5 py-3 sm:w-auto">
+                    <span>Lihat Semua Agenda</span>
                 </a>
             </div>
 
@@ -173,7 +151,7 @@
 {{-- ══════════════════════════════════════════════
      TEFA CATALOG HIGHLIGHT
 ══════════════════════════════════════════════ --}}
-<section class="section-padding" style="background: linear-gradient(135deg, #0F1C2E 0%, #1E3A5F 100%);">
+<section class="section-padding bg-hero-gradient">
     <div class="section-container">
         <div class="text-center mb-12">
             <p class="text-gold-400 font-semibold text-sm uppercase tracking-wider mb-2">Produk Unggulan</p>
@@ -199,9 +177,9 @@
         <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 hidden"></div>
 
         <div class="text-center mt-10">
-            <a href="{{ route('tefa') }}" class="btn-gold btn-lg">
-                Lihat Semua Produk
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <a href="{{ route('tefa') }}" class="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 sm:w-auto">
+                <span>Lihat Semua Produk</span>
+                <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
             </a>
@@ -215,7 +193,6 @@
 <section class="section-padding bg-gray-50">
     <div class="section-container">
         <div class="text-center mb-12">
-            <p class="text-gold-600 font-semibold text-sm uppercase tracking-wider mb-2">Pengembangan Diri</p>
             <h2 class="section-title">Ekstrakurikuler</h2>
             <p class="section-subtitle mx-auto text-center">
                 50+ kegiatan pengembangan bakat, kepemimpinan, dan prestasi nasional.
@@ -232,8 +209,8 @@
         </div>
 
         <div class="text-center">
-            <a href="{{ route('eskul') }}" class="btn-secondary">
-                Lihat Semua Ekstrakurikuler
+            <a href="{{ route('eskul') }}" class="btn-primary inline-flex w-full items-center justify-center rounded-xl px-5 py-3 sm:w-auto">
+                <span>Lihat Semua Ekstrakurikuler</span>
             </a>
         </div>
     </div>
@@ -298,20 +275,6 @@ function initSlider(banners) {
 
     dotsEl.querySelectorAll('.slider-dot').forEach(dot => {
         dot.addEventListener('click', () => goToSlide(+dot.dataset.slide));
-    });
-
-    // Controls
-    document.getElementById('slider-prev').style.display = 'flex';
-    document.getElementById('slider-next').style.display = 'flex';
-    document.getElementById('slider-prev').addEventListener('click', () => {
-        clearInterval(sliderTimer);
-        goToSlide(currentSlide - 1);
-        startAutoPlay();
-    });
-    document.getElementById('slider-next').addEventListener('click', () => {
-        clearInterval(sliderTimer);
-        goToSlide(currentSlide + 1);
-        startAutoPlay();
     });
 
     startAutoPlay();

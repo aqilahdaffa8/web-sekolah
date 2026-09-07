@@ -10,7 +10,6 @@
 ══════════════════════════════════════ --}}
 <div class="bg-hero-gradient pt-28 pb-16">
     <div class="section-container text-center">
-        <span class="badge-brand mb-4 inline-block">Tentang Kami</span>
         <h1 class="text-4xl md:text-5xl font-black text-white mb-4">Profil & Jurusan</h1>
         <p class="text-white/70 max-w-xl mx-auto">
             Kenali kami lebih dekat — sejarah, visi-misi, dan program keahlian unggulan kami.
@@ -150,10 +149,11 @@ import { storageUrl } from '/resources/js/utils.js';
 async function loadProfile() {
     try {
         const data = await publicApi.profile();
+        const school = data.school || {};
 
-        renderVisiMisi(data);
-        renderSejarah(data);
-        renderStruktur(data);
+        renderVisiMisi({ ...data, ...school });
+        renderSejarah({ ...data, ...school });
+        renderStruktur({ ...data, ...school });
         renderPrograms(data.programs || []);
         renderFacilities(data.facilities || []);
     } catch (err) {

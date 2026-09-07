@@ -9,7 +9,7 @@
         <p class="text-sm text-gray-500 mt-1">Kelola artikel dan berita yang tampil di web sekolah.</p>
     </div>
     <button class="btn btn-primary" id="btn-add-post">
-        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Tulis Berita
     </button>
 </div>
@@ -20,7 +20,7 @@
             <input type="text" id="search-input" placeholder="Cari judul berita..." class="form-input w-full" />
         </div>
         <div>
-            <select id="filter-status" class="form-input">
+            <select id="filter-status" class="form-input border border-gray-300 rounded-lg">
                 <option value="">Semua Status</option>
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
@@ -52,9 +52,9 @@
             <textarea name="content" rows="8" class="form-input w-full" placeholder="Tulis isi berita di sini..." required></textarea>
         </div>
 
-        <div class="mt-6 flex justify-end gap-3">
+        <div class="crud-modal-actions">
             <button type="button" class="btn btn-secondary" data-modal-close="post-modal">Batal</button>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </form>
 </x-ui.modal>

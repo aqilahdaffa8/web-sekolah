@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Hubungan Industri & BKK')
+@section('title', 'Hubin & BKK')
 @section('meta_description', 'Mitra DUDI, lowongan kerja alumni, dan informasi PKL/Magang SMKN 1 Katapang.')
 
 @section('content')
@@ -8,7 +8,6 @@
 {{-- Hero --}}
 <div class="bg-hero-gradient pt-28 pb-16">
     <div class="section-container text-center">
-        <span class="badge-brand mb-4 inline-block">Hubungan Industri</span>
         <h1 class="text-4xl md:text-5xl font-black text-white mb-4">Hubin & BKK</h1>
         <p class="text-white/70 max-w-xl mx-auto">
             Jembatan antara sekolah dan dunia industri untuk PKL, karier, dan kemitraan.
@@ -161,7 +160,7 @@ async function loadHubin() {
     try {
         const data = await publicApi.hubin();
         renderDudi(data.partners || []);
-        allJobs = data.job_vacancies || [];
+        allJobs = data.vacancies || data.job_vacancies || [];
         renderJobs(allJobs);
 
         // Stats

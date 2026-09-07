@@ -6,7 +6,6 @@
 
 <div class="bg-hero-gradient pt-28 pb-16">
     <div class="section-container text-center">
-        <span class="badge-brand mb-4 inline-block">Pengembangan Diri</span>
         <h1 class="text-4xl md:text-5xl font-black text-white mb-4">Ekstrakurikuler</h1>
         <p class="text-white/70 max-w-xl mx-auto">Temukan passion Anda, kembangkan bakat, dan raih prestasi bersama.</p>
     </div>
@@ -17,7 +16,7 @@
     <div class="section-container">
         <div class="text-center mb-12">
             <h2 class="section-title">Pilih Ekstrakurikuler</h2>
-            <p class="section-subtitle mx-auto text-center">Lebih dari 30 pilihan kegiatan sesuai minat dan bakat Anda.</p>
+            <p id="eskul-summary" class="section-subtitle mx-auto text-center">Memuat daftar ekstrakurikuler...</p>
         </div>
 
         <div id="eskul-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -87,12 +86,8 @@
                 <input type="text" id="reg-name" class="form-input" placeholder="Nama sesuai rapor" required>
             </div>
             <div>
-                <label class="form-label" for="reg-class">Kelas <span class="text-danger">*</span></label>
-                <input type="text" id="reg-class" class="form-input" placeholder="Contoh: X TKJ 1" required>
-            </div>
-            <div>
-                <label class="form-label" for="reg-phone">No. HP <span class="text-danger">*</span></label>
-                <input type="tel" id="reg-phone" class="form-input" placeholder="08XXXXXXXXXX" required>
+                <label class="form-label" for="reg-nis">NIS <span class="text-danger">*</span></label>
+                <input type="text" id="reg-nis" class="form-input" placeholder="Nomor induk siswa" required>
             </div>
             <div>
                 <label class="form-label" for="reg-reason">Motivasi Bergabung</label>
@@ -115,7 +110,36 @@ import { api }       from '/resources/js/api.js';
 import { storageUrl, formatDate, setButtonLoading } from '/resources/js/utils.js';
 import { toast }     from '/resources/js/toast.js';
 
-const ESKUL_ICONS = ['⚽','🏀','🎭','🎨','💻','🎵','📷','🏊','🥊','📚','♟️','🏐','🤸','🎤','🎬'];
+const ESKUL_ICONS = {
+    robot: '🤖',
+    iot: '🤖',
+    pramuka: '⛺',
+    futsal: '⚽',
+    sepak: '⚽',
+    pmr: '🩺',
+    palang: '🩺',
+    english: '🌐',
+    debat: '🎙️',
+    tari: '💃',
+    suara: '🎤',
+    musik: '🎵',
+    desain: '🎨',
+    grafis: '🎨',
+    multimedia: '📷',
+    paskibra: '🇮🇩',
+    rohis: '📖',
+    tahfidz: '📖',
+    default: '⭐',
+};
+
+function getEskulIcon(name = '') {
+    const normalizedName = name.toLowerCase();
+    const matchedKeyword = Object.keys(ESKUL_ICONS).find(keyword =>
+        keyword !== 'default' && normalizedName.includes(keyword)
+    );
+
+    return ESKUL_ICONS[matchedKeyword || 'default'];
+}
 
 let allAchievements = [];
 let currentEskulId  = null;
@@ -137,15 +161,19 @@ async function loadEskul() {
 }
 
 function renderEskul(eskul) {
-    document.getElementById('eskul-grid').innerHTML = eskul.map((e, i) => `
+    document.getElementById('eskul-summary').textContent = eskul.length
+        ? `${eskul.length} pilihan kegiatan sesuai minat dan bakat Anda.`
+        : 'Belum ada data ekstrakurikuler.';
+
+    document.getElementById('eskul-grid').innerHTML = eskul.map(e => `
         <div class="card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <div class="flex items-start gap-4 mb-4">
                 <div class="w-14 h-14 bg-brand-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-                    ${ESKUL_ICONS[i % ESKUL_ICONS.length]}
+                    ${getEskulIcon(e.name)}
                 </div>
                 <div class="flex-1">
                     <h3 class="font-bold text-gray-900 text-lg">${e.name}</h3>
-                    <p class="text-sm text-gray-500">${e.coach || e.advisor || 'Pembina TBA'}</p>
+                    <p class="text-sm text-gray-500">${e.coach?.name || e.advisor || 'Pembina TBA'}</p>
                 </div>
             </div>
             <p class="text-sm text-gray-600 mb-4 line-clamp-2">${e.description || ''}</p>
@@ -215,20 +243,18 @@ window.submitRegistration = async () => {
     const payload = {
         extracurricular_id: document.getElementById('reg-eskul-id').value,
         name:               document.getElementById('reg-name').value,
-        class:              document.getElementById('reg-class').value,
-        phone:              document.getElementById('reg-phone').value,
-        motivation:         document.getElementById('reg-reason').value,
+        nis:                document.getElementById('reg-nis').value,
+        notes:              document.getElementById('reg-reason').value,
     };
 
-    if (!payload.name || !payload.class || !payload.phone) {
+    if (!payload.name || !payload.nis) {
         toast.warning('Harap isi semua field yang wajib.');
         return;
     }
 
     try {
         setButtonLoading(btn, true);
-        // Use public registration endpoint (mapped to EskulPublicController if exists, otherwise custom)
-        await api.post('/public/extracurriculars/register', payload);
+        await api.post('/public/extracurricular-registrations', payload);
         closeModal(document.getElementById('register-modal'));
         toast.success('Pendaftaran berhasil! Tim kami akan menghubungi Anda.');
     } catch (err) {

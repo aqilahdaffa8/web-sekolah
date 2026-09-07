@@ -6,8 +6,8 @@
         <h1 class="text-2xl font-black text-gray-900">Lowongan Kerja Alumni</h1>
         <p class="text-gray-500 mt-1">Kelola papan loker untuk alumni SMK.</p>
     </div>
-    <button onclick="openJobModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    <button onclick="openJobModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah Loker
     </button>
 </div>
@@ -48,13 +48,13 @@
             <div class="sm:col-span-2"><label class="form-label">Deskripsi</label><textarea id="j-desc" class="form-input h-28 resize-none" placeholder="Deskripsi pekerjaan dan kualifikasi..."></textarea></div>
             <div class="sm:col-span-2"><label class="form-label">Link Lamaran</label><input type="url" id="j-apply" class="form-input" placeholder="https://apply.example.com"></div>
         </div>
-        <div class="modal-footer"><button data-modal-close class="btn-ghost">Batal</button><button id="btn-save-job" onclick="saveJob()" class="btn-primary">Simpan</button></div>
+        <div class="modal-footer"><button type="button" data-modal-close class="btn-ghost">Batal</button><button type="button" id="btn-save-job" onclick="saveJob()" class="btn btn-primary btn-save">Simpan</button></div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 
 window.loadJobs = async function(page=1) {
@@ -85,7 +85,7 @@ function renderGrid(jobs) {
                 <div class="flex items-start justify-between gap-2 flex-wrap">
                     <div>
                         <h3 class="font-bold text-gray-900 text-lg">${j.job_title || j.title}</h3>
-                        <p class="text-sm text-gray-500">${j.dudi?.company_name || 'Perusahaan'}</p>
+                        <p class="text-sm text-gray-500">${j.dudi?.company_name || j.dudi_partner?.company_name || 'Perusahaan'}</p>
                     </div>
                     <span class="badge ${j.status === 'open' ? 'badge-success' : 'badge-danger'}">${j.status === 'open' ? 'Buka' : 'Tutup'}</span>
                 </div>

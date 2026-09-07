@@ -53,18 +53,22 @@
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 async function loadRegistrations(page=1) {
     const status = document.getElementById('filter-status').value;
+    const loading = document.getElementById('reg-count');
+    loading.classList.remove('hidden');
+    loading.textContent = 'Memuat data...';
     try {
         const res = await window.eskulApi.registrations({ page, status });
         const list = res.data || res || [];
-        document.getElementById('reg-count').textContent = `Total: ${list.length} Pendaftar`;
+        loading.classList.add('hidden');
         renderTable(list);
         if (res.meta) {
             window.utils.renderPagination('reg-pagination', res.meta, loadRegistrations);
         }
     } catch(err) {
+        loading.classList.add('hidden');
         window.toast.apiError(err);
     }
 }

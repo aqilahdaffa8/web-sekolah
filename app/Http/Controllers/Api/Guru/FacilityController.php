@@ -19,14 +19,26 @@ class FacilityController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'string'],
-            'program_id' => ['nullable', 'integer', 'exists:programs,id'],
+        $facilityName = $request->input('facility_name') ?? $request->input('name');
+        if (! $facilityName) {
+            return response()->json(['message' => 'The facility name field is required.', 'errors' => ['name' => ['Nama fasilitas wajib diisi.']]], 422);
+        }
+
+        $imageUrl = $request->input('image_url') ?? $request->input('image');
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('facilities', 'public');
+            $imageUrl = '/storage/' . $path;
+        }
+
+        $facility = Facility::create([
+            'facility_name' => $facilityName,
+            'description'   => $request->input('description'),
+            'location'      => $request->input('location'),
+            'capacity'      => $request->input('capacity'),
+            'image_url'     => $imageUrl,
+            'program_id'    => $request->input('program_id') ?? 1,
         ]);
 
-        $facility = Facility::create($data);
         $this->logger->log($request->user()->id, 'created', 'facilities', $facility->id);
 
         return response()->json(['message' => 'Facility created.', 'facility' => $facility], 201);
@@ -39,14 +51,32 @@ class FacilityController extends Controller
 
     public function update(Request $request, Facility $facility): JsonResponse
     {
-        $data = $request->validate([
-            'name' => ['sometimes', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'string'],
-            'program_id' => ['nullable', 'integer', 'exists:programs,id'],
-        ]);
+        $updateData = [];
 
-        $facility->update($data);
+        if ($request->filled('facility_name') || $request->filled('name')) {
+            $updateData['facility_name'] = $request->input('facility_name') ?? $request->input('name');
+        }
+        if ($request->has('description')) {
+            $updateData['description'] = $request->input('description');
+        }
+        if ($request->has('location')) {
+            $updateData['location'] = $request->input('location');
+        }
+        if ($request->has('capacity')) {
+            $updateData['capacity'] = $request->input('capacity');
+        }
+        if ($request->has('program_id')) {
+            $updateData['program_id'] = $request->input('program_id');
+        }
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('facilities', 'public');
+            $updateData['image_url'] = '/storage/' . $path;
+        } elseif ($request->filled('image_url') || $request->filled('image')) {
+            $updateData['image_url'] = $request->input('image_url') ?? $request->input('image');
+        }
+
+        $facility->update($updateData);
         $this->logger->log($request->user()->id, 'updated', 'facilities', $facility->id);
 
         return response()->json(['message' => 'Facility updated.', 'facility' => $facility]);

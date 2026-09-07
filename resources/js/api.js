@@ -95,6 +95,7 @@ export const publicApi = {
     hubin:              ()        => api.get('/public/hubin'),
     tefa:               ()        => api.get('/public/tefa'),
     extracurriculars:   ()        => api.get('/public/extracurriculars'),
+    registerExtracurricular: (data) => api.post('/public/extracurricular-registrations', data),
     achievements:       ()        => api.get('/public/achievements'),
     news:               (params)  => api.get('/public/news', params),
     newsDetail:         (slug)    => api.get(`/public/news/${slug}`),
@@ -160,14 +161,21 @@ export const hubinApi = {
     deleteDudi:         (id)   => api.delete(`/hubin/dudi-partners/${id}`),
 
     jobVacancies:       (p)    => api.get('/hubin/job-vacancies', p),
+    vacancies:           (p)    => api.get('/hubin/job-vacancies', p),
     createJob:          (d)    => api.post('/hubin/job-vacancies', d),
+    createVacancy:      (d)    => api.post('/hubin/job-vacancies', d),
     updateJob:          (id,d) => api.put(`/hubin/job-vacancies/${id}`, d),
+    updateVacancy:      (id,d) => api.put(`/hubin/job-vacancies/${id}`, d),
     deleteJob:          (id)   => api.delete(`/hubin/job-vacancies/${id}`),
+    deleteVacancy:      (id)   => api.delete(`/hubin/job-vacancies/${id}`),
 
     tracerStudies:      (p)    => api.get('/hubin/tracer-studies', p),
     createTracer:       (d)    => api.post('/hubin/tracer-studies', d),
+    createTracerStudy:  (d)    => api.post('/hubin/tracer-studies', d),
     updateTracer:       (id,d) => api.put(`/hubin/tracer-studies/${id}`, d),
+    updateTracerStudy:  (id,d) => api.put(`/hubin/tracer-studies/${id}`, d),
     deleteTracer:       (id)   => api.delete(`/hubin/tracer-studies/${id}`),
+    deleteTracerStudy:  (id)   => api.delete(`/hubin/tracer-studies/${id}`),
 };
 
 // ── Koperasi endpoints ────────────────────────────────────────
@@ -188,9 +196,13 @@ export const guruApi = {
     upsertGrades:   (d)    => api.post('/guru/grades', d),
 
     modules:        (p)    => api.get('/guru/learning-modules', p),
+    learningModules: (p)   => api.get('/guru/learning-modules', p),
     createModule:   (d)    => api.upload('/guru/learning-modules', d),
+    createLearningModule: (d) => api.upload('/guru/learning-modules', d),
     updateModule:   (id,d) => api.uploadPut(`/guru/learning-modules/${id}`, d),
+    updateLearningModule: (id,d) => api.uploadPut(`/guru/learning-modules/${id}`, d),
     deleteModule:   (id)   => api.delete(`/guru/learning-modules/${id}`),
+    deleteLearningModule: (id) => api.delete(`/guru/learning-modules/${id}`),
 
     facilities:     (p)    => api.get('/guru/facilities', p),
     createFacility: (d)    => api.upload('/guru/facilities', d),
@@ -203,12 +215,16 @@ export const eskulApi = {
     extracurriculars:   (p)    => api.get('/eskul/extracurriculars', p),
     createEskul:        (d)    => api.post('/eskul/extracurriculars', d),
     updateEskul:        (id,d) => api.put(`/eskul/extracurriculars/${id}`, d),
+    updateExtracurricular: (id,d) => api.put(`/eskul/extracurriculars/${id}`, d),
     deleteEskul:        (id)   => api.delete(`/eskul/extracurriculars/${id}`),
+    deleteExtracurricular: (id) => api.delete(`/eskul/extracurriculars/${id}`),
 
     registrations:      (p)    => api.get('/eskul/registrations', p),
     updateRegStatus:    (id,d) => api.patch(`/eskul/registrations/${id}/status`, d),
+    updateRegistrationStatus: (id, status) => api.patch(`/eskul/registrations/${id}/status`, { status }),
 
     achievements:       (p)    => api.get('/eskul/achievements', p),
     createAchievement:  (d)    => api.upload('/eskul/achievements', d),
     updateAchievement:  (id,d) => api.uploadPut(`/eskul/achievements/${id}`, d),
+    deleteAchievement:  (id)   => api.delete(`/eskul/achievements/${id}`),
 };

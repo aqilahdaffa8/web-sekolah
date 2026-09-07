@@ -97,7 +97,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let currentOrderId = null;
 
 async function loadOrders(page = 1) {
@@ -118,11 +118,16 @@ async function loadOrders(page = 1) {
 }
 
 function renderOrders(orders) {
-    document.getElementById('orders-tbody').innerHTML = orders.length ? orders.map(o => `
+    document.getElementById('orders-tbody').innerHTML = orders.length ? orders.map(o => {
+        const firstItem = o.items?.[0] || {};
+        const product = firstItem.product || o.product || {};
+        const quantity = firstItem.quantity ?? o.quantity ?? 0;
+
+        return `
         <tr class="cursor-pointer hover:bg-brand-50/40 transition-colors" onclick="viewOrder(${JSON.stringify(o).replace(/"/g,'&quot;')})">
-            <td class="font-medium text-gray-900">${o.customer_name}</td>
-            <td class="text-gray-600">${o.product?.product_name ?? o.product?.name ?? '-'}</td>
-            <td><span class="font-semibold text-gray-800">${o.quantity}</span></td>
+            <td class="font-medium text-gray-900">${o.buyer_name || o.customer_name || '-'}</td>
+            <td class="text-gray-600">${product.product_name ?? product.name ?? '-'}</td>
+            <td><span class="font-semibold text-gray-800">${quantity}</span></td>
             <td class="font-semibold text-brand-900">${window.utils.formatCurrency(o.total_price)}</td>
             <td>${window.utils.statusBadge(o.status)}</td>
             <td class="text-gray-400 text-xs">${window.utils.formatDate(o.created_at, {withTime: true})}</td>
@@ -131,21 +136,24 @@ function renderOrders(orders) {
                         class="btn-table-view text-xs py-1 px-3">Detail</button>
             </td>
         </tr>
-    `).join('') : '<tr><td colspan="7" class="text-center py-12 text-gray-400">Tidak ada pesanan.</td></tr>';
+    `;
+    }).join('') : '<tr><td colspan="7" class="text-center py-12 text-gray-400">Tidak ada pesanan.</td></tr>';
 }
 
 window.viewOrder = (order) => {
     if (typeof order === 'string') order = JSON.parse(order);
     currentOrderId = order.id;
     document.getElementById('order-status-select').value = order.status;
-    const prodName = order.product?.product_name ?? order.product?.name ?? '-';
+    const firstItem = order.items?.[0] || {};
+    const product = firstItem.product || order.product || {};
+    const prodName = product.product_name ?? product.name ?? '-';
     document.getElementById('order-detail-body').innerHTML = `
         <div class="space-y-4">
             <div class="grid grid-cols-2 gap-3 text-sm">
-                <div><p class="text-gray-400">Pelanggan</p><p class="font-semibold">${order.customer_name}</p></div>
-                <div><p class="text-gray-400">No. HP</p><p class="font-semibold">${order.customer_phone}</p></div>
+                <div><p class="text-gray-400">Pelanggan</p><p class="font-semibold">${order.buyer_name || order.customer_name || '-'}</p></div>
+                <div><p class="text-gray-400">No. HP</p><p class="font-semibold">${order.buyer_contact || order.customer_phone || '-'}</p></div>
                 <div><p class="text-gray-400">Produk</p><p class="font-semibold">${prodName}</p></div>
-                <div><p class="text-gray-400">Jumlah</p><p class="font-semibold">${order.quantity} ${order.product?.unit || 'pcs'}</p></div>
+                <div><p class="text-gray-400">Jumlah</p><p class="font-semibold">${firstItem.quantity ?? order.quantity ?? 0} ${product.unit || 'pcs'}</p></div>
                 <div><p class="text-gray-400">Total</p><p class="font-black text-brand-700 text-lg">${window.utils.formatCurrency(order.total_price)}</p></div>
                 <div><p class="text-gray-400">Status</p>${window.utils.statusBadge(order.status)}</div>
             </div>

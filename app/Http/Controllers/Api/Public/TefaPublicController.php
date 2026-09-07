@@ -17,11 +17,13 @@ class TefaPublicController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        return response()->json(
-            TefaProduct::where('stock', '>', 0)
+        return response()->json([
+            'products' => TefaProduct::with('program')
+                ->where('stock', '>', 0)
                 ->when($request->search, fn ($q) => $q->where('product_name', 'like', "%{$request->search}%"))
-                ->paginate(12)
-        );
+                ->latest()
+                ->get(),
+        ]);
     }
 
     /**

@@ -9,14 +9,14 @@
         <p class="text-sm text-gray-500 mt-1">Kelola data penelusuran alumni (Kerja, Kuliah, Wirausaha).</p>
     </div>
     <button class="btn btn-primary" onclick="openFormModal()">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Tambah Data
     </button>
 </div>
 
 <div class="card p-0 overflow-hidden mb-6">
     <div class="p-4 border-b border-gray-100 flex gap-4 bg-gray-50">
-        <select id="status-filter" class="form-input w-48">
+        <select id="status-filter" class="form-input w-48 border border-gray-300 rounded-lg">
             <option value="">Semua Status</option>
             <option value="Kerja">Bekerja</option>
             <option value="Kuliah">Kuliah</option>
@@ -67,9 +67,9 @@
             </div>
         </div>
 
-        <div class="mt-6 flex justify-end gap-3">
+        <div class="crud-modal-actions">
             <button type="button" class="btn btn-secondary" data-modal-close="tracer-modal">Batal</button>
-            <button type="submit" class="btn btn-primary" id="btn-save-tracer">Simpan</button>
+            <button type="submit" class="btn btn-primary btn-save" id="btn-save-tracer">Simpan</button>
         </div>
     </form>
 </x-ui.modal>

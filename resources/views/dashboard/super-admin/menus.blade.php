@@ -9,7 +9,7 @@
         <p class="text-sm text-gray-500 mt-1">Kelola susunan menu yang tampil di navigasi web sekolah.</p>
     </div>
     <button class="btn btn-primary" id="btn-add-menu">
-        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         Tambah Menu
     </button>
 </div>
@@ -41,9 +41,9 @@
             <label for="is-active-check" class="text-sm font-medium text-gray-700">Aktifkan menu ini</label>
         </div>
 
-        <div class="mt-6 flex justify-end gap-3">
+        <div class="crud-modal-actions">
             <button type="button" class="btn btn-secondary" data-modal-close="menu-modal">Batal</button>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </form>
 </x-ui.modal>

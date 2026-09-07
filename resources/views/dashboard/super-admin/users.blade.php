@@ -18,10 +18,8 @@
         <h1 class="text-2xl font-black text-gray-900">Manajemen User</h1>
         <p class="text-gray-500 mt-1">Kelola akun pengguna dan hak akses sistem.</p>
     </div>
-    <button onclick="openCreateUserModal()" class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-        </svg>
+    <button onclick="openCreateUserModal()" class="btn btn-primary">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah User
     </button>
 </div>
@@ -120,8 +118,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button data-modal-close class="btn-ghost">Batal</button>
-            <button id="btn-save-user" onclick="saveUser()" class="btn-primary">Simpan</button>
+            <button type="button" data-modal-close class="btn-ghost">Batal</button>
+            <button type="button" id="btn-save-user" onclick="saveUser()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
 </div>
@@ -149,7 +147,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 let editingId = null;
 let currentPage = 1;
 const PER_PAGE = 15;
