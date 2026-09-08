@@ -32,12 +32,27 @@ class TefaPublicController extends Controller
     public function placeOrder(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'buyer_name' => ['required', 'string', 'max:255'],
+            'buyer_name' => ['nullable', 'string', 'max:255'],
+            'customer_name' => ['nullable', 'string', 'max:255'],
             'buyer_contact' => ['nullable', 'string', 'max:100'],
+            'customer_phone' => ['nullable', 'string', 'max:100'],
+            'delivery_address' => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'integer', 'exists:tefa_products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ]);
+
+        if (empty($data['buyer_name']) && ! empty($data['customer_name'])) {
+            $data['buyer_name'] = $data['customer_name'];
+        }
+        if (empty($data['buyer_contact']) && ! empty($data['customer_phone'])) {
+            $data['buyer_contact'] = $data['customer_phone'];
+        }
+
+        if (empty($data['buyer_name'])) {
+            $data['buyer_name'] = 'Pelanggan';
+        }
 
         $order = $this->orderService->placeOrder($data);
 

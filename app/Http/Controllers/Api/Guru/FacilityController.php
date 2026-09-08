@@ -30,14 +30,23 @@ class FacilityController extends Controller
             $imageUrl = '/storage/' . $path;
         }
 
-        $facility = Facility::create([
+        $data = [
             'facility_name' => $facilityName,
-            'description'   => $request->input('description'),
-            'location'      => $request->input('location'),
-            'capacity'      => $request->input('capacity'),
             'image_url'     => $imageUrl,
-            'program_id'    => $request->input('program_id') ?? 1,
-        ]);
+            'program_id'    => $request->input('program_id') ?? (\App\Models\Program::first()?->id ?? 1),
+        ];
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('facilities', 'description')) {
+            $data['description'] = $request->input('description');
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('facilities', 'location')) {
+            $data['location'] = $request->input('location');
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('facilities', 'capacity')) {
+            $data['capacity'] = $request->input('capacity') ? (int) $request->input('capacity') : null;
+        }
+
+        $facility = Facility::create($data);
 
         $this->logger->log($request->user()->id, 'created', 'facilities', $facility->id);
 

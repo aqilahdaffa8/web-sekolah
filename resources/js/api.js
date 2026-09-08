@@ -192,8 +192,11 @@ export const koperasiApi = {
 
 // ── Guru endpoints ────────────────────────────────────────────
 export const guruApi = {
+    masterData:     ()     => api.get('/guru/master-data'),
     grades:         (p)    => api.get('/guru/grades', p),
+    studentsByClass: (p)   => api.get('/guru/grades/students-by-class', p),
     upsertGrades:   (d)    => api.post('/guru/grades', d),
+    batchUpsertGrades: (d) => api.post('/guru/grades/batch', d),
 
     modules:        (p)    => api.get('/guru/learning-modules', p),
     learningModules: (p)   => api.get('/guru/learning-modules', p),
@@ -212,8 +215,10 @@ export const guruApi = {
 
 // ── Eskul endpoints ───────────────────────────────────────────
 export const eskulApi = {
+    masterData:         ()     => api.get('/eskul/master-data'),
     extracurriculars:   (p)    => api.get('/eskul/extracurriculars', p),
     createEskul:        (d)    => api.post('/eskul/extracurriculars', d),
+    createExtracurricular: (d) => api.post('/eskul/extracurriculars', d),
     updateEskul:        (id,d) => api.put(`/eskul/extracurriculars/${id}`, d),
     updateExtracurricular: (id,d) => api.put(`/eskul/extracurriculars/${id}`, d),
     deleteEskul:        (id)   => api.delete(`/eskul/extracurriculars/${id}`),

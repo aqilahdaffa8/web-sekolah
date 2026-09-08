@@ -50,13 +50,22 @@ class TefaOrderService
             }
 
             // 2. Create order header
-            $order = TefaOrder::create([
+            $orderData = [
                 'order_code' => 'ORD-'.strtoupper(uniqid()),
                 'buyer_name' => $data['buyer_name'],
                 'buyer_contact' => $data['buyer_contact'] ?? null,
                 'total_price' => 0,
                 'status' => 'pending',
-            ]);
+            ];
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('tefa_orders', 'delivery_address') && array_key_exists('delivery_address', $data)) {
+                $orderData['delivery_address'] = $data['delivery_address'];
+            }
+            if (\Illuminate\Support\Facades\Schema::hasColumn('tefa_orders', 'notes') && array_key_exists('notes', $data)) {
+                $orderData['notes'] = $data['notes'];
+            }
+
+            $order = TefaOrder::create($orderData);
 
             // 3. Create items & decrement stock
             foreach ($items as $item) {

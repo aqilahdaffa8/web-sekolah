@@ -38,15 +38,19 @@ class TefaProductController extends Controller
         return response()->json(['message' => 'Product created.', 'product' => $product->load('program')], 201);
     }
 
-    public function show(TefaProduct $tefaProduct): JsonResponse
+    public function show($product): JsonResponse
     {
+        $tefaProduct = $product instanceof TefaProduct ? $product : TefaProduct::findOrFail($product);
         return response()->json($tefaProduct->load('program'));
     }
 
-    public function update(Request $request, TefaProduct $tefaProduct): JsonResponse
+    public function update(Request $request, $product): JsonResponse
     {
+        $tefaProduct = $product instanceof TefaProduct ? $product : TefaProduct::findOrFail($product);
+
         $data = $request->validate([
             'product_name' => ['sometimes', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['sometimes', 'numeric', 'min:0'],
             'stock' => ['sometimes', 'integer', 'min:0'],
@@ -54,17 +58,26 @@ class TefaProductController extends Controller
             'program_id' => ['sometimes', 'integer', 'exists:programs,id'],
         ]);
 
-        $tefaProduct->update($data);
-        $this->logger->log($request->user()->id, 'updated', 'tefa_products');
+        if (empty($data['product_name']) && ! empty($data['name'])) {
+            $data['product_name'] = $data['name'];
+        }
 
-        return response()->json(['message' => 'Product updated.', 'product' => $tefaProduct]);
+        $tefaProduct->update($data);
+        $this->logger->log($request->user()->id, 'updated', 'tefa_products', $tefaProduct->id);
+
+        return response()->json(['message' => 'Produk berhasil diperbarui.', 'product' => $tefaProduct]);
     }
 
-    public function destroy(Request $request, TefaProduct $tefaProduct): JsonResponse
+    public function destroy(Request $request, $product): JsonResponse
     {
-        $this->logger->log($request->user()->id, 'deleted', 'tefa_products');
+        $tefaProduct = $product instanceof TefaProduct ? $product : TefaProduct::findOrFail($product);
+
+        // Delete associated order items first to avoid FK restrict constraint failures
+        \Illuminate\Support\Facades\DB::table('tefa_order_items')->where('product_id', $tefaProduct->id)->delete();
+
+        $this->logger->log($request->user()->id, 'deleted', 'tefa_products', $tefaProduct->id);
         $tefaProduct->delete();
 
-        return response()->json(['message' => 'Product deleted.']);
+        return response()->json(['message' => 'Produk berhasil dihapus.']);
     }
 }

@@ -13,6 +13,8 @@ class TefaOrder extends Model
         'order_code',
         'buyer_name',
         'buyer_contact',
+        'delivery_address',
+        'notes',
         'total_price',
         'status',
     ];
@@ -20,6 +22,15 @@ class TefaOrder extends Model
     protected $casts = [
         'total_price' => 'float',
     ];
+
+    protected $appends = [
+        'customer_name',
+    ];
+
+    public function getCustomerNameAttribute(): ?string
+    {
+        return $this->attributes['buyer_name'] ?? null;
+    }
 
     public function items()
     {

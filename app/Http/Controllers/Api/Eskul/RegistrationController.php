@@ -14,23 +14,59 @@ class RegistrationController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        return response()->json(
-            ExtracurricularRegistration::with(['extracurricular', 'student'])
-                ->when($request->status, fn ($q) => $q->where('status', $request->status))
-                ->when($request->extracurricular_id, fn ($q) => $q->where('extracurricular_id', $request->extracurricular_id))
-                ->latest()
-                ->paginate(15)
-        );
+        $status = $request->query('status');
+        $search = $request->query('search');
+        $eskulId = $request->query('extracurricular_id');
+
+        $query = ExtracurricularRegistration::with(['extracurricular', 'student.classRoom'])
+            ->when($status !== null && $status !== '', fn ($q) => $q->where('status', $status))
+            ->when($eskulId !== null && $eskulId !== '', fn ($q) => $q->where('extracurricular_id', $eskulId))
+            ->when($search !== null && $search !== '', function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->whereHas('student', function ($sq) use ($search) {
+                        $sq->where('name', 'like', "%{$search}%")
+                           ->orWhere('nis', 'like', "%{$search}%");
+                    })->orWhereHas('extracurricular', function ($eq) use ($search) {
+                        $eq->where('name', 'like', "%{$search}%");
+                    });
+                });
+            })
+            ->latest();
+
+        $paginated = $query->paginate($request->query('per_page', 15));
+
+        $counts = [
+            'all'      => ExtracurricularRegistration::count(),
+            'pending'  => ExtracurricularRegistration::where('status', 'pending')->count(),
+            'approved' => ExtracurricularRegistration::where('status', 'approved')->count(),
+            'rejected' => ExtracurricularRegistration::where('status', 'rejected')->count(),
+        ];
+
+        return response()->json([
+            'data'         => $paginated->items(),
+            'current_page' => $paginated->currentPage(),
+            'last_page'    => $paginated->lastPage(),
+            'per_page'     => $paginated->perPage(),
+            'total'        => $paginated->total(),
+            'from'         => $paginated->firstItem() ?? 0,
+            'to'           => $paginated->lastItem() ?? 0,
+            'counts'       => $counts,
+        ]);
     }
 
     public function updateStatus(Request $request, ExtracurricularRegistration $registration): JsonResponse
     {
         $data = $request->validate([
-            'status' => ['required', 'in:approved,rejected'],
+            'status' => ['required', 'in:approved,rejected,pending'],
             'notes' => ['nullable', 'string'],
         ]);
 
-        $registration->update($data);
+        $updateData = ['status' => $data['status']];
+        if (\Illuminate\Support\Facades\Schema::hasColumn('extracurricular_registrations', 'notes') && array_key_exists('notes', $data)) {
+            $updateData['notes'] = $data['notes'];
+        }
+
+        $registration->update($updateData);
         $this->logger->log(
             $request->user()->id,
             "registration_{$data['status']}",

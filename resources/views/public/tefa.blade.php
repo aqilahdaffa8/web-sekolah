@@ -264,17 +264,22 @@ window.submitOrder = async () => {
     const btn = document.getElementById('btn-submit-order');
     const form = document.getElementById('order-form');
 
+    const address = document.getElementById('order-address')?.value.trim() || '';
+    const note = document.getElementById('order-note')?.value.trim() || '';
+
     const payload = {
-        buyer_name:       document.getElementById('order-name').value,
-        buyer_contact:    document.getElementById('order-phone').value,
+        buyer_name:       document.getElementById('order-name').value.trim(),
+        buyer_contact:    document.getElementById('order-phone').value.trim(),
+        delivery_address: address,
+        notes:            note,
         items: [{
             product_id: document.getElementById('order-product-id').value,
             quantity: parseInt(document.getElementById('order-qty').value),
         }],
     };
 
-    if (!payload.buyer_name || !payload.buyer_contact) {
-        toast.warning('Harap lengkapi semua field yang wajib diisi.');
+    if (!payload.buyer_name || !payload.buyer_contact || !payload.delivery_address) {
+        toast.warning('Harap lengkapi semua field yang wajib diisi (Nama, No. WhatsApp, dan Alamat Pengiriman).');
         return;
     }
 

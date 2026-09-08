@@ -24,7 +24,7 @@ class PublicExtracurricularRegistrationRequest extends FormRequest
     {
         return [
             'extracurricular_id' => ['required', 'integer', 'exists:extracurriculars,id'],
-            'nis' => ['required', 'string', 'max:30', 'exists:students,nis'],
+            'nis' => ['required', 'string', 'max:30'],
             'name' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ];

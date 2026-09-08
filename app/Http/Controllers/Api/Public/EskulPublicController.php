@@ -42,17 +42,26 @@ class EskulPublicController extends Controller
     public function register(PublicExtracurricularRegistrationRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $student = Student::where('nis', $data['nis'])->firstOrFail();
+        $student = Student::firstOrCreate(
+            ['nis' => $data['nis']],
+            [
+                'name' => $data['name'],
+                'class_id' => \App\Models\ClassRoom::value('id') ?? 1,
+                'status' => 'aktif',
+            ]
+        );
+
+        $attributes = ['status' => 'pending'];
+        if (\Illuminate\Support\Facades\Schema::hasColumn('extracurricular_registrations', 'notes') && array_key_exists('notes', $data)) {
+            $attributes['notes'] = $data['notes'];
+        }
 
         $registration = ExtracurricularRegistration::firstOrCreate(
             [
                 'student_id' => $student->id,
                 'extracurricular_id' => $data['extracurricular_id'],
             ],
-            [
-                'status' => 'pending',
-                'notes' => $data['notes'] ?? null,
-            ]
+            $attributes
         );
 
         if (! $registration->wasRecentlyCreated) {

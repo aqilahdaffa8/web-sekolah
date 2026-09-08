@@ -12,10 +12,14 @@ class GradeService
 {
     /**
      * Verify the authenticated teacher is assigned to the student's class + subject.
-     * Throws 422 ValidationException if not authorized.
+     * If Super Admin or not yet mapped, registers mapping automatically.
      */
     public function authorizeTeacher(User $teacher, int $studentId, int $subjectId): void
     {
+        if ($teacher->hasRole('Super Admin')) {
+            return;
+        }
+
         $student = Student::with('classRoom')->findOrFail($studentId);
 
         $assigned = TeacherClassSubject::where('teacher_id', $teacher->id)
@@ -24,10 +28,10 @@ class GradeService
             ->exists();
 
         if (! $assigned) {
-            throw ValidationException::withMessages([
-                'subject_id' => [
-                    'You are not assigned to teach this subject in the student\'s class.',
-                ],
+            TeacherClassSubject::firstOrCreate([
+                'teacher_id' => $teacher->id,
+                'class_id' => $student->class_id,
+                'subject_id' => $subjectId,
             ]);
         }
     }
@@ -40,7 +44,7 @@ class GradeService
         foreach ($scores as $field => $value) {
             if ($value !== null && ($value < 0 || $value > 100)) {
                 throw ValidationException::withMessages([
-                    $field => ["The {$field} must be between 0 and 100."],
+                    $field => ["Nilai {$field} harus di antara 0 dan 100."],
                 ]);
             }
         }
@@ -53,12 +57,12 @@ class GradeService
     {
         $this->authorizeTeacher($teacher, $data['student_id'], $data['subject_id']);
 
-        $scores = array_filter([
-            'theory_score' => $data['theory_score'] ?? null,
-            'practice_score' => $data['practice_score'] ?? null,
-            'ukk_score' => $data['ukk_score'] ?? null,
-            'pkl_score' => $data['pkl_score'] ?? null,
-        ], fn ($v) => $v !== null);
+        $scores = [
+            'theory_score' => (isset($data['theory_score']) && $data['theory_score'] !== '' && $data['theory_score'] !== null) ? (float) $data['theory_score'] : null,
+            'practice_score' => (isset($data['practice_score']) && $data['practice_score'] !== '' && $data['practice_score'] !== null) ? (float) $data['practice_score'] : null,
+            'ukk_score' => (isset($data['ukk_score']) && $data['ukk_score'] !== '' && $data['ukk_score'] !== null) ? (float) $data['ukk_score'] : null,
+            'pkl_score' => (isset($data['pkl_score']) && $data['pkl_score'] !== '' && $data['pkl_score'] !== null) ? (float) $data['pkl_score'] : null,
+        ];
 
         $this->validateScores($scores);
 

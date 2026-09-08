@@ -13,13 +13,8 @@
         <p class="text-gray-500 mt-1">Daftar kegiatan ekstrakurikuler SMKN 1 Katapang.</p>
     </div>
     <button onclick="openCreateModal()" class="btn btn-primary">
-<<<<<<< HEAD
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-=======
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
->>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         </svg>
         Tambah Eskul
     </button>
@@ -82,13 +77,8 @@
             </div>
         </div>
         <div class="modal-footer">
-<<<<<<< HEAD
-            <button data-modal-close class="btn-secondary">Batal</button>
+            <button type="button" data-modal-close class="btn btn-secondary">Batal</button>
             <button type="button" id="btn-save-eskul" onclick="saveEskul()" class="btn btn-primary btn-save">Simpan</button>
-=======
-            <button data-modal-close class="btn btn-secondary">Batal</button>
-            <button id="btn-save-eskul" onclick="saveEskul()" class="btn btn-primary">Simpan</button>
->>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         </div>
     </div>
 </div>
@@ -192,10 +182,12 @@ window.saveEskul = async () => {
     try {
         window.utils.setButtonLoading(btn, true);
         if (editingId) {
-            await window.eskulApi.updateExtracurricular(editingId, payload);
+            const updateFn = window.eskulApi.updateExtracurricular || window.eskulApi.updateEskul;
+            await updateFn(editingId, payload);
             window.toast.success('Ekstrakurikuler berhasil diperbarui.');
         } else {
-            await window.eskulApi.createExtracurricular(payload);
+            const createFn = window.eskulApi.createExtracurricular || window.eskulApi.createEskul;
+            await createFn(payload);
             window.toast.success('Ekstrakurikuler berhasil ditambahkan.');
         }
         window.closeModal(document.getElementById('eskul-modal'));
@@ -210,7 +202,8 @@ window.saveEskul = async () => {
 window.deleteEskul = async (id) => {
     if (!confirm('Apakah Anda yakin ingin menghapus ekstrakurikuler ini?')) return;
     try {
-        await window.eskulApi.deleteExtracurricular(id);
+        const deleteFn = window.eskulApi.deleteExtracurricular || window.eskulApi.deleteEskul;
+        await deleteFn(id);
         window.toast.success('Ekstrakurikuler berhasil dihapus.');
         loadEskul();
     } catch(err) {

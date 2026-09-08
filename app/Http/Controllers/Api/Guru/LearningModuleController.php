@@ -37,7 +37,24 @@ class LearningModuleController extends Controller
 
         $data['teacher_id'] = $request->user()->id;
 
-        $module = LearningModule::create($data);
+        // Populate backward-compatible columns if they exist in table
+        if (\Illuminate\Support\Facades\Schema::hasColumn('learning_modules', 'program_id')) {
+            $classRoom = \App\Models\ClassRoom::find($data['class_id'] ?? null);
+            $data['program_id'] = $classRoom?->program_id ?? (\App\Models\Program::first()?->id ?? 1);
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('learning_modules', 'file_url')) {
+            $data['file_url'] = $data['file_path'] ?? ($data['title'] ?? '-');
+        }
+
+        // Filter data to only columns present in database
+        $filteredData = [];
+        foreach ($data as $column => $value) {
+            if (\Illuminate\Support\Facades\Schema::hasColumn('learning_modules', $column)) {
+                $filteredData[$column] = $value;
+            }
+        }
+
+        $module = LearningModule::create($filteredData);
         $this->logger->log($request->user()->id, 'created', 'learning_modules', $module->id);
 
         return response()->json(['message' => 'Module created.', 'module' => $module->load('subject', 'classRoom')], 201);

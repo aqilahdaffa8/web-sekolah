@@ -373,10 +373,12 @@ export function storageUrl(path) {
 // ── Badge HTML helpers ────────────────────────────────────────
 const STATUS_MAP = {
     // Order statuses
-    pending:   { cls: 'badge-warning', label: 'Pending'   },
-    paid:      { cls: 'badge-info',    label: 'Dibayar'   },
-    completed: { cls: 'badge-success', label: 'Selesai'   },
-    cancelled: { cls: 'badge-danger',  label: 'Dibatalkan'},
+    pending:    { cls: 'badge-warning', label: 'Pending'   },
+    paid:       { cls: 'badge-info',    label: 'Dibayar'   },
+    processing: { cls: 'badge-brand',   label: 'Diproses'  },
+    completed:  { cls: 'badge-success', label: 'Selesai'   },
+    done:       { cls: 'badge-success', label: 'Selesai'   },
+    cancelled:  { cls: 'badge-danger',  label: 'Dibatalkan'},
     // Job statuses
     open:      { cls: 'badge-success', label: 'Buka'      },
     closed:    { cls: 'badge-danger',  label: 'Tutup'     },

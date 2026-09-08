@@ -93,22 +93,35 @@ loadStats();
 // Recent orders
 async function loadRecentOrders() {
     try {
-        const res = await window.api.get('/koperasi/orders', { per_page: 5 });
-        const orders = res.data?.data || res.data || [];
-        document.getElementById('recent-orders').innerHTML = orders.length ? orders.map(o => `
-            <div class="px-5 py-4 flex items-center gap-3">
-                <div class="w-9 h-9 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0 text-brand-700 font-bold text-sm">
-                    ${(o.customer_name || '?')[0].toUpperCase()}
+        const res = await window.api.get('/koperasi/orders', { per_page: 6 });
+        const orders = Array.isArray(res) ? res : (Array.isArray(res.data) ? res.data : (res.data?.data || []));
+        document.getElementById('recent-orders').innerHTML = orders.length ? orders.map(o => {
+            const customerName = o.buyer_name || o.customer_name || 'Pelanggan';
+            const firstItem = o.items?.[0] || {};
+            const product = firstItem.product || o.product || {};
+            const productName = product.product_name ?? product.name ?? o.product_name ?? 'Produk Vokasi';
+            const qty = firstItem.quantity ? `${firstItem.quantity}x ` : '';
+            const moreItems = (o.items?.length || 0) > 1 ? ` (+${o.items.length - 1} item)` : '';
+            const productDesc = `${qty}${productName}${moreItems}`;
+            const badgeClass = o.status === 'pending' ? 'badge-warning' : (o.status === 'cancelled' ? 'badge-danger' : 'badge-info');
+
+            return `
+            <div class="px-5 py-4 flex items-center gap-3.5 hover:bg-gray-50/70 transition-colors">
+                <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0 text-slate-400 overflow-hidden shadow-xs">
+                    <svg class="w-6 h-6 text-slate-400 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-900 truncate">${o.customer_name}</p>
-                    <p class="text-xs text-gray-400">${o.product?.product_name ?? o.product?.name ?? 'Produk'} · ${window.utils.formatCurrency(o.total_price)}</p>
+                    <p class="text-sm font-bold text-gray-900 truncate">${customerName}</p>
+                    <p class="text-xs text-gray-500 truncate mt-0.5">${productDesc} · ${window.utils.formatCurrency(o.total_price)}</p>
                 </div>
-                <span class="badge-${o.status === 'pending' ? 'warning' : o.status === 'done' ? 'success' : 'info'} flex-shrink-0">
+                <span class="${badgeClass} flex-shrink-0 text-xs font-semibold">
                     ${o.status}
                 </span>
             </div>
-        `).join('') : '<p class="text-center text-gray-400 py-8 text-sm">Belum ada pesanan.</p>';
+            `;
+        }).join('') : '<p class="text-center text-gray-400 py-8 text-sm">Belum ada pesanan.</p>';
     } catch (_) {}
 }
 

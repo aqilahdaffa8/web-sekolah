@@ -120,7 +120,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // ── KOPERASI & TEFA ──────────────────────────────────────────────────────
     Route::prefix('koperasi')->middleware('role:Koperasi,Super Admin')->group(function () {
         Route::get('/master-data', [App\Http\Controllers\Api\Koperasi\MasterDataController::class, 'index']);
-        Route::apiResource('/products', TefaProductController::class);
+        Route::delete('/products/{product}', [TefaProductController::class, 'destroy']);
+        Route::apiResource('/products', TefaProductController::class)->parameters(['products' => 'product']);
         Route::get('/orders', [TefaOrderController::class, 'index']);
         Route::get('/orders/{tefaOrder}', [TefaOrderController::class, 'show']);
         Route::patch('/orders/{tefaOrder}/status', [TefaOrderController::class, 'updateStatus']);
@@ -130,6 +131,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('guru')->middleware('role:Guru,Super Admin')->group(function () {
         Route::get('/master-data', [App\Http\Controllers\Api\Guru\MasterDataController::class, 'index']);
         Route::apiResource('/learning-modules', LearningModuleController::class);
+        Route::get('/grades/students-by-class', [GradeController::class, 'studentsByClass']);
+        Route::post('/grades/batch', [GradeController::class, 'batchUpsert']);
         Route::get('/grades', [GradeController::class, 'index']);
         Route::post('/grades', [GradeController::class, 'upsert']);
         Route::get('/grades/{grade}', [GradeController::class, 'show']);

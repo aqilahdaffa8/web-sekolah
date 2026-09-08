@@ -7,11 +7,7 @@
         <p class="text-gray-500 mt-1">Kelola daftar mitra dunia usaha dan industri.</p>
     </div>
     <button onclick="openCreateModal()" class="btn btn-primary">
-<<<<<<< HEAD
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-=======
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
->>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         Tambah Mitra
     </button>
 </div>
@@ -51,13 +47,8 @@
             <div><label class="form-label">Logo</label><input type="file" id="d-logo" class="form-input" accept="image/*"></div>
         </div>
         <div class="modal-footer">
-<<<<<<< HEAD
-            <button data-modal-close class="btn-ghost">Batal</button>
+            <button type="button" data-modal-close class="btn btn-ghost">Batal</button>
             <button type="button" id="btn-save-dudi" onclick="saveDudi()" class="btn btn-primary btn-save">Simpan</button>
-=======
-            <button data-modal-close class="btn btn-ghost">Batal</button>
-            <button id="btn-save-dudi" onclick="saveDudi()" class="btn btn-primary">Simpan</button>
->>>>>>> b4131732b82dedec8bb907a60fd0e1b683b999ff
         </div>
     </div>
 </div>

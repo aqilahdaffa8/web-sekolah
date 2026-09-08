@@ -13,10 +13,17 @@ class LearningModule extends Model
         'title',
         'description',
         'file_path',
+        'file_url',
         'teacher_id',
         'class_id',
         'subject_id',
+        'program_id',
     ];
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
 
     public function teacher()
     {
