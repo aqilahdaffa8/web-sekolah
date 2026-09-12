@@ -82,21 +82,40 @@
             </div>
             <input type="hidden" id="reg-eskul-id">
             <div>
-                <label class="form-label" for="reg-name">Nama Lengkap <span class="text-danger">*</span></label>
-                <input type="text" id="reg-name" class="form-input" placeholder="Nama sesuai rapor" required>
+                <label class="form-label" for="reg-name">Nama Lengkap</label>
+                <input type="text" id="reg-name" class="form-input bg-brand-50/70 text-brand-900 font-semibold" readonly tabindex="-1">
             </div>
             <div>
-                <label class="form-label" for="reg-nis">NIS <span class="text-danger">*</span></label>
-                <input type="text" id="reg-nis" class="form-input" placeholder="Nomor induk siswa" required>
+                <label class="form-label" for="reg-nis">NIS</label>
+                <input type="text" id="reg-nis" class="form-input bg-brand-50/70 text-brand-900 font-semibold" readonly tabindex="-1">
             </div>
             <div>
-                <label class="form-label" for="reg-reason">Motivasi Bergabung</label>
+                <label class="form-label" for="reg-reason">Motivasi / Catatan</label>
                 <textarea id="reg-reason" class="form-input h-20 resize-none" placeholder="Mengapa Anda tertarik bergabung?"></textarea>
             </div>
         </div>
         <div class="modal-footer">
             <button data-modal-close class="btn btn-ghost">Batal</button>
-            <button id="btn-register" onclick="submitRegistration()" class="btn btn-primary">Daftar Sekarang</button>
+            <button id="btn-register" onclick="submitRegistration()" class="btn btn-primary">Kirim Pendaftaran</button>
+        </div>
+    </div>
+</div>
+
+{{-- Guest / non-student notice --}}
+<div id="login-required-modal" data-modal class="modal-overlay hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="text-lg font-bold text-brand-900">Pendaftaran khusus siswa aktif</h3>
+            <button data-modal-close class="btn-icon text-brand-400">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="modal-body space-y-3">
+            <p id="login-required-copy" class="text-sm text-brand-700">Pengunjung umum hanya dapat melihat katalog eskul dan prestasi. Pendaftaran hanya untuk siswa dengan NIS aktif.</p>
+        </div>
+        <div class="modal-footer">
+            <button data-modal-close class="btn btn-ghost">Tutup</button>
+            <a id="login-required-cta" href="{{ url('/login?redirect=/ekstrakurikuler') }}" class="btn btn-primary">Masuk sebagai Siswa</a>
         </div>
     </div>
 </div>
@@ -104,11 +123,11 @@
 @endsection
 
 @push('scripts')
-<script type="module">
-import { publicApi } from '/resources/js/api.js';
-import { api }       from '/resources/js/api.js';
-import { storageUrl, formatDate, setButtonLoading } from '/resources/js/utils.js';
-import { toast }     from '/resources/js/toast.js';
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const publicApi = window.publicApi;
+const toast = window.toast;
+const { storageUrl, setButtonLoading } = window.utils;
 
 const ESKUL_ICONS = {
     robot: '🤖',
@@ -142,7 +161,6 @@ function getEskulIcon(name = '') {
 }
 
 let allAchievements = [];
-let currentEskulId  = null;
 
 async function loadEskul() {
     try {
@@ -157,7 +175,25 @@ async function loadEskul() {
         buildAchievementFilters(allAchievements);
     } catch (err) {
         console.error(err);
+        document.getElementById('eskul-summary').textContent = 'Gagal memuat daftar ekstrakurikuler.';
     }
+}
+
+function registrationButton(eskul) {
+    const payload = JSON.stringify(eskul).replace(/"/g, '&quot;');
+    if (eskul.status === 'closed') {
+        return `<button class="btn btn-primary w-full btn-sm" disabled>Pendaftaran Ditutup</button>`;
+    }
+
+    if (window.auth?.isActiveStudent?.()) {
+        return `<button onclick="openRegister(${payload})" class="btn btn-primary w-full btn-sm">Daftar Sekarang</button>`;
+    }
+
+    if (window.auth?.isLoggedIn?.()) {
+        return `<button onclick="openLoginRequired('staff')" class="btn btn-secondary w-full btn-sm">Khusus Siswa Aktif</button>`;
+    }
+
+    return `<button onclick="openLoginRequired('guest')" class="btn btn-primary w-full btn-sm">Login untuk Mendaftar</button>`;
 }
 
 function renderEskul(eskul) {
@@ -172,23 +208,19 @@ function renderEskul(eskul) {
                     ${getEskulIcon(e.name)}
                 </div>
                 <div class="flex-1">
-                    <h3 class="font-bold text-gray-900 text-lg">${e.name}</h3>
-                    <p class="text-sm text-gray-500">${e.coach?.name || e.advisor || 'Pembina TBA'}</p>
+                    <h3 class="font-bold text-brand-900 text-lg">${e.name}</h3>
+                    <p class="text-sm text-brand-600">${e.coach?.name || e.advisor || 'Pembina TBA'}</p>
                 </div>
             </div>
-            <p class="text-sm text-gray-600 mb-4 line-clamp-2">${e.description || ''}</p>
+            <p class="text-sm text-brand-700 mb-4 line-clamp-2">${e.description || ''}</p>
             <div class="flex flex-wrap gap-2 mb-5">
                 ${e.schedule ? `<span class="badge-info">📅 ${e.schedule}</span>` : ''}
-                ${e.location ? `<span class="badge-gray">📍 ${e.location}</span>` : ''}
+                ${e.location ? `<span class="badge-brand">📍 ${e.location}</span>` : ''}
                 ${e.member_count !== undefined ? `<span class="badge-brand">👥 ${e.member_count} anggota</span>` : ''}
             </div>
-            <button onclick="openRegister(${JSON.stringify(e).replace(/"/g, '&quot;')})"
-                    class="btn btn-primary w-full btn-sm"
-                    ${e.status === 'closed' ? 'disabled' : ''}>
-                ${e.status === 'closed' ? 'Pendaftaran Ditutup' : 'Daftar Sekarang'}
-            </button>
+            ${registrationButton(e)}
         </div>
-    `).join('') || '<p class="col-span-3 text-center text-gray-500 py-12">Belum ada data ekstrakurikuler.</p>';
+    `).join('') || '<p class="col-span-3 text-center text-brand-600 py-12">Belum ada data ekstrakurikuler.</p>';
 }
 
 function renderAchievements(achievements) {
@@ -203,13 +235,13 @@ function renderAchievements(achievements) {
             <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-200 flex items-center justify-center text-6xl">🏆</div>`}
             <div class="p-4">
                 <div class="flex items-start justify-between gap-2 mb-2">
-                    <h3 class="font-bold text-gray-900 line-clamp-2">${a.title}</h3>
+                    <h3 class="font-bold text-brand-900 line-clamp-2">${a.title}</h3>
                     <span class="badge-warning flex-shrink-0">${a.level || 'Nasional'}</span>
                 </div>
-                <p class="text-sm text-gray-500">${a.extracurricular?.name || ''} · ${a.year || new Date().getFullYear()}</p>
+                <p class="text-sm text-brand-600">${a.extracurricular?.name || ''} · ${a.year || new Date().getFullYear()}</p>
             </div>
         </div>
-    `).join('') || '<p class="col-span-3 text-center text-gray-500 py-12">Belum ada data prestasi.</p>';
+    `).join('') || '<p class="col-span-3 text-center text-brand-600 py-12">Belum ada data prestasi.</p>';
 }
 
 function buildAchievementFilters(achievements) {
@@ -229,42 +261,61 @@ window.filterAch = (year) => {
     renderAchievements(filtered);
 };
 
+window.openLoginRequired = (audience = 'guest') => {
+    const copy = document.getElementById('login-required-copy');
+    const cta = document.getElementById('login-required-cta');
+    if (audience === 'staff') {
+        copy.textContent = 'Akun staf tidak dapat mendaftar eskul. Masuk dengan akun Siswa yang terhubung ke NIS aktif.';
+        cta.textContent = 'Ganti akun';
+    } else {
+        copy.textContent = 'Pengunjung umum hanya dapat melihat katalog eskul dan prestasi. Pendaftaran hanya untuk siswa dengan NIS aktif.';
+        cta.textContent = 'Masuk sebagai Siswa';
+    }
+    openModal(document.getElementById('login-required-modal'));
+};
+
 window.openRegister = (eskul) => {
+    if (!window.auth?.isActiveStudent?.()) {
+        window.openLoginRequired(window.auth?.isLoggedIn?.() ? 'staff' : 'guest');
+        return;
+    }
+
     if (typeof eskul === 'string') eskul = JSON.parse(eskul);
-    currentEskulId = eskul.id;
+    const student = window.auth.getStudent();
     document.getElementById('reg-eskul-id').value = eskul.id;
     document.getElementById('reg-eskul-name').textContent = eskul.name;
     document.getElementById('reg-eskul-schedule').textContent = eskul.schedule || '';
+    document.getElementById('reg-name').value = student.name;
+    document.getElementById('reg-nis').value = student.nis;
+    document.getElementById('reg-reason').value = '';
     openModal(document.getElementById('register-modal'));
 };
 
 window.submitRegistration = async () => {
-    const btn = document.getElementById('btn-register');
-    const payload = {
-        extracurricular_id: document.getElementById('reg-eskul-id').value,
-        name:               document.getElementById('reg-name').value,
-        nis:                document.getElementById('reg-nis').value,
-        notes:              document.getElementById('reg-reason').value,
-    };
-
-    if (!payload.name || !payload.nis) {
-        toast.warning('Harap isi semua field yang wajib.');
+    if (!window.auth?.isActiveStudent?.()) {
+        toast.warning('Pendaftaran hanya untuk siswa aktif.');
         return;
     }
 
+    const btn = document.getElementById('btn-register');
+    const payload = {
+        extracurricular_id: document.getElementById('reg-eskul-id').value,
+        notes: document.getElementById('reg-reason').value,
+    };
+
     try {
         setButtonLoading(btn, true);
-        await api.post('/public/extracurricular-registrations', payload);
+        await publicApi.registerExtracurricular(payload);
         closeModal(document.getElementById('register-modal'));
-        toast.success('Pendaftaran berhasil! Tim kami akan menghubungi Anda.');
+        toast.success('Pendaftaran berhasil dan menunggu validasi admin.');
     } catch (err) {
         toast.apiError(err);
     } finally {
-        setButtonLoading(btn, false, 'Daftar Sekarang');
+        setButtonLoading(btn, false, 'Kirim Pendaftaran');
     }
 };
 
 loadEskul();
+});
 </script>
 @endpush
-

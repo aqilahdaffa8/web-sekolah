@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Api\Public;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PublicExtracurricularRegistrationRequest;
 use App\Models\Achievement;
 use App\Models\Extracurricular;
-use App\Models\ExtracurricularRegistration;
-use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -37,43 +34,5 @@ class EskulPublicController extends Controller
                     'extracurricular' => $achievement->extracurricular,
                 ])
         );
-    }
-
-    public function register(PublicExtracurricularRegistrationRequest $request): JsonResponse
-    {
-        $data = $request->validated();
-        $student = Student::firstOrCreate(
-            ['nis' => $data['nis']],
-            [
-                'name' => $data['name'],
-                'class_id' => \App\Models\ClassRoom::value('id') ?? 1,
-                'status' => 'aktif',
-            ]
-        );
-
-        $attributes = ['status' => 'pending'];
-        if (\Illuminate\Support\Facades\Schema::hasColumn('extracurricular_registrations', 'notes') && array_key_exists('notes', $data)) {
-            $attributes['notes'] = $data['notes'];
-        }
-
-        $registration = ExtracurricularRegistration::firstOrCreate(
-            [
-                'student_id' => $student->id,
-                'extracurricular_id' => $data['extracurricular_id'],
-            ],
-            $attributes
-        );
-
-        if (! $registration->wasRecentlyCreated) {
-            return response()->json([
-                'message' => 'Siswa sudah terdaftar pada ekstrakurikuler ini.',
-                'errors' => ['extracurricular_id' => ['Pendaftaran untuk ekstrakurikuler ini sudah ada.']],
-            ], 422);
-        }
-
-        return response()->json([
-            'message' => 'Pendaftaran berhasil dan menunggu validasi admin.',
-            'registration' => $registration->load(['student', 'extracurricular']),
-        ], 201);
     }
 }

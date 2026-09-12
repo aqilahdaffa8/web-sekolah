@@ -74,15 +74,17 @@
 
                 {{-- ── Right actions ──────────────────────────── --}}
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('login') }}"
-                       class="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold
-                              bg-brand-gradient text-white shadow-sm hover:shadow-md hover:opacity-90
-                              transition-all duration-200 active:scale-95">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                        </svg>
-                        Login Admin
-                    </a>
+                    <div id="nav-desktop-auth" class="hidden lg:flex items-center gap-2">
+                        <a href="{{ route('login') }}"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold
+                                  bg-brand-gradient text-white shadow-sm hover:shadow-md hover:opacity-90
+                                  transition-all duration-200 active:scale-95">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                            </svg>
+                            Masuk
+                        </a>
+                    </div>
 
                     {{-- Hamburger --}}
                     <button id="mobile-menu-toggle"
@@ -143,14 +145,14 @@
         @endforeach
     </div>
 
-    <div class="px-4 pb-6 pt-2 border-t border-gray-100 bg-gray-50/50">
+    <div id="nav-mobile-auth" class="px-4 pb-6 pt-2 border-t border-gray-100 bg-gray-50/50">
         <a href="{{ route('login') }}"
            class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl
                   bg-brand-gradient text-white text-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
             </svg>
-            Login Admin
+            Masuk
         </a>
     </div>
 </nav>

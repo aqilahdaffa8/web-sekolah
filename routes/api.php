@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SiteSettingController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\StudentActivationController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\Eskul\AchievementController;
 use App\Http\Controllers\Api\Eskul\ExtracurricularController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\Api\Public\HubinPublicController;
 use App\Http\Controllers\Api\Public\NewsController;
 use App\Http\Controllers\Api\Public\ProfileController;
 use App\Http\Controllers\Api\Public\TefaPublicController;
+use App\Http\Controllers\Api\Student\ExtracurricularRegistrationController as StudentExtracurricularRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,7 +43,6 @@ Route::prefix('public')->group(function () {
     Route::get('/tefa', [TefaPublicController::class, 'index']);
     Route::get('/extracurriculars', [EskulPublicController::class, 'index']);
     Route::get('/achievements', [EskulPublicController::class, 'achievements']);
-    Route::post('/extracurricular-registrations', [EskulPublicController::class, 'register']);
     Route::get('/news', [NewsController::class, 'index']);
     Route::get('/news/{post}', [NewsController::class, 'show']);
     Route::get('/events', [NewsController::class, 'events']);
@@ -57,6 +58,10 @@ Route::prefix('auth')->group(function () {
     // Rate-limited login: 5 attempts per minute per IP
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
+    // Student account self-activation
+    Route::post('/student/check-nis', [StudentActivationController::class, 'checkNis'])->middleware('throttle:10,1');
+    Route::post('/student/activate', [StudentActivationController::class, 'activate'])->middleware('throttle:5,1');
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
@@ -69,6 +74,9 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
+
+    Route::post('/extracurricular-registrations', [StudentExtracurricularRegistrationController::class, 'store'])
+        ->middleware('role:Siswa,Super Admin');
 
     // ── SUPER ADMIN ──────────────────────────────────────────────────────────
     Route::prefix('admin')->middleware('role:Super Admin')->group(function () {

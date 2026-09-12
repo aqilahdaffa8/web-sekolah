@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -89,5 +90,34 @@ class User extends Authenticatable
     public function teacherClassSubjects()
     {
         return $this->hasMany(TeacherClassSubject::class, 'teacher_id');
+    }
+
+    public function student(): HasOne
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    /**
+     * Payload used by login /me for the SPA session.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSessionArray(): array
+    {
+        $this->loadMissing(['roles.permissions', 'student']);
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'roles' => $this->roles->pluck('role_name'),
+            'permissions' => $this->allPermissions()->values(),
+            'student' => $this->student ? [
+                'id' => $this->student->id,
+                'nis' => $this->student->nis,
+                'name' => $this->student->name,
+                'status' => $this->student->status,
+            ] : null,
+        ];
     }
 }

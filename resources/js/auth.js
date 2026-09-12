@@ -48,9 +48,31 @@ export function isHubin()      { return hasRole(['Hubin', 'Super Admin']); }
 export function isKoperasi()   { return hasRole(['Koperasi', 'Super Admin']); }
 export function isGuru()       { return hasRole(['Guru', 'Super Admin']); }
 export function isEskul()      { return hasRole(['Eskul', 'Super Admin']); }
+export function isSiswa()      { return hasRole('Siswa'); }
+
+export function getStudent() {
+    return getUser()?.student ?? null;
+}
+
+export function isActiveStudent() {
+    return isSiswa() && getStudent()?.status === 'aktif';
+}
+
+function safeRedirectPath() {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+        return redirect;
+    }
+
+    return null;
+}
 
 // ── Get default dashboard route per role ──────────────────────
 export function getDashboardRoute() {
+    const redirect = safeRedirectPath();
+    if (redirect) return redirect;
+    if (isSiswa() && !isSuperAdmin()) return '/eskul';
     if (isSuperAdmin()) return '/dashboard';
     if (isHubin())      return '/dashboard/hubin/mitra';
     if (isKoperasi())   return '/dashboard/koperasi/produk';
@@ -77,15 +99,20 @@ export async function login(email, password) {
         permissions,
     });
 
-    // Redirect to the appropriate dashboard based on role
-    const destination = _getDashboardRoute(roles);
-    window.location.href = destination;
+    window.location.href = _getDashboardRoute(roles);
 
     return data;
 }
 
 /** Internal helper used at login time (before global helpers are available) */
 function _getDashboardRoute(roles) {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) {
+        return redirect;
+    }
+
+    if (roles.includes('Siswa') && !roles.includes('Super Admin')) return '/eskul';
     if (roles.includes('Super Admin')) return '/dashboard';
     if (roles.includes('Hubin'))      return '/dashboard/hubin/mitra';
     if (roles.includes('Koperasi'))   return '/dashboard/koperasi/produk';

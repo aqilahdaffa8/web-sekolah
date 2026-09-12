@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initModals();
     initDropdowns();
+    initPublicNavbarAuth();
 
     // ── Populate topbar user info ──────────────────────────────────────────
     const user = auth.getUser ? auth.getUser() : null;
@@ -186,6 +187,67 @@ export function closeModal(modal) {
     modal.classList.remove('flex');
     modal.classList.add('hidden');
     document.body.classList.remove('overflow-hidden');
+}
+
+function initPublicNavbarAuth() {
+    const desktop = document.getElementById('nav-desktop-auth');
+    const mobile = document.getElementById('nav-mobile-auth');
+    if (!desktop && !mobile) return;
+
+    if (!auth.isLoggedIn()) return;
+
+    const user = auth.getUser();
+    const student = auth.getStudent();
+    const isSiswa = auth.isSiswa();
+    const displayName = student?.name || user?.name || user?.email || 'Pengguna';
+    const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const statusLabel = isSiswa
+        ? (student?.status === 'aktif' ? 'Siswa aktif' : 'Siswa')
+        : (auth.getRoles()[0] || 'Staf');
+    const nisBadge = student?.nis
+        ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-brand-50 text-brand-800 text-[11px] font-bold tracking-wide">NIS ${student.nis}</span>`
+        : '';
+    const extraAction = isSiswa
+        ? ''
+        : `<a href="${auth.getDashboardRoute()}" class="inline-flex items-center px-3 py-2 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 transition-colors">Dashboard</a>`;
+
+    if (desktop) {
+        desktop.innerHTML = `
+            <div class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-2xl border border-brand-100 bg-white shadow-sm">
+                <div class="w-9 h-9 rounded-xl bg-brand-gradient text-white text-xs font-bold flex items-center justify-center">${initials}</div>
+                <div class="leading-tight pr-1">
+                    <p class="text-sm font-bold text-brand-900">${displayName}</p>
+                    <p class="text-[11px] text-brand-600 font-medium">${statusLabel}${student?.nis ? ` · ${student.nis}` : ''}</p>
+                </div>
+                ${extraAction}
+                <button type="button" data-public-logout class="px-3 py-2 rounded-xl text-sm font-semibold text-brand-800 hover:text-red-700 hover:bg-red-50 transition-colors">Keluar</button>
+            </div>
+        `;
+    }
+
+    if (mobile) {
+        mobile.innerHTML = `
+            <div class="rounded-2xl border border-brand-100 bg-white p-4 mb-3">
+                <p class="text-sm font-bold text-brand-900">${displayName}</p>
+                <p class="text-xs text-brand-600 mt-0.5">${statusLabel}</p>
+                ${nisBadge ? `<div class="mt-2">${nisBadge}</div>` : ''}
+            </div>
+            ${extraAction ? extraAction.replace('inline-flex', 'flex w-full justify-center mb-2') : ''}
+            <button type="button" data-public-logout class="flex items-center justify-center w-full px-4 py-3 rounded-xl border border-brand-100 text-sm font-bold text-brand-800 hover:bg-brand-50">Keluar</button>
+        `;
+    }
+
+    document.querySelectorAll('[data-public-logout]').forEach(button => {
+        button.addEventListener('click', async () => {
+            button.disabled = true;
+            button.textContent = 'Keluar...';
+            try {
+                await authApi.logout();
+            } catch (_) { /* ignore expired sessions */ }
+            auth.clearSession();
+            window.location.href = '/';
+        });
+    });
 }
 
 // ── Dropdown menus ────────────────────────────────────────────

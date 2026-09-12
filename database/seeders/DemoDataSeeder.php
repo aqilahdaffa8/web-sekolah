@@ -2,25 +2,25 @@
 
 namespace Database\Seeders;
 
+use App\Models\Achievement;
+use App\Models\Banner;
+use App\Models\Category;
+use App\Models\ClassRoom;
 use App\Models\DudiPartner;
-use App\Models\JobVacancy;
-use App\Models\Student;
-use App\Models\TracerStudy;
-use App\Models\Post;
 use App\Models\Event;
 use App\Models\Extracurricular;
 use App\Models\ExtracurricularRegistration;
-use App\Models\Achievement;
-use App\Models\TefaProduct;
+use App\Models\Facility;
+use App\Models\JobVacancy;
+use App\Models\LearningModule;
+use App\Models\Post;
+use App\Models\Program;
+use App\Models\SiteSetting;
+use App\Models\Student;
 use App\Models\TefaOrder;
 use App\Models\TefaOrderItem;
-use App\Models\Program;
-use App\Models\Category;
-use App\Models\Banner;
-use App\Models\LearningModule;
-use App\Models\Facility;
-use App\Models\SiteSetting;
-use App\Models\ClassRoom;
+use App\Models\TefaProduct;
+use App\Models\TracerStudy;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -51,11 +51,11 @@ class DemoDataSeeder extends Seeder
     private function seedSiteSettings(): void
     {
         $settings = [
-            'school_name'     => 'SMKN 1 Katapang',
-            'school_tagline'  => 'Mencetak Generasi Unggul, Berkarakter & Siap Kerja',
-            'school_address'  => 'Jl. Ceuri Terusan Kopo No.KM 13.5, Katapang, Kec. Katapang, Kabupaten Bandung, Jawa Barat 40921',
-            'school_phone'    => '(022) 589-3737',
-            'school_email'    => 'info@smkn1katapang.sch.id',
+            'school_name' => 'SMKN 1 Katapang',
+            'school_tagline' => 'Mencetak Generasi Unggul, Berkarakter & Siap Kerja',
+            'school_address' => 'Jl. Ceuri Terusan Kopo No.KM 13.5, Katapang, Kec. Katapang, Kabupaten Bandung, Jawa Barat 40921',
+            'school_phone' => '(022) 589-3737',
+            'school_email' => 'info@smkn1katapang.sch.id',
             'school_whatsapp' => '081234567890',
         ];
 
@@ -70,18 +70,18 @@ class DemoDataSeeder extends Seeder
     {
         $banners = [
             [
-                'image_url'  => 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&auto=format&fit=crop&q=80',
-                'link_url'   => '/profil',
+                'image_url' => 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&auto=format&fit=crop&q=80',
+                'link_url' => '/profil',
                 'sort_order' => 1,
             ],
             [
-                'image_url'  => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&auto=format&fit=crop&q=80',
-                'link_url'   => '/katalog',
+                'image_url' => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&auto=format&fit=crop&q=80',
+                'link_url' => '/katalog',
                 'sort_order' => 2,
             ],
             [
-                'image_url'  => 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1600&auto=format&fit=crop&q=80',
-                'link_url'   => '/hubin',
+                'image_url' => 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1600&auto=format&fit=crop&q=80',
+                'link_url' => '/hubin',
                 'sort_order' => 3,
             ],
         ];
@@ -89,7 +89,7 @@ class DemoDataSeeder extends Seeder
         foreach ($banners as $b) {
             Banner::firstOrCreate(['image_url' => $b['image_url']], $b);
         }
-        $this->command->info('✅ Banners seeded (' . count($banners) . ')');
+        $this->command->info('✅ Banners seeded ('.count($banners).')');
     }
 
     // ── Categories ────────────────────────────────────────────
@@ -129,18 +129,37 @@ class DemoDataSeeder extends Seeder
         ];
 
         foreach ($studentNames as $idx => $name) {
-            $nis = '2024' . str_pad($idx + 1, 4, '0', STR_PAD_LEFT);
+            $nis = '2024'.str_pad($idx + 1, 4, '0', STR_PAD_LEFT);
             Student::firstOrCreate(
                 ['nis' => $nis],
                 [
-                    'name'     => $name,
-                    'nis'      => $nis,
+                    'name' => $name,
+                    'nis' => $nis,
                     'class_id' => $classId,
-                    'status'   => 'aktif',
+                    'status' => 'aktif',
                 ]
             );
         }
-        $this->command->info('✅ Active Students seeded (' . count($studentNames) . ')');
+
+        $this->linkStudentUserAccounts();
+        $this->command->info('✅ Active Students seeded ('.count($studentNames).')');
+    }
+
+    private function linkStudentUserAccounts(): void
+    {
+        $links = [
+            '20240001' => 'aditya@siswa.smk.sch.id',
+            '20240002' => 'alya@siswa.smk.sch.id',
+        ];
+
+        foreach ($links as $nis => $email) {
+            $user = User::query()->where('email', $email)->first();
+            $student = Student::query()->where('nis', $nis)->first();
+
+            if ($user && $student) {
+                $student->update(['user_id' => $user->id]);
+            }
+        }
     }
 
     // ── DUDI Partners ─────────────────────────────────────────
@@ -167,7 +186,7 @@ class DemoDataSeeder extends Seeder
         foreach ($partners as $p) {
             DudiPartner::firstOrCreate(['company_name' => $p['company_name']], $p);
         }
-        $this->command->info('✅ DUDI Partners seeded (' . count($partners) . ')');
+        $this->command->info('✅ DUDI Partners seeded ('.count($partners).')');
     }
 
     // ── Job Vacancies ─────────────────────────────────────────
@@ -194,21 +213,21 @@ class DemoDataSeeder extends Seeder
             JobVacancy::firstOrCreate(
                 ['job_title' => $v['job_title'], 'dudi_id' => $dudiId],
                 [
-                    'dudi_id'     => $dudiId,
-                    'job_title'   => $v['job_title'],
+                    'dudi_id' => $dudiId,
+                    'job_title' => $v['job_title'],
                     'description' => "📍 Lokasi: {$v['location']}\n💰 Kisaran Gaji: {$v['salary']}\n\nKualifikasi: Lulusan SMK/SMKN jurusan terkait, berdisiplin tinggi, memiliki sertifikat kompetensi keahlian. Silakan ajukan lamaran melalui BKK SMKN 1 Katapang.",
-                    'status'      => $v['status'],
+                    'status' => $v['status'],
                 ]
             );
         }
-        $this->command->info('✅ Job Vacancies seeded (' . count($vacancies) . ')');
+        $this->command->info('✅ Job Vacancies seeded ('.count($vacancies).')');
     }
 
     // ── Tracer Studies ────────────────────────────────────────
     private function seedTracerStudies(): void
     {
         $students = Student::pluck('id')->toArray();
-        $classId  = ClassRoom::value('id') ?? 1;
+        $classId = ClassRoom::value('id') ?? 1;
 
         $alumni = [
             ['Budi Santoso',      2022, 'Kerja',     'PT. Telkom Indonesia (Persero) Tbk'],
@@ -231,20 +250,20 @@ class DemoDataSeeder extends Seeder
         foreach ($alumni as $idx => [$name, $year, $status, $company]) {
             $studentId = $students[$idx] ?? Student::firstOrCreate(
                 ['name' => $name],
-                ['name' => $name, 'nis' => 'ALUMNI' . str_pad($idx + 1, 4, '0', STR_PAD_LEFT), 'class_id' => $classId]
+                ['name' => $name, 'nis' => 'ALUMNI'.str_pad($idx + 1, 4, '0', STR_PAD_LEFT), 'class_id' => $classId]
             )->id;
 
             TracerStudy::firstOrCreate(
                 ['student_id' => $studentId, 'graduation_year' => $year],
                 [
-                    'student_id'             => $studentId,
-                    'graduation_year'        => $year,
-                    'current_status'         => $status,
+                    'student_id' => $studentId,
+                    'graduation_year' => $year,
+                    'current_status' => $status,
                     'company_or_campus_name' => $company,
                 ]
             );
         }
-        $this->command->info('✅ Tracer Studies seeded (' . count($alumni) . ')');
+        $this->command->info('✅ Tracer Studies seeded ('.count($alumni).')');
     }
 
     // ── Posts (Berita) ────────────────────────────────────────
@@ -257,46 +276,46 @@ class DemoDataSeeder extends Seeder
 
         $posts = [
             [
-                'title'       => 'Siswa SMKN 1 Katapang Raih Medali Emas LKS Tingkat Provinsi Jawa Barat',
+                'title' => 'Siswa SMKN 1 Katapang Raih Medali Emas LKS Tingkat Provinsi Jawa Barat',
                 'category_id' => $catPrestasi,
-                'image_url'   => 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
-                'content'     => 'Kabar membanggakan datang dari kontingen LKS SMKN 1 Katapang. Siswa jurusan Rekayasa Perangkat Lunak berhasil meraih juara 1 dan medali emas dalam cabang lomba Web Technologies tingkat Provinsi Jawa Barat. Prestasi ini mengantarkan sekolah menuju ajang LKS Nasional tahun 2026. Kepala Sekolah mengapresiasi dedikasi para guru pembimbing serta ketekunan siswa dalam mempersiapkan diri.',
-                'status'      => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
+                'content' => 'Kabar membanggakan datang dari kontingen LKS SMKN 1 Katapang. Siswa jurusan Rekayasa Perangkat Lunak berhasil meraih juara 1 dan medali emas dalam cabang lomba Web Technologies tingkat Provinsi Jawa Barat. Prestasi ini mengantarkan sekolah menuju ajang LKS Nasional tahun 2026. Kepala Sekolah mengapresiasi dedikasi para guru pembimbing serta ketekunan siswa dalam mempersiapkan diri.',
+                'status' => 'published',
             ],
             [
-                'title'       => 'SMKN 1 Katapang Resmikan Lab Komputer Modern Berstandar Industri 4.0',
+                'title' => 'SMKN 1 Katapang Resmikan Lab Komputer Modern Berstandar Industri 4.0',
                 'category_id' => $catKegiatan,
-                'image_url'   => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
-                'content'     => 'Untuk memperkuat pembelajaran vokasi berbasis kompetensi industri, SMKN 1 Katapang meresmikan laboratorium komputer baru berstandar industri dengan 72 unit workstation berkecepatan tinggi, konektivitas serat optik gigabit, dan ruang kolaborasi agile. Fasilitas ini didukung oleh kemitraan strategis dengan BUMN teknologi terkemuka di Bandung.',
-                'status'      => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
+                'content' => 'Untuk memperkuat pembelajaran vokasi berbasis kompetensi industri, SMKN 1 Katapang meresmikan laboratorium komputer baru berstandar industri dengan 72 unit workstation berkecepatan tinggi, konektivitas serat optik gigabit, dan ruang kolaborasi agile. Fasilitas ini didukung oleh kemitraan strategis dengan BUMN teknologi terkemuka di Bandung.',
+                'status' => 'published',
             ],
             [
-                'title'       => 'Penandatanganan MoU Kerjasama Kelas Industri dengan 15 Perusahaan Nasional',
+                'title' => 'Penandatanganan MoU Kerjasama Kelas Industri dengan 15 Perusahaan Nasional',
                 'category_id' => $catIndustri,
-                'image_url'   => 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
-                'content'     => 'SMKN 1 Katapang memperluas jejaring kemitraan DUDI dengan menandatangani nota kesepahaman (MoU) bersama 15 perusahaan manufaktur, perbankan, dan teknologi. Kerjasama ini meliputi sinkronisasi kurikulum merdeka vokasi, program guru tamu dari praktisi industri, magang kerja bersertifikat, serta rekrutmen prioritas bagi alumni lulusan.',
-                'status'      => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
+                'content' => 'SMKN 1 Katapang memperluas jejaring kemitraan DUDI dengan menandatangani nota kesepahaman (MoU) bersama 15 perusahaan manufaktur, perbankan, dan teknologi. Kerjasama ini meliputi sinkronisasi kurikulum merdeka vokasi, program guru tamu dari praktisi industri, magang kerja bersertifikat, serta rekrutmen prioritas bagi alumni lulusan.',
+                'status' => 'published',
             ],
             [
-                'title'       => 'Produk TeFA Siswa Tembus Pasar Retail dan Pameran Vokasi Nasional',
+                'title' => 'Produk TeFA Siswa Tembus Pasar Retail dan Pameran Vokasi Nasional',
                 'category_id' => $catPrestasi,
-                'image_url'   => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&auto=format&fit=crop&q=80',
-                'content'     => 'Unit Teaching Factory (TeFA) SMKN 1 Katapang berhasil memamerkan produk kriya kulit handmade, kue lava brownies produksi siswa boga, dan paket aplikasi manajemen sekolah di ajang Vokasi Land Expo. Pesanan terus mengalir dari berbagai instansi mitra dan konsumen retail.',
-                'status'      => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&auto=format&fit=crop&q=80',
+                'content' => 'Unit Teaching Factory (TeFA) SMKN 1 Katapang berhasil memamerkan produk kriya kulit handmade, kue lava brownies produksi siswa boga, dan paket aplikasi manajemen sekolah di ajang Vokasi Land Expo. Pesanan terus mengalir dari berbagai instansi mitra dan konsumen retail.',
+                'status' => 'published',
             ],
             [
-                'title'       => 'Workshop Kewirausahaan Vokasi: Membangun Startup Mandiri di Kalangan Pelajar',
+                'title' => 'Workshop Kewirausahaan Vokasi: Membangun Startup Mandiri di Kalangan Pelajar',
                 'category_id' => $catKegiatan,
-                'image_url'   => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80',
-                'content'     => 'Lebih dari 300 siswa kelas XII mengikuti pelatihan kewirausahaan digital dan inkubasi bisnis mini yang diselenggarakan oleh BKK dan Koperasi SMKN 1 Katapang bersama HIPMI. Pelatihan ini melatih keterampilan pitching, validasi produk, serta pengelolaan kas usaha.',
-                'status'      => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80',
+                'content' => 'Lebih dari 300 siswa kelas XII mengikuti pelatihan kewirausahaan digital dan inkubasi bisnis mini yang diselenggarakan oleh BKK dan Koperasi SMKN 1 Katapang bersama HIPMI. Pelatihan ini melatih keterampilan pitching, validasi produk, serta pengelolaan kas usaha.',
+                'status' => 'published',
             ],
             [
-                'title'       => 'Kunjungan Industri Siswa TKJ & Otomotif ke Pabrik Manufaktur Cikarang',
+                'title' => 'Kunjungan Industri Siswa TKJ & Otomotif ke Pabrik Manufaktur Cikarang',
                 'category_id' => $catIndustri,
-                'image_url'   => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=80',
-                'content'     => 'Sebanyak 180 siswa didampingi guru kejuruan berkunjung langsung ke fasilitas perakitan modern untuk melihat proses otomatisasi robotik, manajemen K3 industri, dan standar kualitas Six Sigma di fasilitas pabrik perakitan berskala multinasional.',
-                'status'      => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=80',
+                'content' => 'Sebanyak 180 siswa didampingi guru kejuruan berkunjung langsung ke fasilitas perakitan modern untuk melihat proses otomatisasi robotik, manajemen K3 industri, dan standar kualitas Six Sigma di fasilitas pabrik perakitan berskala multinasional.',
+                'status' => 'published',
             ],
         ];
 
@@ -304,17 +323,17 @@ class DemoDataSeeder extends Seeder
             Post::firstOrCreate(
                 ['slug' => Str::slug($p['title'])],
                 [
-                    'title'       => $p['title'],
-                    'slug'        => Str::slug($p['title']),
-                    'content'     => $p['content'],
-                    'image_url'   => $p['image_url'],
+                    'title' => $p['title'],
+                    'slug' => Str::slug($p['title']),
+                    'content' => $p['content'],
+                    'image_url' => $p['image_url'],
                     'category_id' => $p['category_id'],
-                    'status'      => $p['status'],
-                    'author_id'   => $authorId,
+                    'status' => $p['status'],
+                    'author_id' => $authorId,
                 ]
             );
         }
-        $this->command->info('✅ Posts seeded (' . count($posts) . ')');
+        $this->command->info('✅ Posts seeded ('.count($posts).')');
     }
 
     // ── Events / Agenda ────────────────────────────────────────
@@ -333,13 +352,13 @@ class DemoDataSeeder extends Seeder
             Event::firstOrCreate(
                 ['title' => $ev['title']],
                 [
-                    'title'       => $ev['title'],
-                    'description' => $ev['desc'] . ' Lokasi: Kampus SMKN 1 Katapang.',
-                    'event_date'  => $date,
+                    'title' => $ev['title'],
+                    'description' => $ev['desc'].' Lokasi: Kampus SMKN 1 Katapang.',
+                    'event_date' => $date,
                 ]
             );
         }
-        $this->command->info('✅ Events seeded (' . count($events) . ')');
+        $this->command->info('✅ Events seeded ('.count($events).')');
     }
 
     // ── Extracurriculars ───────────────────────────────────────
@@ -364,37 +383,41 @@ class DemoDataSeeder extends Seeder
             Extracurricular::firstOrCreate(
                 ['name' => $e['name']],
                 [
-                    'name'        => $e['name'],
+                    'name' => $e['name'],
                     'description' => $e['desc'],
-                    'schedule'    => $e['schedule'],
-                    'coach_id'    => $coachId,
+                    'schedule' => $e['schedule'],
+                    'coach_id' => $coachId,
                 ]
             );
         }
-        $this->command->info('✅ Extracurriculars seeded (' . count($eskuls) . ')');
+        $this->command->info('✅ Extracurriculars seeded ('.count($eskuls).')');
     }
 
     // ── Extracurricular Registrations ──────────────────────────
     private function seedExtracurricularRegistrations(): void
     {
         $students = Student::pluck('id')->toArray();
-        $eskuls   = Extracurricular::pluck('id')->toArray();
+        $eskuls = Extracurricular::pluck('id')->toArray();
 
-        if (empty($students) || empty($eskuls)) return;
+        if (empty($students) || empty($eskuls)) {
+            return;
+        }
 
         $statuses = ['approved', 'approved', 'pending', 'approved', 'pending', 'approved'];
 
         foreach ($students as $idx => $studentId) {
-            if ($idx >= 15) break;
+            if ($idx >= 15) {
+                break;
+            }
             $eskulId = $eskuls[$idx % count($eskuls)];
-            $status  = $statuses[$idx % count($statuses)];
+            $status = $statuses[$idx % count($statuses)];
 
             ExtracurricularRegistration::firstOrCreate(
                 ['student_id' => $studentId, 'extracurricular_id' => $eskulId],
                 [
-                    'student_id'         => $studentId,
+                    'student_id' => $studentId,
                     'extracurricular_id' => $eskulId,
-                    'status'             => $status,
+                    'status' => $status,
                 ]
             );
         }
@@ -420,13 +443,13 @@ class DemoDataSeeder extends Seeder
             Achievement::firstOrCreate(
                 ['title' => $a['title']],
                 [
-                    'title'              => $a['title'],
-                    'description'        => $a['desc'],
+                    'title' => $a['title'],
+                    'description' => $a['desc'],
                     'extracurricular_id' => $eskulId,
                 ]
             );
         }
-        $this->command->info('✅ Achievements seeded (' . count($achievements) . ')');
+        $this->command->info('✅ Achievements seeded ('.count($achievements).')');
     }
 
     // ── TeFA Products ──────────────────────────────────────────
@@ -437,59 +460,59 @@ class DemoDataSeeder extends Seeder
         $products = [
             [
                 'product_name' => 'Tas Kulit Handmade Premium Katapang',
-                'price'        => 350000,
-                'stock'        => 18,
-                'image_url'    => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Tas selempang kulit sapi asli dibuat manual dengan teknik jahit tangan presisi oleh siswa jurusan Kriya Kulit.',
+                'price' => 350000,
+                'stock' => 18,
+                'image_url' => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Tas selempang kulit sapi asli dibuat manual dengan teknik jahit tangan presisi oleh siswa jurusan Kriya Kulit.',
             ],
             [
                 'product_name' => 'Kue Brownies Coklat Lava Lumer',
-                'price'        => 45000,
-                'stock'        => 35,
-                'image_url'    => 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Brownies panggang lembut dengan coklat leleh di dalamnya. 100% bahan premium halal buatan siswa Tata Boga.',
+                'price' => 45000,
+                'stock' => 35,
+                'image_url' => 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Brownies panggang lembut dengan coklat leleh di dalamnya. 100% bahan premium halal buatan siswa Tata Boga.',
             ],
             [
                 'product_name' => 'Paket Web Profil Perusahaan & Sekolah',
-                'price'        => 1750000,
-                'stock'        => 10,
-                'image_url'    => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Layanan pengembangan website responsive, SEO-ready, dan dashboard admin dinamis garapan siswa Rekayasa Perangkat Lunak.',
+                'price' => 1750000,
+                'stock' => 10,
+                'image_url' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Layanan pengembangan website responsive, SEO-ready, dan dashboard admin dinamis garapan siswa Rekayasa Perangkat Lunak.',
             ],
             [
                 'product_name' => 'Kain Batik Tulis Motif Khas Parahyangan',
-                'price'        => 280000,
-                'stock'        => 20,
-                'image_url'    => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Kain batik tulis motif daun teh dan pegunungan khas Jawa Barat, dibuat dengan canting tembaga manual.',
+                'price' => 280000,
+                'stock' => 20,
+                'image_url' => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Kain batik tulis motif daun teh dan pegunungan khas Jawa Barat, dibuat dengan canting tembaga manual.',
             ],
             [
                 'product_name' => 'Jasa Desain Identitas Visual & Logo Brand',
-                'price'        => 350000,
-                'stock'        => 25,
-                'image_url'    => 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Paket lengkap desain logo vector, guideline warna, mock-up kartu nama, dan feed media sosial dari siswa DKV.',
+                'price' => 350000,
+                'stock' => 25,
+                'image_url' => 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Paket lengkap desain logo vector, guideline warna, mock-up kartu nama, dan feed media sosial dari siswa DKV.',
             ],
             [
                 'product_name' => 'Jasa Servis Ringan & Tune-Up Motor Injeksi',
-                'price'        => 65000,
-                'stock'        => 50,
-                'image_url'    => 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Layanan perawatan berkala motor matic dan bebek oleh teknisi siswa Otomotif dengan panduan SOP bengkel resmi Astra.',
+                'price' => 65000,
+                'stock' => 50,
+                'image_url' => 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Layanan perawatan berkala motor matic dan bebek oleh teknisi siswa Otomotif dengan panduan SOP bengkel resmi Astra.',
             ],
             [
                 'product_name' => 'Instalasi Jaringan LAN & Hotspot WiFi Mikrotik',
-                'price'        => 450000,
-                'stock'        => 12,
-                'image_url'    => 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Jasa penarikan kabel UTP Cat6, crimping, konfigurasi router Mikrotik, dan manajemen bandwidth kantor/sekolah.',
+                'price' => 450000,
+                'stock' => 12,
+                'image_url' => 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Jasa penarikan kabel UTP Cat6, crimping, konfigurasi router Mikrotik, dan manajemen bandwidth kantor/sekolah.',
             ],
             [
                 'product_name' => 'Tempe Krispi Aneka Rasa Gurih Renyah',
-                'price'        => 15000,
-                'stock'        => 80,
-                'image_url'    => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80',
-                'desc'         => 'Snack tempe kedelai lokal renyah dengan bumbu rempah alami tanpa pengawet. Tersedia rasa original, balado, dan keju.',
+                'price' => 15000,
+                'stock' => 80,
+                'image_url' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80',
+                'desc' => 'Snack tempe kedelai lokal renyah dengan bumbu rempah alami tanpa pengawet. Tersedia rasa original, balado, dan keju.',
             ],
         ];
 
@@ -498,68 +521,70 @@ class DemoDataSeeder extends Seeder
                 ['product_name' => $p['product_name']],
                 [
                     'product_name' => $p['product_name'],
-                    'description'  => $p['desc'],
-                    'price'        => $p['price'],
-                    'stock'        => $p['stock'],
-                    'image_url'    => $p['image_url'],
-                    'program_id'   => $programId,
+                    'description' => $p['desc'],
+                    'price' => $p['price'],
+                    'stock' => $p['stock'],
+                    'image_url' => $p['image_url'],
+                    'program_id' => $programId,
                 ]
             );
         }
-        $this->command->info('✅ TeFA Products seeded (' . count($products) . ')');
+        $this->command->info('✅ TeFA Products seeded ('.count($products).')');
     }
 
     // ── TeFA Orders ───────────────────────────────────────────
     private function seedTefaOrders(): void
     {
         $products = TefaProduct::all();
-        if ($products->isEmpty()) return;
+        if ($products->isEmpty()) {
+            return;
+        }
 
         $orders = [
             [
-                'order_code'    => 'ORD-20260905-001',
-                'buyer_name'    => 'Drs. H. Mulyana (SMKN 2 Baleendah)',
+                'order_code' => 'ORD-20260905-001',
+                'buyer_name' => 'Drs. H. Mulyana (SMKN 2 Baleendah)',
                 'buyer_contact' => '081234567890',
-                'status'        => 'completed',
-                'items'         => [
+                'status' => 'completed',
+                'items' => [
                     ['product_idx' => 0, 'qty' => 2],
                     ['product_idx' => 1, 'qty' => 5],
                 ],
             ],
             [
-                'order_code'    => 'ORD-20260905-002',
-                'buyer_name'    => 'Ibu Hj. Kartika Sari',
+                'order_code' => 'ORD-20260905-002',
+                'buyer_name' => 'Ibu Hj. Kartika Sari',
                 'buyer_contact' => '082198765432',
-                'status'        => 'paid',
-                'items'         => [
+                'status' => 'paid',
+                'items' => [
                     ['product_idx' => 1, 'qty' => 4],
                     ['product_idx' => 3, 'qty' => 1],
                 ],
             ],
             [
-                'order_code'    => 'ORD-20260905-003',
-                'buyer_name'    => 'PT Daya Adicipta Motora',
+                'order_code' => 'ORD-20260905-003',
+                'buyer_name' => 'PT Daya Adicipta Motora',
                 'buyer_contact' => '085711223344',
-                'status'        => 'pending',
-                'items'         => [
+                'status' => 'pending',
+                'items' => [
                     ['product_idx' => 2, 'qty' => 1],
                 ],
             ],
             [
-                'order_code'    => 'ORD-20260905-004',
-                'buyer_name'    => 'Bpk. Ridwan Fauzi',
+                'order_code' => 'ORD-20260905-004',
+                'buyer_name' => 'Bpk. Ridwan Fauzi',
                 'buyer_contact' => '087812349900',
-                'status'        => 'completed',
-                'items'         => [
+                'status' => 'completed',
+                'items' => [
                     ['product_idx' => 5, 'qty' => 3],
                 ],
             ],
             [
-                'order_code'    => 'ORD-20260905-005',
-                'buyer_name'    => 'Koperasi Guru SMKN 1 Katapang',
+                'order_code' => 'ORD-20260905-005',
+                'buyer_name' => 'Koperasi Guru SMKN 1 Katapang',
                 'buyer_contact' => '081399887766',
-                'status'        => 'paid',
-                'items'         => [
+                'status' => 'paid',
+                'items' => [
                     ['product_idx' => 7, 'qty' => 20],
                 ],
             ],
@@ -575,19 +600,19 @@ class DemoDataSeeder extends Seeder
                 $total += $subtotal;
                 $itemsData[] = [
                     'product_id' => $prod->id,
-                    'quantity'   => $item['qty'],
-                    'subtotal'   => $subtotal,
+                    'quantity' => $item['qty'],
+                    'subtotal' => $subtotal,
                 ];
             }
 
             $order = TefaOrder::firstOrCreate(
                 ['order_code' => $o['order_code']],
                 [
-                    'order_code'    => $o['order_code'],
-                    'buyer_name'    => $o['buyer_name'],
+                    'order_code' => $o['order_code'],
+                    'buyer_name' => $o['buyer_name'],
                     'buyer_contact' => $o['buyer_contact'],
-                    'total_price'   => $total,
-                    'status'        => $o['status'],
+                    'total_price' => $total,
+                    'status' => $o['status'],
                 ]
             );
 
@@ -595,15 +620,15 @@ class DemoDataSeeder extends Seeder
                 TefaOrderItem::firstOrCreate(
                     ['order_id' => $order->id, 'product_id' => $it['product_id']],
                     [
-                        'order_id'   => $order->id,
+                        'order_id' => $order->id,
                         'product_id' => $it['product_id'],
-                        'quantity'   => $it['quantity'],
-                        'subtotal'   => $it['subtotal'],
+                        'quantity' => $it['quantity'],
+                        'subtotal' => $it['subtotal'],
                     ]
                 );
             }
         }
-        $this->command->info('✅ TeFA Orders seeded (' . count($orders) . ')');
+        $this->command->info('✅ TeFA Orders seeded ('.count($orders).')');
     }
 
     // ── Learning Modules ───────────────────────────────────────
@@ -624,14 +649,14 @@ class DemoDataSeeder extends Seeder
             LearningModule::firstOrCreate(
                 ['title' => $m['title']],
                 [
-                    'title'      => $m['title'],
-                    'file_url'   => $m['file_url'],
+                    'title' => $m['title'],
+                    'file_url' => $m['file_url'],
                     'program_id' => $programId,
                     'teacher_id' => $teacherId,
                 ]
             );
         }
-        $this->command->info('✅ Learning Modules seeded (' . count($modules) . ')');
+        $this->command->info('✅ Learning Modules seeded ('.count($modules).')');
     }
 
     // ── Facilities ────────────────────────────────────────────
@@ -642,27 +667,27 @@ class DemoDataSeeder extends Seeder
         $facilities = [
             [
                 'facility_name' => 'Laboratorium Komputer Software Engineering',
-                'image_url'     => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
+                'image_url' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
             ],
             [
                 'facility_name' => 'Bengkel Praktik Otomotif & Mesin Presisi',
-                'image_url'     => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
+                'image_url' => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
             ],
             [
                 'facility_name' => 'Studio Penyiaran & Multimedia Katapang TV',
-                'image_url'     => 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80',
+                'image_url' => 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80',
             ],
             [
                 'facility_name' => 'Ruang Workshop Teaching Factory (TeFA) Kriya Kulit',
-                'image_url'     => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80',
+                'image_url' => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80',
             ],
             [
                 'facility_name' => 'Gedung Olahraga & Lapangan Futsal Indoor',
-                'image_url'     => 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&auto=format&fit=crop&q=80',
+                'image_url' => 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&auto=format&fit=crop&q=80',
             ],
             [
                 'facility_name' => 'Perpustakaan Digital & Ruang Riset Pelajar',
-                'image_url'     => 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&auto=format&fit=crop&q=80',
+                'image_url' => 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&auto=format&fit=crop&q=80',
             ],
         ];
 
@@ -671,11 +696,11 @@ class DemoDataSeeder extends Seeder
                 ['facility_name' => $f['facility_name']],
                 [
                     'facility_name' => $f['facility_name'],
-                    'image_url'     => $f['image_url'],
-                    'program_id'    => $programId,
+                    'image_url' => $f['image_url'],
+                    'program_id' => $programId,
                 ]
             );
         }
-        $this->command->info('✅ Facilities seeded (' . count($facilities) . ')');
+        $this->command->info('✅ Facilities seeded ('.count($facilities).')');
     }
 }

@@ -16,31 +16,43 @@ class UserSeeder extends Seeder
                 'name' => 'Super Admin',
                 'email' => 'superadmin@smk.sch.id',
                 'password' => 'ChangeMe!12345',
-                'role' => 'Super Admin'
+                'role' => 'Super Admin',
             ],
             [
                 'name' => 'Admin Hubin',
                 'email' => 'hubin@smk.sch.id',
                 'password' => 'password123',
-                'role' => 'Hubin'
+                'role' => 'Hubin',
             ],
             [
                 'name' => 'Admin Koperasi',
                 'email' => 'koperasi@smk.sch.id',
                 'password' => 'password123',
-                'role' => 'Koperasi'
+                'role' => 'Koperasi',
             ],
             [
                 'name' => 'Bapak Guru',
                 'email' => 'guru@smk.sch.id',
                 'password' => 'password123',
-                'role' => 'Guru'
+                'role' => 'Guru',
             ],
             [
                 'name' => 'Pembina Eskul',
                 'email' => 'eskul@smk.sch.id',
                 'password' => 'password123',
-                'role' => 'Eskul'
+                'role' => 'Eskul',
+            ],
+            [
+                'name' => 'Aditya Pratama',
+                'email' => 'aditya@siswa.smk.sch.id',
+                'password' => 'password123',
+                'role' => 'Siswa',
+            ],
+            [
+                'name' => 'Alya Nuraini',
+                'email' => 'alya@siswa.smk.sch.id',
+                'password' => 'password123',
+                'role' => 'Siswa',
             ],
         ];
 

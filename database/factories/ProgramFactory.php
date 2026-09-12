@@ -14,7 +14,6 @@ class ProgramFactory extends Factory
         return [
             'program_name' => fake()->unique()->words(3, true),
             'description' => fake()->sentence(),
-            'image' => null,
         ];
     }
 }

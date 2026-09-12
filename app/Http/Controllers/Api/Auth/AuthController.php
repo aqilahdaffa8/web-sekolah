@@ -38,18 +38,11 @@ class AuthController extends Controller
         }
 
         $user = $result['user'];
-        $user->loadMissing('roles.permissions');
 
         return response()->json([
             'message' => 'Login successful.',
             'token' => $result['token'],
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->roles->pluck('role_name'),
-                'permissions' => $user->allPermissions(),
-            ],
+            'user' => $user->toSessionArray(),
         ]);
     }
 
@@ -68,14 +61,6 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        $user = $request->user()->loadMissing('roles.permissions');
-
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'roles' => $user->roles->pluck('role_name'),
-            'permissions' => $user->allPermissions(),
-        ]);
+        return response()->json($request->user()->toSessionArray());
     }
 }
