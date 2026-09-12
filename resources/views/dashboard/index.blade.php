@@ -74,7 +74,8 @@ if (user) {
 async function loadStats() {
     try {
         const res = await window.api.get('/dashboard/stats');
-        const stats = res.data?.data || res.data || {};
+        // Handle both {success: true, data: {...}} and direct data responses
+        const stats = res.data?.data ?? res.data ?? res ?? {};
         const elStudents = document.getElementById('ds-students');
         const elOrders   = document.getElementById('ds-orders');
         const elJobs     = document.getElementById('ds-jobs');

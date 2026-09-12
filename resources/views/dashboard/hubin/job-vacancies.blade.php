@@ -118,7 +118,7 @@
         window.deleteJob = async (id) => {
             if (!confirm('Hapus lowongan ini?')) return;
             try {
-                await window.api.delete(`/hubin/job-vacancies/${id}`);
+                await window.hubinApi.deleteJob(id);
                 window.showToast('Lowongan dihapus', 'success');
                 loadJobs();
             } catch (error) {
@@ -135,12 +135,8 @@
             if (empty) empty.classList.add('hidden');
 
             try {
-                // Adjust parameter query based on your controller setup
-                let url = `/hubin/job-vacancies?search=${encodeURIComponent(search)}`;
-                if (status) url += `&status=${status}`;
-
-                const response = await window.api.get(url);
-                jobs = response.data || response;
+                const response = await window.hubinApi.jobVacancies({ search, status });
+                jobs = response.data ?? response ?? [];
 
                 if (loading) loading.classList.add('hidden');
 
@@ -151,12 +147,12 @@
 
                 let rows = '';
                 jobs.forEach(j => {
-                    const company = j.dudi_partner ? j.dudi_partner.company_name : '-';
+                    const company = j.dudi_partner?.company_name ?? '-';
                     const badgeClass = j.status === 'open' ? 'badge-active' : 'badge-cancelled';
                     const badgeText = j.status === 'open' ? 'Open' : 'Closed';
                     rows += `
                         <tr>
-                            <td class="font-medium text-gray-900">${j.job_title}</td>
+                            <td class="font-medium text-gray-900">${j.job_title ?? '-'}</td>
                             <td class="text-gray-600">${company}</td>
                             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
                             <td>
@@ -193,9 +189,9 @@
 
             try {
                 if (id) {
-                    await window.api.put(`/hubin/job-vacancies/${id}`, payload);
+                    await window.hubinApi.updateJob(id, payload);
                 } else {
-                    await window.api.post('/hubin/job-vacancies', payload);
+                    await window.hubinApi.createJob(payload);
                 }
                 window.showToast('Lowongan berhasil disimpan', 'success');
                 modal.classList.add('hidden');

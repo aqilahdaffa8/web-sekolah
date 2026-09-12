@@ -111,7 +111,7 @@
         window.deleteModule = async (id) => {
             if (!confirm('Hapus modul ini?')) return;
             try {
-                await window.api.delete(`/guru/learning-modules/${id}`);
+                await window.guruApi.deleteModule(id);
                 window.showToast('Modul dihapus', 'success');
                 loadModules();
             } catch (error) {
@@ -125,8 +125,8 @@
             if (empty) empty.classList.add('hidden');
 
             try {
-                const response = await window.api.get('/guru/learning-modules');
-                modules = response.data || response;
+                const response = await window.guruApi.modules();
+                modules = response.data ?? response ?? [];
 
                 if (loading) loading.classList.add('hidden');
 
@@ -137,14 +137,15 @@
 
                 let rows = '';
                 modules.forEach(mod => {
-                    const className = mod.class_room ? mod.class_room.name : `Kelas #${mod.class_id}`;
-                    const subjectName = mod.subject ? mod.subject.name : `Mapel #${mod.subject_id}`;
+                    const className = mod.class_room?.name ?? `Kelas #${mod.class_id ?? ''}`;
+                    const subjectName = mod.subject?.name ?? `Mapel #${mod.subject_id ?? ''}`;
+                    const filePath = mod.file_path ?? '#';
                     rows += `
                         <tr>
-                            <td class="font-medium text-gray-900">${mod.title}</td>
+                            <td class="font-medium text-gray-900">${mod.title ?? '-'}</td>
                             <td class="text-gray-600">${className}</td>
                             <td class="text-gray-600">${subjectName}</td>
-                            <td class="text-blue-600"><a href="${mod.file_path}" target="_blank">Lihat File</a></td>
+                            <td class="text-blue-600"><a href="${filePath}" target="_blank">Lihat File</a></td>
                             <td>
                                 <div class="flex gap-2">
                                     <button onclick="openFormModal(${mod.id})" class="text-blue-600 hover:text-blue-800">Edit</button>
@@ -182,9 +183,9 @@
 
             try {
                 if (id) {
-                    await window.api.put(`/guru/learning-modules/${id}`, payload);
+                    await window.guruApi.updateModule(id, payload);
                 } else {
-                    await window.api.post('/guru/learning-modules', payload);
+                    await window.guruApi.createModule(payload);
                 }
                 window.showToast('Modul berhasil disimpan', 'success');
                 modal.classList.add('hidden');

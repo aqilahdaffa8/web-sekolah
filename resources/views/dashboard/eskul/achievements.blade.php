@@ -63,7 +63,11 @@
             </div>
         </div>
         <div class="modal-footer">
+<<<<<<< Updated upstream
             <button type="button" data-modal-close class="btn btn-secondary">Batal</button>
+=======
+            <button data-modal-close class="btn-secondary">Batal</button>
+>>>>>>> Stashed changes
             <button type="button" id="btn-save-achieve" onclick="saveAchieve()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
@@ -77,7 +81,8 @@ let editingId = null;
 async function loadAchievements() {
     try {
         const res = await window.eskulApi.achievements();
-        const list = res.data || res || [];
+        // Handle paginated response {data: [...]} or direct array
+        const list = res.data ?? res ?? [];
         renderList(list);
     } catch(err) {
         window.toast.apiError(err);
@@ -91,22 +96,29 @@ function renderList(list) {
         return;
     }
 
-    grid.innerHTML = list.map(a => `
+    grid.innerHTML = list.map(a => {
+        const title = a.title ?? a.achievement_name ?? 'Prestasi';
+        const level = a.competition_level ?? a.level ?? 'Tingkat Nasional';
+        const year = a.year ?? (a.created_at ? new Date(a.created_at).getFullYear() : new Date().getFullYear());
+        const description = a.description ?? 'Prestasi membanggakan siswa SMKN 1 Katapang.';
+
+        return `
         <div class="card p-5 flex flex-col justify-between hover:shadow-md transition-all">
             <div>
                 <div class="flex items-start justify-between gap-2 mb-2">
-                    <span class="badge-brand text-xs font-bold">🏆 ${a.competition_level || a.level || 'Tingkat Nasional'}</span>
-                    <span class="text-xs text-gray-400 font-semibold">${a.year || new Date(a.created_at).getFullYear()}</span>
+                    <span class="badge-brand text-xs font-bold">🏆 ${level}</span>
+                    <span class="text-xs text-gray-400 font-semibold">${year}</span>
                 </div>
-                <h3 class="font-bold text-gray-900 text-lg mb-2">${a.title || a.achievement_name}</h3>
-                <p class="text-sm text-gray-600 mb-4">${a.description || 'Prestasi membanggakan siswa SMKN 1 Katapang.'}</p>
+                <h3 class="font-bold text-gray-900 text-lg mb-2">${title}</h3>
+                <p class="text-sm text-gray-600 mb-4">${description}</p>
             </div>
             <div class="pt-4 border-t border-gray-100 flex gap-2">
                 <button onclick='editAchieve(${JSON.stringify(a).replace(/'/g, "&apos;")})' class="btn-table-edit flex-1">Edit</button>
                 <button onclick="deleteAchieve(${a.id})" class="btn-table-delete">Hapus</button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 window.openCreateModal = () => {
@@ -122,10 +134,10 @@ window.editAchieve = (a) => {
     editingId = a.id;
     document.getElementById('achieve-modal-title').textContent = 'Edit Prestasi';
     document.getElementById('a-id').value = a.id;
-    document.getElementById('a-title').value = a.title || a.achievement_name;
-    document.getElementById('a-level').value = a.competition_level || a.level || 'Nasional';
-    document.getElementById('a-year').value = a.year || new Date(a.created_at).getFullYear();
-    document.getElementById('a-desc').value = a.description || '';
+    document.getElementById('a-title').value = a.title ?? a.achievement_name ?? '';
+    document.getElementById('a-level').value = a.competition_level ?? a.level ?? 'Nasional';
+    document.getElementById('a-year').value = a.year ?? (a.created_at ? new Date(a.created_at).getFullYear() : new Date().getFullYear());
+    document.getElementById('a-desc').value = a.description ?? '';
     window.openModal(document.getElementById('achieve-modal'));
 };
 

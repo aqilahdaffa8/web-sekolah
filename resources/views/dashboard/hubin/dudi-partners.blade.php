@@ -93,7 +93,7 @@
         window.deleteDudi = async (id) => {
             if (!confirm('Hapus mitra ini?')) return;
             try {
-                await window.api.delete(`/hubin/dudi-partners/${id}`);
+                await window.hubinApi.deleteDudi(id);
                 window.showToast('Mitra dihapus', 'success');
                 loadDudis();
             } catch (error) {
@@ -107,8 +107,8 @@
             if (empty) empty.classList.add('hidden');
 
             try {
-                const response = await window.api.get(`/hubin/dudi-partners?search=${encodeURIComponent(search)}`);
-                dudis = response.data || response;
+                const response = await window.hubinApi.dudiPartners({ search });
+                dudis = response.data ?? response ?? [];
 
                 if (loading) loading.classList.add('hidden');
 
@@ -123,8 +123,8 @@
                     const mouHtml = d.mou_document ? `<a href="${d.mou_document}" target="_blank" class="text-blue-600 underline">Lihat MoU</a>` : '-';
                     rows += `
                         <tr>
-                            <td class="font-medium text-gray-900">${d.company_name}</td>
-                            <td class="text-gray-600">${d.industry_field || '-'}</td>
+                            <td class="font-medium text-gray-900">${d.company_name ?? '-'}</td>
+                            <td class="text-gray-600">${d.industry_field ?? '-'}</td>
                             <td>${logoHtml}</td>
                             <td>${mouHtml}</td>
                             <td>
@@ -161,9 +161,9 @@
 
             try {
                 if (id) {
-                    await window.api.put(`/hubin/dudi-partners/${id}`, payload);
+                    await window.hubinApi.updateDudi(id, payload);
                 } else {
-                    await window.api.post('/hubin/dudi-partners', payload);
+                    await window.hubinApi.createDudi(payload);
                 }
                 window.showToast('Mitra berhasil disimpan', 'success');
                 modal.classList.add('hidden');

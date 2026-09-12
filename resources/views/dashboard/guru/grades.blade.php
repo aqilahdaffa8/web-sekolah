@@ -139,10 +139,15 @@
                 <span id="modal-final-score" class="text-base font-black text-brand-700">-</span>
             </div>
         </div>
+<<<<<<< Updated upstream
         <div class="modal-footer">
             <button type="button" data-modal-close class="btn btn-ghost">Batal</button>
             <button type="button" id="btn-save-grade" onclick="saveGradeModal()" class="btn btn-primary btn-save">Simpan Nilai</button>
         </div>
+=======
+<<<<<<< HEAD
+        <div class="modal-footer"><button type="button" data-modal-close class="btn-ghost">Batal</button><button type="button" id="btn-save-grade" onclick="saveGrade()" class="btn btn-primary btn-save">Simpan</button></div>
+>>>>>>> Stashed changes
     </div>
 </div>
 @endsection

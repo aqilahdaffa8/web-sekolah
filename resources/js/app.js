@@ -64,17 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ── Toast listener ─────────────────────────────────────────────────────
-    window.addEventListener('toast-message', (e) => {
-        const { message, type } = e.detail;
-        if (toast[type]) {
-            toast[type](message);
-        } else {
-            toast.info(message);
-        }
-    });
 });
-
+ 
 // ── Mobile hamburger menu ─────────────────────────────────────
 function initMobileMenu() {
     const toggle  = document.getElementById('mobile-menu-toggle');

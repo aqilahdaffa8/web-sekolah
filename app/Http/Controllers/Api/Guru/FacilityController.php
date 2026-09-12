@@ -12,9 +12,14 @@ class FacilityController extends Controller
 {
     public function __construct(private ActivityLogService $logger) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return response()->json(Facility::with('program')->get());
+        return response()->json(
+            Facility::with('program')
+                ->when($request->search, fn ($q) => $q->where('facility_name', 'like', "%{$request->search}%"))
+                ->latest()
+                ->paginate(15)
+        );
     }
 
     public function store(Request $request): JsonResponse

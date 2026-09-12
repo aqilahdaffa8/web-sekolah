@@ -72,7 +72,8 @@ let editingId = null;
 async function loadFacilities() {
     try {
         const res = await window.guruApi.facilities();
-        const list = res.data || res || [];
+        // Handle both paginated {data: [...]} and direct array responses
+        const list = res.data ?? res ?? [];
         renderList(list);
     } catch(err) {
         window.toast.apiError(err);
@@ -92,20 +93,27 @@ function renderList(list) {
         'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
     ];
 
-    grid.innerHTML = list.map((f, idx) => `
+    grid.innerHTML = list.map((f, idx) => {
+        const imgUrl = f.image_url ?? f.image ?? defaultImgs[idx % defaultImgs.length];
+        const name = f.facility_name ?? f.name ?? 'Fasilitas';
+        const location = f.location ?? 'Kampus Utama';
+        const capacity = f.capacity ?? '';
+        const description = f.description ?? 'Fasilitas berstandar industri siap pakai.';
+
+        return `
         <div class="card overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group">
             <div class="h-44 overflow-hidden relative bg-gray-100">
-                <img src="${f.image || f.image_url || defaultImgs[idx % defaultImgs.length]}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.src='${defaultImgs[idx % defaultImgs.length]}'">
-                <span class="absolute top-3 right-3 badge-brand font-semibold text-xs shadow-sm">${f.capacity ? f.capacity + ' Siswa' : 'Fasilitas'}</span>
+                <img src="${imgUrl}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" onerror="this.src='${defaultImgs[idx % defaultImgs.length]}'">
+                <span class="absolute top-3 right-3 badge-brand font-semibold text-xs shadow-sm">${capacity ? capacity + ' Siswa' : 'Fasilitas'}</span>
             </div>
             <div class="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                    <h3 class="font-bold text-gray-900 text-lg mb-1">${f.facility_name || f.name}</h3>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1">${name}</h3>
                     <p class="text-xs text-brand-600 font-semibold mb-2 flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                        ${f.location || 'Kampus Utama'}
+                        ${location}
                     </p>
-                    <p class="text-sm text-gray-600 line-clamp-2 mb-4">${f.description || 'Fasilitas berstandar industri siap pakai.'}</p>
+                    <p class="text-sm text-gray-600 line-clamp-2 mb-4">${description}</p>
                 </div>
                 <div class="pt-3 border-t border-gray-100 flex gap-2">
                     <button onclick='editFacility(${JSON.stringify(f).replace(/'/g, "&apos;")})' class="btn-table-edit flex-1">Edit</button>
@@ -113,7 +121,8 @@ function renderList(list) {
                 </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 window.openCreateModal = () => {

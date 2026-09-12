@@ -77,7 +77,11 @@
             </div>
         </div>
         <div class="modal-footer">
+<<<<<<< Updated upstream
             <button type="button" data-modal-close class="btn btn-secondary">Batal</button>
+=======
+            <button data-modal-close class="btn-secondary">Batal</button>
+>>>>>>> Stashed changes
             <button type="button" id="btn-save-eskul" onclick="saveEskul()" class="btn btn-primary btn-save">Simpan</button>
         </div>
     </div>
@@ -95,7 +99,8 @@ async function loadEskul() {
     loading.textContent = 'Memuat data...';
     try {
         const res = await window.eskulApi.extracurriculars();
-        allEskul = res.data || res || [];
+        // Handle paginated response {data: [...]} or direct array
+        allEskul = res.data ?? res ?? [];
         renderEskul(allEskul);
     } catch(err) {
         loading.classList.add('hidden');
@@ -105,7 +110,7 @@ async function loadEskul() {
 
 function renderEskul(list) {
     const query = document.getElementById('eskul-search').value.toLowerCase();
-    const filtered = list.filter(e => e.name.toLowerCase().includes(query) || (e.description||'').toLowerCase().includes(query));
+    const filtered = list.filter(e => (e.name ?? '').toLowerCase().includes(query) || (e.description ?? '').toLowerCase().includes(query));
     document.getElementById('total-count').classList.add('hidden');
 
     if (!filtered.length) {
@@ -117,18 +122,25 @@ function renderEskul(list) {
         return;
     }
 
-    document.getElementById('eskul-grid').innerHTML = filtered.map(e => `
+    document.getElementById('eskul-grid').innerHTML = filtered.map(e => {
+        const name = e.name ?? 'Ekstrakurikuler';
+        const schedule = e.schedule ?? 'Jadwal belum ditentukan';
+        const description = e.description ?? 'Tidak ada deskripsi.';
+        const regCount = e.registrations_count ?? 0;
+        const badgeText = regCount ? regCount + ' Peserta' : 'Aktif';
+
+        return `
         <div class="card p-5 flex flex-col justify-between hover:shadow-md transition-all">
             <div>
                 <div class="flex items-start justify-between gap-2 mb-2">
-                    <h3 class="font-bold text-gray-900 text-lg">${e.name}</h3>
-                    <span class="badge-brand text-xs">${e.registrations_count ? e.registrations_count + ' Peserta' : 'Aktif'}</span>
+                    <h3 class="font-bold text-gray-900 text-lg">${name}</h3>
+                    <span class="badge-brand text-xs">${badgeText}</span>
                 </div>
                 <p class="text-xs text-brand-600 font-semibold mb-2 flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    ${e.schedule || 'Jadwal belum ditentukan'}
+                    ${schedule}
                 </p>
-                <p class="text-sm text-gray-600 line-clamp-3 mb-4">${e.description || 'Tidak ada deskripsi.'}</p>
+                <p class="text-sm text-gray-600 line-clamp-3 mb-4">${description}</p>
             </div>
             <div class="pt-4 border-t border-gray-100 flex items-center gap-2">
                 <button onclick='editEskul(${JSON.stringify(e).replace(/'/g, "&apos;")})' class="btn-table-edit flex-1">
@@ -141,7 +153,8 @@ function renderEskul(list) {
                 </button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 window.openCreateModal = () => {

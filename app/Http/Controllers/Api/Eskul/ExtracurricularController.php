@@ -12,9 +12,14 @@ class ExtracurricularController extends Controller
 {
     public function __construct(private ActivityLogService $logger) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return response()->json(Extracurricular::with('coach')->withCount('registrations')->get());
+        return response()->json(
+            Extracurricular::with('coach')->withCount('registrations')
+                ->when($request->search, fn ($q) => $q->where('name', 'like', "%{$request->search}%"))
+                ->latest()
+                ->paginate(15)
+        );
     }
 
     public function store(Request $request): JsonResponse

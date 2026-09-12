@@ -125,9 +125,11 @@ function render(products) {
     }
 
     document.getElementById('products-grid').innerHTML = filtered.map((p, idx) => {
-        const name = p.product_name || p.name || 'Produk Vokasi';
-        const img = p.image_url || p.image || fallbackImgs[idx % fallbackImgs.length];
-        const stock = p.stock ?? 10;
+        const name = p.product_name ?? p.name ?? 'Produk Vokasi';
+        const img = p.image_url ?? p.image ?? fallbackImgs[idx % fallbackImgs.length];
+        const price = p.price ?? 0;
+        const stock = p.stock ?? 0;
+        const description = p.description ?? 'Karya terbaik siswa SMKN 1 Katapang.';
 
         return `
         <div class="card overflow-hidden flex flex-col justify-between group hover:shadow-md transition-all">
@@ -140,8 +142,8 @@ function render(products) {
                 </div>
                 <div class="p-4">
                     <p class="font-bold text-sm text-gray-900 line-clamp-1 mb-1">${name}</p>
-                    <p class="text-brand-700 font-extrabold text-base">${window.utils.formatCurrency(p.price)}</p>
-                    <p class="text-xs text-gray-500 line-clamp-2 mt-1">${p.description || 'Karya terbaik siswa SMKN 1 Katapang.'}</p>
+                    <p class="text-brand-700 font-extrabold text-base">${window.utils.formatCurrency(price)}</p>
+                    <p class="text-xs text-gray-500 line-clamp-2 mt-1">${description}</p>
                 </div>
             </div>
             <div class="p-4 pt-0 flex gap-2">

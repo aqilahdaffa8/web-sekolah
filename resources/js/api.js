@@ -161,7 +161,7 @@ export const hubinApi = {
     deleteDudi:         (id)   => api.delete(`/hubin/dudi-partners/${id}`),
 
     jobVacancies:       (p)    => api.get('/hubin/job-vacancies', p),
-    vacancies:           (p)    => api.get('/hubin/job-vacancies', p),
+    vacancies:          (p)    => api.get('/hubin/job-vacancies', p),
     createJob:          (d)    => api.post('/hubin/job-vacancies', d),
     createVacancy:      (d)    => api.post('/hubin/job-vacancies', d),
     updateJob:          (id,d) => api.put(`/hubin/job-vacancies/${id}`, d),
