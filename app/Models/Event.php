@@ -14,12 +14,15 @@ class Event extends Model
         'description',
         'image',
         'location',
+        'event_date',
         'start_date',
         'end_date',
         'status',
+        'created_by',
     ];
 
     protected $casts = [
+        'event_date' => 'date',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];

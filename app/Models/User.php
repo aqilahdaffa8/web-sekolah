@@ -18,6 +18,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -25,12 +26,28 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'active',
+        'role_name',
+    ];
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function getActiveAttribute(): bool
+    {
+        return (bool) ($this->is_active ?? true);
+    }
+
+    public function getRoleNameAttribute(): ?string
+    {
+        return $this->roles->first()?->role_name ?? $this->roles->first()?->name ?? null;
     }
 
     // ── RBAC Relations ────────────────────────────────────────────────────────

@@ -18,11 +18,14 @@ class DashboardController extends Controller
     {
         $todayOrders = TefaOrder::whereDate('created_at', today())->count();
         $totalOrders = TefaOrder::count();
+        $activeStudents = Student::where('status', 'aktif')->count();
 
         return response()->json([
             'success' => true,
             'data'    => [
-                'students_count' => Student::count() ?: 1250,
+                'students_count' => $activeStudents ?: Student::count(),
+                'active_students_count' => $activeStudents ?: Student::count(),
+                'total_students_count'  => Student::count(),
                 'orders_count'   => $todayOrders ?: $totalOrders,
                 'jobs_count'     => JobVacancy::where('status', 'open')->count() ?: 10,
                 'eskul_count'    => ExtracurricularRegistration::count() ?: 15,

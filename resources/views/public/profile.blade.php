@@ -229,36 +229,62 @@ function renderStruktur(data) {
     ` : '<p class="text-center text-gray-500 py-12">Data struktur organisasi belum tersedia.</p>';
 }
 
+function getProgramIcon(name) {
+    const n = (name || '').toLowerCase();
+    if (n.includes('perangkat') || n.includes('rpl')) return '💻';
+    if (n.includes('jaringan') || n.includes('tkj')) return '🌐';
+    if (n.includes('broadcasting') || n.includes('perfilman') || n.includes('bp')) return '🎬';
+    if (n.includes('mesin')) return '⚙️';
+    if (n.includes('otomotif')) return '🚗';
+    if (n.includes('tekstil') || n.includes('tpt')) return '🧵';
+    if (n.includes('elektronika') || n.includes('elektro')) return '⚡';
+    return '🎓';
+}
+
 function renderPrograms(programs) {
-    const icons = ['💻','⚙️','🎨','🍳','🏥','⚡'];
-    document.getElementById('programs-grid').innerHTML = programs.map((p, i) => `
-        <div class="card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div class="text-4xl mb-4">${icons[i % icons.length]}</div>
-            <h3 class="font-bold text-gray-900 text-lg mb-2">${p.name}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-4">${p.description || ''}</p>
-            <div class="flex items-center gap-2 mt-auto">
-                <span class="badge-brand">${p.level || 'SMK'}</span>
-                ${p.accreditation ? `<span class="badge-success">Akreditasi ${p.accreditation}</span>` : ''}
+    document.getElementById('programs-grid').innerHTML = programs.map((p) => {
+        const progName = p.name || p.program_name || 'Program Keahlian';
+        const icon = getProgramIcon(progName);
+        return `
+        <div class="card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col h-full border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-14 h-14 rounded-2xl bg-brand-50 flex items-center justify-center text-3xl shadow-xs border border-brand-100/60">
+                    ${icon}
+                </div>
+                <span class="badge-brand">${p.level || 'SMK 3 Tahun'}</span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-lg mb-2">${progName}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4 flex-1">${p.description || ''}</p>
+            <div class="flex items-center justify-between pt-3 border-t border-gray-50 mt-auto">
+                <span class="badge-success text-xs font-semibold">Akreditasi ${p.accreditation || 'A'}</span>
+                <span class="text-xs text-brand-600 font-semibold">${p.classes?.length || 2} Kelas</span>
             </div>
         </div>
-    `).join('') || '<p class="text-gray-500 col-span-3 text-center py-12">Data program belum tersedia.</p>';
+    `;
+    }).join('') || '<p class="text-gray-500 col-span-3 text-center py-12">Data program belum tersedia.</p>';
 }
 
 function renderFacilities(facilities) {
-    document.getElementById('facilities-grid').innerHTML = facilities.map(f => `
-        <div class="card group overflow-hidden">
-            <div class="overflow-hidden h-52">
-                <img src="${storageUrl(f.image)}" alt="${f.name}"
-                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+    document.getElementById('facilities-grid').innerHTML = facilities.map(f => {
+        const facName = f.name || f.facility_name || 'Fasilitas';
+        const rawImg = f.image || f.image_url || '';
+        const imgSrc = rawImg.startsWith('http') ? rawImg : storageUrl(rawImg);
+        return `
+        <div class="card group overflow-hidden border border-gray-100 hover:shadow-lg transition-all duration-300">
+            <div class="overflow-hidden h-52 bg-slate-100 relative">
+                <img src="${imgSrc}" alt="${facName}"
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                      loading="lazy"
                      onerror="this.src='https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80'">
+                ${f.location ? `<span class="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-lg backdrop-blur-xs font-medium">${f.location}</span>` : ''}
             </div>
-            <div class="p-4">
-                <h3 class="font-bold text-gray-900 mb-1">${f.name}</h3>
-                <p class="text-sm text-gray-500">${f.description || ''}</p>
+            <div class="p-5">
+                <h3 class="font-bold text-gray-900 text-base mb-1.5 group-hover:text-brand-700 transition-colors">${facName}</h3>
+                <p class="text-sm text-gray-500 leading-relaxed">${f.description || 'Fasilitas praktikum modern untuk menunjang kegiatan pembelajaran siswa.'}</p>
             </div>
         </div>
-    `).join('') || '<p class="text-gray-500 col-span-3 text-center py-12">Data fasilitas belum tersedia.</p>';
+    `;
+    }).join('') || '<p class="text-gray-500 col-span-3 text-center py-12">Data fasilitas belum tersedia.</p>';
 }
 
 // Tab system — custom for profile (border-bottom style)

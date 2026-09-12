@@ -11,6 +11,13 @@ class Program extends Model
 
     protected $fillable = ['program_name', 'description', 'image'];
 
+    protected $appends = ['name'];
+
+    public function getNameAttribute(): string
+    {
+        return $this->program_name ?? '';
+    }
+
     public function classes()
     {
         return $this->hasMany(ClassRoom::class);

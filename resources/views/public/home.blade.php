@@ -217,54 +217,75 @@
 @endsection
 
 @push('scripts')
-<script>
-const publicApi = window.publicApi;
-const { formatDate, formatRelativeTime, formatNumber, animateCounter, observeElements, storageUrl, truncate } = window.utils;
+<script type="module">
+import { publicApi as apiModule } from '/resources/js/api.js';
+import * as utilsModule from '/resources/js/utils.js';
+
+const publicApi = window.publicApi || apiModule;
+const utils     = window.utils || utilsModule;
+const {
+    formatDate = (d) => String(d || ''),
+    formatRelativeTime = (d) => String(d || ''),
+    formatNumber = (n) => String(n || 0),
+    animateCounter = (el, val) => { if (el) el.textContent = val; },
+    observeElements = (sel, cb) => { document.querySelectorAll(sel).forEach(cb); },
+    storageUrl = (p) => {
+        if (!p) return '';
+        if (p.startsWith('http://') || p.startsWith('https://')) return p;
+        return `/storage/${p.replace(/^\//, '')}`;
+    },
+    truncate = (s, len = 100) => (s && s.length > len) ? s.substring(0, len) + '...' : (s || '')
+} = utils;
 
 // ── Hero Slider ───────────────────────────────────────────────
 let currentSlide  = 0;
 let totalSlides   = 1;
 let sliderTimer   = null;
-const staticSlides = 1; // we already have 1 in HTML
 
 function goToSlide(n) {
     const track = document.getElementById('slider-track');
     const dots  = document.querySelectorAll('.slider-dot');
+    if (!track) return;
     currentSlide = (n + totalSlides) % totalSlides;
     track.style.transform = `translateX(-${currentSlide * 100}%)`;
     dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
 }
 
 function startAutoPlay() {
+    if (sliderTimer) clearInterval(sliderTimer);
     sliderTimer = setInterval(() => goToSlide(currentSlide + 1), 5000);
 }
 
 function initSlider(banners) {
     const track = document.getElementById('slider-track');
     const dotsEl = document.getElementById('slider-dots');
+    if (!track || !dotsEl) return;
 
     // Add dynamic slides
-    banners.forEach(b => {
-        const slide = document.createElement('div');
-        slide.className = 'slide relative w-full flex-shrink-0 bg-hero-gradient';
-        slide.innerHTML = `
-            ${b.image ? `<img data-src="${storageUrl(b.image)}" alt="${b.title}"
-                class="absolute inset-0 w-full h-full object-cover opacity-40 lazy-bg">` : ''}
-            <div class="absolute inset-0 bg-gradient-to-r from-brand-950/90 to-transparent"></div>
-            <div class="relative z-10 section-container h-full flex flex-col justify-center pt-20 pb-16">
-                <div class="max-w-3xl">
-                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 text-balance">
-                        ${b.title}
-                    </h2>
-                    ${b.subtitle ? `<p class="text-lg text-white/80 mb-8 max-w-2xl">${b.subtitle}</p>` : ''}
-                    ${b.link ? `<a href="${b.link}" class="btn btn-gold btn-lg">Selengkapnya</a>` : ''}
+    if (banners && banners.length) {
+        banners.forEach(b => {
+            const slide = document.createElement('div');
+            slide.className = 'slide relative w-full flex-shrink-0 bg-hero-gradient';
+            const bannerImg = b.image ? storageUrl(b.image) : '';
+            slide.innerHTML = `
+                ${bannerImg ? `<img src="${bannerImg}" alt="${b.title || 'Banner'}"
+                    class="absolute inset-0 w-full h-full object-cover opacity-40">` : ''}
+                <div class="absolute inset-0 bg-gradient-to-r from-brand-950/90 to-transparent"></div>
+                <div class="relative z-10 section-container h-full flex flex-col justify-center pt-20 pb-16">
+                    <div class="max-w-3xl">
+                        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 text-balance">
+                            ${b.title || 'SMKN 1 Katapang'}
+                        </h2>
+                        ${b.subtitle ? `<p class="text-lg text-white/80 mb-8 max-w-2xl">${b.subtitle}</p>` : ''}
+                        ${b.link ? `<a href="${b.link}" class="btn btn-gold btn-lg">Selengkapnya</a>` : ''}
+                    </div>
                 </div>
-            </div>
-        `;
-        track.appendChild(slide);
-    });
+            `;
+            track.appendChild(slide);
+        });
+    }
 
-    totalSlides = document.querySelectorAll('.slide').length;
+    totalSlides = document.querySelectorAll('.slide').length || 1;
 
     // Build dots
     dotsEl.innerHTML = Array(totalSlides).fill(0).map((_, i) =>
@@ -275,7 +296,7 @@ function initSlider(banners) {
         dot.addEventListener('click', () => goToSlide(+dot.dataset.slide));
     });
 
-    startAutoPlay();
+    if (totalSlides > 1) startAutoPlay();
 }
 
 // ── Fetch Home Data ───────────────────────────────────────────
@@ -283,85 +304,128 @@ async function loadHome() {
     try {
         const data = await publicApi.home();
 
-        // Banners
-        if (data.banners?.length) initSlider(data.banners);
-        else { totalSlides = 1; initSlider([]); }
+        // 1. Banners
+        if (data.banners?.length) {
+            initSlider(data.banners);
+        } else {
+            initSlider([]);
+        }
 
-        // Stats
+        // 2. Stats
         if (data.stats) {
             const stats = data.stats;
-            observeElements('.stat-counter-item', (el) => {
-                const statMap = {
-                    'stat-students': stats.students ?? 1200,
-                    'stat-teachers': stats.teachers ?? 80,
-                    'stat-programs': stats.programs ?? 6,
-                    'stat-partners': stats.partners ?? 150,
-                };
-                Object.entries(statMap).forEach(([id, val]) => {
-                    const el = document.getElementById(id);
-                    if (el) animateCounter(el, val);
-                });
+            const statMap = {
+                'stat-students': stats.students ?? 1250,
+                'stat-teachers': stats.teachers ?? 85,
+                'stat-programs': stats.programs ?? 7,
+                'stat-partners': stats.partners ?? 50,
+            };
+            Object.entries(statMap).forEach(([id, val]) => {
+                const el = document.getElementById(id);
+                if (el) animateCounter(el, val);
             });
         }
 
-        // News
-        if (data.latest_news?.length) renderNews(data.latest_news);
-        else loadFallbackStats();
+        // 3. News (Berita & Pengumuman)
+        const newsItems = data.latest_news || data.news || [];
+        if (newsItems.length) {
+            renderNews(newsItems);
+        } else {
+            document.getElementById('news-skeleton')?.classList.add('hidden');
+            const grid = document.getElementById('news-grid');
+            if (grid) {
+                grid.classList.remove('hidden');
+                grid.innerHTML = '<p class="col-span-3 text-center text-gray-400 py-10">Belum ada berita & pengumuman tersedia.</p>';
+            }
+        }
 
-        // Events
-        if (data.upcoming_events?.length) renderEvents(data.upcoming_events);
+        // 4. Events (Agenda Terdekat)
+        const eventItems = data.upcoming_events || data.events || [];
+        if (eventItems.length) {
+            renderEvents(eventItems);
+        } else {
+            const list = document.getElementById('events-list');
+            if (list) list.innerHTML = '<p class="text-gray-400 py-8 text-center">Belum ada agenda kegiatan terdekat.</p>';
+        }
 
-        // Products
-        if (data.featured_products?.length) renderProducts(data.featured_products);
+        // 5. Products (Katalog TeFA & Koperasi)
+        const productItems = data.featured_products || data.products || [];
+        if (productItems.length) {
+            renderProducts(productItems);
+        } else {
+            document.getElementById('products-skeleton')?.classList.add('hidden');
+            const grid = document.getElementById('products-grid');
+            if (grid) {
+                grid.classList.remove('hidden');
+                grid.innerHTML = '<p class="col-span-4 text-center text-white/60 py-10">Belum ada produk TeFA & Koperasi tersedia.</p>';
+            }
+        }
 
-        // Eskul
-        if (data.extracurriculars?.length) renderEskul(data.extracurriculars);
+        // 6. Extracurriculars (Ekstrakurikuler)
+        const eskulItems = data.extracurriculars || [];
+        if (eskulItems.length) {
+            renderEskul(eskulItems);
+        } else {
+            const grid = document.getElementById('eskul-grid');
+            if (grid) grid.innerHTML = '<p class="col-span-6 text-center text-gray-400 py-8">Belum ada data ekstrakurikuler.</p>';
+        }
 
     } catch (err) {
-        console.warn('Home data load failed, using defaults', err);
+        console.warn('Home data load failed, using fallbacks', err);
         loadFallbackStats();
     }
 }
 
 function loadFallbackStats() {
-    observeElements('.stat-counter-item', () => {
-        animateCounter(document.getElementById('stat-students'), 1250);
-        animateCounter(document.getElementById('stat-teachers'), 85);
-        animateCounter(document.getElementById('stat-programs'), 6);
-        animateCounter(document.getElementById('stat-partners'), 180);
-    });
+    const elStudents = document.getElementById('stat-students');
+    const elTeachers = document.getElementById('stat-teachers');
+    const elPrograms = document.getElementById('stat-programs');
+    const elPartners = document.getElementById('stat-partners');
+    if (elStudents) animateCounter(elStudents, 1250);
+    if (elTeachers) animateCounter(elTeachers, 85);
+    if (elPrograms) animateCounter(elPrograms, 7);
+    if (elPartners) animateCounter(elPartners, 50);
 }
 
 // ── Render Functions ──────────────────────────────────────────
 function renderNews(items) {
-    document.getElementById('news-skeleton').classList.add('hidden');
+    document.getElementById('news-skeleton')?.classList.add('hidden');
     const grid = document.getElementById('news-grid');
+    if (!grid) return;
     grid.classList.remove('hidden');
+
     const fallbackNewsImgs = [
-        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80',
+        'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
     ];
-    grid.innerHTML = items.slice(0,3).map((post, idx) => {
-        const imgSrc = post.image_url || (post.thumbnail ? storageUrl(post.thumbnail) : fallbackNewsImgs[idx % fallbackNewsImgs.length]);
+
+    grid.innerHTML = items.slice(0, 3).map((post, idx) => {
+        const rawImg = post.image_url || post.thumbnail || '';
+        const imgSrc = rawImg.startsWith('http') ? rawImg : (rawImg ? storageUrl(rawImg) : fallbackNewsImgs[idx % fallbackNewsImgs.length]);
+        const catName = post.category?.name || post.category?.category_name || 'Berita';
+        const dateFormatted = post.published_at ? formatRelativeTime(post.published_at) : 'Baru saja';
+        const postTitle = post.title || 'Informasi Sekolah';
+        const postExcerpt = post.excerpt || post.content || '';
+
         return `
-        <article class="news-card group">
+        <article class="news-card group flex flex-col h-full card hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden">
             <div class="overflow-hidden bg-gray-100 relative h-48">
-                <img src="${imgSrc}" alt="${post.title}"
+                <img src="${imgSrc}" alt="${postTitle}"
                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                      loading="lazy"
                      onerror="this.src='${fallbackNewsImgs[idx % fallbackNewsImgs.length]}'">
             </div>
-            <div class="news-card-body">
+            <div class="news-card-body p-5 flex flex-col flex-1">
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="badge-info">${post.category?.name ?? 'Berita'}</span>
-                    <span class="text-xs text-gray-400">${formatRelativeTime(post.published_at)}</span>
+                    <span class="badge-info text-xs font-semibold">${catName}</span>
+                    <span class="text-xs text-gray-400">${dateFormatted}</span>
                 </div>
-                <h3 class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand-700 transition-colors">
-                    ${post.title}
+                <h3 class="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand-700 transition-colors text-base">
+                    ${postTitle}
                 </h3>
-                <p class="text-sm text-gray-500 line-clamp-3 mb-4 flex-1">${truncate(post.excerpt || '', 120)}</p>
-                <a href="/berita/${post.slug}" class="text-sm font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1 group-inner">
+                <p class="text-sm text-gray-500 line-clamp-3 mb-4 flex-1">${truncate(postExcerpt, 120)}</p>
+                <a href="/berita/${post.slug || post.id}" class="text-sm font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1 mt-auto group-inner">
                     Baca Selengkapnya
                     <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -374,40 +438,64 @@ function renderNews(items) {
 
 function renderEvents(events) {
     const list = document.getElementById('events-list');
+    if (!list) return;
+    const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+
     list.innerHTML = events.slice(0, 5).map(ev => {
-        const d = new Date(ev.event_date || ev.start_date || new Date());
+        const rawDate = ev.event_date || ev.start_date || '';
+        const d = rawDate ? new Date(rawDate) : new Date();
+        const day = isNaN(d.getDate()) ? '01' : String(d.getDate()).padStart(2, '0');
+        const month = isNaN(d.getMonth()) ? 'Sep' : months[d.getMonth()];
+        const evTitle = ev.title || 'Agenda Kegiatan';
+        const evLoc   = ev.location || 'Kampus SMKN 1 Katapang';
+        const evType  = ev.type || 'Kegiatan Sekolah';
+
         return `
-        <a href="/berita#agenda" class="flex gap-4 p-4 mb-3 card hover:border-brand-200 hover:shadow-md transition-all">
-            <div class="w-14 h-14 bg-brand-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border border-brand-100">
-                <span class="text-xl font-black text-brand-700 leading-none">${d.getDate()}</span>
-                <span class="text-xs text-brand-500 font-medium">${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'][d.getMonth()]}</span>
+        <a href="/berita#agenda" class="flex items-center gap-4 p-4 mb-3 card hover:border-brand-200 hover:shadow-md transition-all border border-gray-100">
+            <div class="w-14 h-14 bg-brand-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border border-brand-100 shadow-xs">
+                <span class="text-xl font-black text-brand-700 leading-none">${day}</span>
+                <span class="text-xs text-brand-500 font-bold uppercase mt-0.5">${month}</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="font-semibold text-gray-900 line-clamp-1">${ev.title}</p>
-                <p class="text-sm text-gray-500 mt-0.5">${ev.location || 'Kampus SMKN 1 Katapang'}</p>
+                <p class="font-bold text-gray-900 line-clamp-1 text-sm md:text-base">${evTitle}</p>
+                <p class="text-xs md:text-sm text-gray-500 mt-0.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                    ${evLoc}
+                </p>
             </div>
-            <span class="badge-info flex-shrink-0 self-start">${ev.type || 'Acara'}</span>
+            <span class="badge-info text-xs font-semibold flex-shrink-0 self-center hidden sm:inline-block">${evType}</span>
         </a>`;
     }).join('');
 }
 
 function renderProducts(products) {
-    document.getElementById('products-skeleton').classList.add('hidden');
+    document.getElementById('products-skeleton')?.classList.add('hidden');
     const grid = document.getElementById('products-grid');
+    if (!grid) return;
     grid.classList.remove('hidden');
+
     const fallbackProdImgs = [
         'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80',
         'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80',
         'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
         'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
     ];
+
     grid.innerHTML = products.slice(0, 4).map((p, idx) => {
-        const imgSrc = p.image || (p.image_url ? storageUrl(p.image_url) : fallbackProdImgs[idx % fallbackProdImgs.length]);
+        const prodName = p.name || p.product_name || 'Produk Unggulan';
+        const rawImg   = p.image || p.image_url || '';
+        const imgSrc   = rawImg.startsWith('http') ? rawImg : (rawImg ? storageUrl(rawImg) : fallbackProdImgs[idx % fallbackProdImgs.length]);
+        const catName  = p.category?.name || p.category?.category_name || p.program?.program_name || 'TeFA & Koperasi';
+        const price    = Number(p.price || 0);
+
         return `
-        <a href="{{ route('tefa') }}" class="group">
-            <div class="bg-white/10 rounded-2xl overflow-hidden border border-white/10 hover:border-gold-400/50 transition-all hover:-translate-y-1 duration-300">
+        <a href="/katalog" class="group block h-full">
+            <div class="bg-white/10 rounded-2xl overflow-hidden border border-white/10 hover:border-gold-400/50 transition-all hover:-translate-y-1 duration-300 flex flex-col h-full">
                 <div class="relative overflow-hidden aspect-square bg-white/5">
-                    <img src="${imgSrc}" alt="${p.name}"
+                    <img src="${imgSrc}" alt="${prodName}"
                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                          loading="lazy"
                          onerror="this.src='${fallbackProdImgs[idx % fallbackProdImgs.length]}'">
@@ -415,10 +503,10 @@ function renderProducts(products) {
                         ? '<span class="absolute top-2 right-2 badge-danger">Habis</span>'
                         : '<span class="absolute top-2 right-2 badge-success">Tersedia</span>'}
                 </div>
-                <div class="p-4">
-                    <p class="text-xs text-gold-400 mb-1">${p.category?.name ?? 'Produk'}</p>
-                    <h3 class="font-bold text-white line-clamp-1">${p.name}</h3>
-                    <p class="text-lg font-black text-gold-400 mt-2">Rp ${Number(p.price||0).toLocaleString('id-ID')}</p>
+                <div class="p-4 flex flex-col flex-1">
+                    <p class="text-xs text-gold-400 mb-1 font-medium">${catName}</p>
+                    <h3 class="font-bold text-white line-clamp-1 text-sm md:text-base">${prodName}</h3>
+                    <p class="text-lg font-black text-gold-400 mt-auto pt-2">Rp ${price.toLocaleString('id-ID')}</p>
                 </div>
             </div>
         </a>
@@ -426,35 +514,22 @@ function renderProducts(products) {
 }
 
 function renderEskul(eskul) {
-    const emojis = ['⚽','🏀','🎭','🎨','💻','🎵','📷','🏊','🥊','📚'];
-    document.getElementById('eskul-grid').innerHTML = eskul.slice(0, 6).map((e, i) => `
-        <a href="{{ route('eskul') }}" class="card p-5 text-center hover:border-brand-200 hover:shadow-md transition-all group">
-            <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center mx-auto mb-3 text-2xl group-hover:bg-brand-100 transition-colors">
+    const emojis = ['🤖','⛺','⚽','🚑','🗣️','💃','🎶','🎨','💂','📖'];
+    const grid = document.getElementById('eskul-grid');
+    if (!grid) return;
+
+    grid.innerHTML = eskul.slice(0, 6).map((e, i) => `
+        <a href="/ekstrakurikuler" class="card p-5 text-center hover:border-brand-200 hover:shadow-md transition-all group flex flex-col items-center justify-center border border-gray-100">
+            <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center mb-3 text-2xl group-hover:bg-brand-100 transition-colors shadow-2xs">
                 ${emojis[i % emojis.length]}
             </div>
-            <p class="text-sm font-semibold text-gray-800 line-clamp-2">${e.name}</p>
+            <p class="text-sm font-bold text-gray-800 line-clamp-2">${e.name}</p>
         </a>
     `).join('');
 }
 
-// ── Init lazy image observer ──────────────────────────────────
-function initLazyImages() {
-    const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                const img = e.target;
-                if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
-                obs.unobserve(img);
-            }
-        });
-    }, { rootMargin: '200px' });
-
-    document.querySelectorAll('.lazy-img').forEach(img => obs.observe(img));
-}
-
 // ── Bootstrap ─────────────────────────────────────────────────
 loadHome();
-setTimeout(initLazyImages, 100); // after DOM fully rendered
 </script>
 @endpush
 

@@ -106,7 +106,7 @@
                 <input type="password" id="u-password" name="password" class="form-input" placeholder="Min. 8 karakter">
             </div>
             <div>
-                <label class="form-label">Role</label>
+                <label class="form-label">Role <span class="text-danger">*</span></label>
                 <select id="u-role" class="form-select">
                     <option value="">Pilih role...</option>
                     <option value="Super Admin">Super Admin</option>
@@ -114,6 +114,13 @@
                     <option value="Koperasi">Koperasi</option>
                     <option value="Guru">Guru</option>
                     <option value="Eskul">Eskul</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Status Akun</label>
+                <select id="u-status" class="form-select">
+                    <option value="1">Aktif</option>
+                    <option value="0">Nonaktif</option>
                 </select>
             </div>
         </div>
@@ -182,9 +189,9 @@ function renderTable(users) {
             </td>
             <td class="text-gray-500">${u.email}</td>
             <td>
-                ${u.roles?.map(r => `<span class="badge-brand mr-1">${r.name}</span>`).join('') || '<span class="text-gray-400 text-xs">—</span>'}
+                ${u.roles?.map(r => `<span class="badge-brand mr-1">${r.role_name || r.name}</span>`).join('') || (u.role_name ? `<span class="badge-brand mr-1">${u.role_name}</span>` : '<span class="text-gray-400 text-xs">—</span>')}
             </td>
-            <td>${window.utils.statusBadge(u.active ? 'active' : 'inactive')}</td>
+            <td>${window.utils.statusBadge((u.is_active ?? u.active ?? true) ? 'active' : 'inactive')}</td>
             <td class="text-gray-500 text-xs">${window.utils.formatDate(u.created_at)}</td>
             <td>
                 <div class="flex items-center gap-1.5 justify-end">
@@ -214,6 +221,7 @@ window.openCreateUserModal = () => {
     document.getElementById('u-email').value   = '';
     document.getElementById('u-password').value= '';
     document.getElementById('u-role').value    = '';
+    document.getElementById('u-status').value  = '1';
     document.getElementById('pwd-required').classList.remove('hidden');
     window.openModal(document.getElementById('user-modal'));
 };
@@ -226,18 +234,26 @@ window.openEditUser = (user) => {
     document.getElementById('u-name').value    = user.name;
     document.getElementById('u-email').value   = user.email;
     document.getElementById('u-password').value= '';
-    document.getElementById('u-role').value    = user.roles?.[0]?.name || '';
+    document.getElementById('u-role').value    = user.roles?.[0]?.role_name || user.roles?.[0]?.name || user.role_name || '';
+    document.getElementById('u-status').value  = (user.is_active ?? user.active ?? true) ? '1' : '0';
     document.getElementById('pwd-required').classList.add('hidden');
     window.openModal(document.getElementById('user-modal'));
 };
 
 window.saveUser = async () => {
     const btn = document.getElementById('btn-save-user');
+    const roleVal = document.getElementById('u-role').value;
+    if (!roleVal) {
+        window.toast.warning('Silakan pilih role pengguna terlebih dahulu.');
+        return;
+    }
+
     const payload = {
         name:  document.getElementById('u-name').value,
         email: document.getElementById('u-email').value,
         password: document.getElementById('u-password').value || undefined,
-        role:  document.getElementById('u-role').value,
+        role:  roleVal,
+        is_active: document.getElementById('u-status').value === '1',
     };
 
     try {

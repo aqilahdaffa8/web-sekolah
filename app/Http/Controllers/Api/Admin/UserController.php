@@ -17,9 +17,13 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         $users = User::with('roles')
-            ->when($request->search, fn ($q) => $q->where('name', 'like', "%{$request->search}%")
-                ->orWhere('email', 'like', "%{$request->search}%"))
-            ->paginate(15);
+            ->when($request->search, fn ($q) => $q->where(function ($sub) use ($request) {
+                $sub->where('name', 'like', "%{$request->search}%")
+                    ->orWhere('email', 'like', "%{$request->search}%");
+            }))
+            ->when($request->role, fn ($q) => $q->whereHas('roles', fn ($rq) => $rq->where('role_name', $request->role)))
+            ->latest()
+            ->paginate($request->query('per_page', 15));
 
         return response()->json($users);
     }
@@ -30,17 +34,25 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
+            'role' => ['nullable', 'string'],
             'role_ids' => ['sometimes', 'array'],
             'role_ids.*' => ['integer', 'exists:roles,id'],
+            'is_active' => ['nullable', 'boolean'],
         ]);
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'is_active' => $request->has('is_active') ? (bool) $data['is_active'] : true,
         ]);
 
-        if (! empty($data['role_ids'])) {
+        if (! empty($data['role'])) {
+            $roleModel = Role::where('role_name', $data['role'])->orWhere('id', $data['role'])->first();
+            if ($roleModel) {
+                $user->roles()->sync([$roleModel->id]);
+            }
+        } elseif (! empty($data['role_ids'])) {
             $user->roles()->sync($data['role_ids']);
         }
 
@@ -59,14 +71,34 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'email', 'unique:users,email,'.$user->id],
-            'password' => ['sometimes', 'string', 'min:8'],
+            'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['nullable', 'string'],
+            'role_ids' => ['sometimes', 'array'],
+            'role_ids.*' => ['integer', 'exists:roles,id'],
+            'is_active' => ['nullable', 'boolean'],
         ]);
 
-        if (isset($data['password'])) {
+        if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        if ($request->has('is_active')) {
+            $data['is_active'] = (bool) $data['is_active'];
         }
 
         $user->update($data);
+
+        if ($request->has('role') && ! empty($data['role'])) {
+            $roleModel = Role::where('role_name', $data['role'])->orWhere('id', $data['role'])->first();
+            if ($roleModel) {
+                $user->roles()->sync([$roleModel->id]);
+            }
+        } elseif (! empty($data['role_ids'])) {
+            $user->roles()->sync($data['role_ids']);
+        }
+
         $this->logger->log($request->user()->id, 'updated', 'users', $user->id);
 
         return response()->json(['message' => 'User updated.', 'user' => $user->fresh('roles')]);
