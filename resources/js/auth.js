@@ -72,7 +72,7 @@ function safeRedirectPath() {
 export function getDashboardRoute() {
     const redirect = safeRedirectPath();
     if (redirect) return redirect;
-    if (isSiswa() && !isSuperAdmin()) return '/eskul';
+    if (isSiswa() && !isSuperAdmin()) return '/siswa/nilai';
     if (isSuperAdmin()) return '/dashboard';
     if (isHubin())      return '/dashboard/hubin/mitra';
     if (isKoperasi())   return '/dashboard/koperasi/produk';
@@ -112,7 +112,7 @@ function _getDashboardRoute(roles) {
         return redirect;
     }
 
-    if (roles.includes('Siswa') && !roles.includes('Super Admin')) return '/eskul';
+    if (roles.includes('Siswa') && !roles.includes('Super Admin')) return '/siswa/nilai';
     if (roles.includes('Super Admin')) return '/dashboard';
     if (roles.includes('Hubin'))      return '/dashboard/hubin/mitra';
     if (roles.includes('Koperasi'))   return '/dashboard/koperasi/produk';

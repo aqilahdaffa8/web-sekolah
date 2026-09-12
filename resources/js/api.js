@@ -74,6 +74,21 @@ async function request(method, path, body = null, headers = {}) {
     return parseResponse(res);
 }
 
+async function download(path, body) {
+    const res = await fetch(`${API_BASE}${path}`, {
+        method: 'POST',
+        headers: buildHeaders(),
+        body: JSON.stringify(body),
+        credentials: 'same-origin',
+    });
+
+    if (!res.ok) {
+        return parseResponse(res);
+    }
+
+    return res.blob();
+}
+
 // ── HTTP Methods ──────────────────────────────────────────────
 export const api = {
     get:    (path, params = {}) => {
@@ -86,6 +101,7 @@ export const api = {
     delete: (path)        => request('DELETE', path),
     upload: (path, formData) => request('POST', path, formData),
     uploadPut: (path, formData) => request('PUT', path, formData),
+    download: (path, body) => download(path, body),
 };
 
 // ── Public endpoints ──────────────────────────────────────────
@@ -112,6 +128,11 @@ export const authApi = {
     me:     ()             => api.get('/auth/me'),
 };
 
+export const studentApi = {
+    grades:         (d) => api.post('/student/grades', d),
+    downloadGrades: (d) => api.download('/student/grades/download', d),
+};
+
 // ── Admin endpoints ───────────────────────────────────────────
 export const adminApi = {
     // Users
@@ -121,6 +142,14 @@ export const adminApi = {
     deleteUser:     (id)   => api.delete(`/admin/users/${id}`),
     assignRole:     (uid,d)=> api.post(`/admin/users/${uid}/roles`, d),
     revokeRole:     (uid,rid)=>api.delete(`/admin/users/${uid}/roles/${rid}`),
+
+    students:        (p)    => api.get('/admin/students', p),
+    studentClasses:  ()     => api.get('/admin/students/classes'),
+    createStudent:   (d)    => api.post('/admin/students', d),
+    updateStudent:   (id,d) => api.put(`/admin/students/${id}`, d),
+    deleteStudent:   (id)   => api.delete(`/admin/students/${id}`),
+    importStudents:  (d)    => api.upload('/admin/students/import', d),
+    studentTemplate: ()     => '/api/admin/students/template',
 
     // Roles & Permissions
     roles:              (p)      => api.get('/admin/roles', p),

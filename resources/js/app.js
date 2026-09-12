@@ -5,7 +5,7 @@
 import { toast } from './toast.js';
 import * as utils from './utils.js';
 import * as auth from './auth.js';
-import { api, authApi, adminApi, hubinApi, koperasiApi, guruApi, eskulApi, publicApi } from './api.js';
+import { api, authApi, adminApi, hubinApi, koperasiApi, guruApi, eskulApi, publicApi, studentApi } from './api.js';
 
 // Expose modules globally for inline scripts in Blade
 window.api = api;
@@ -16,6 +16,7 @@ window.koperasiApi = koperasiApi;
 window.guruApi = guruApi;
 window.eskulApi = eskulApi;
 window.publicApi = publicApi;
+window.studentApi = studentApi;
 window.auth = auth;
 window.utils = utils;
 window.toast = toast;
@@ -199,7 +200,7 @@ function initPublicNavbarAuth() {
         ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-brand-50 text-brand-800 text-[11px] font-bold tracking-wide">NIS ${student.nis}</span>`
         : '';
     const extraAction = isSiswa
-        ? ''
+        ? '<a href="/siswa/nilai" class="inline-flex items-center px-3 py-2 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 transition-colors">Nilai Saya</a>'
         : `<a href="${auth.getDashboardRoute()}" class="inline-flex items-center px-3 py-2 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 transition-colors">Dashboard</a>`;
 
     if (desktop) {

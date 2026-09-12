@@ -26,6 +26,7 @@
         ['href' => route('hubin'),   'label' => 'Hubin & BKK',      'route' => 'hubin'],
         ['href' => route('tefa'),    'label' => 'Katalog TeFA',     'route' => 'tefa'],
         ['href' => route('eskul'),   'label' => 'Ekstrakurikuler',  'route' => 'eskul'],
+        ['href' => route('student.grades.verify'), 'label' => 'Nilai Saya', 'route' => 'student.grades.verify'],
         ['href' => route('news'),    'label' => 'Berita',           'route' => 'news'],
         ['href' => route('contact'), 'label' => 'Kontak',           'route' => 'contact'],
     ];

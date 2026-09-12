@@ -21,6 +21,7 @@
                 <a href="/eskul" class="hover:text-yellow-400 transition">Ekstrakurikuler</a>
                 <a href="/berita" class="hover:text-yellow-400 transition">Berita & Agenda</a>
                 <a href="/kontak" class="hover:text-yellow-400 transition">Kontak</a>
+                <a href="/siswa/nilai" class="hover:text-yellow-400 transition">Cek Nilai</a>
                 
                 <div class="border-l border-blue-600 pl-6 ml-2">
                     <a href="/login" class="btn bg-yellow-400 text-blue-900 hover:bg-yellow-300 border-none font-bold">Login Admin</a>
@@ -45,6 +46,7 @@
         <a href="/eskul" class="block px-4 py-2 hover:bg-blue-600">Ekstrakurikuler</a>
         <a href="/berita" class="block px-4 py-2 hover:bg-blue-600">Berita & Agenda</a>
         <a href="/kontak" class="block px-4 py-2 hover:bg-blue-600">Kontak</a>
+        <a href="/siswa/nilai" class="block px-4 py-2 hover:bg-blue-600">Cek Nilai</a>
         <a href="/login" class="block px-4 py-2 text-yellow-400 font-bold mt-2 border-t border-blue-600">Login Admin</a>
     </div>
 </nav>

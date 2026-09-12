@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\MenuController;
 use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SiteSettingController;
+use App\Http\Controllers\Api\Admin\StudentController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\StudentActivationController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Api\Public\NewsController;
 use App\Http\Controllers\Api\Public\ProfileController;
 use App\Http\Controllers\Api\Public\TefaPublicController;
 use App\Http\Controllers\Api\Student\ExtracurricularRegistrationController as StudentExtracurricularRegistrationController;
+use App\Http\Controllers\Api\Student\StudentGradeController;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -78,8 +80,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/extracurricular-registrations', [StudentExtracurricularRegistrationController::class, 'store'])
         ->middleware('role:Siswa,Super Admin');
 
+    Route::prefix('student')->middleware('role:Siswa')->group(function () {
+        Route::post('/grades', [StudentGradeController::class, 'index']);
+        Route::post('/grades/download', [StudentGradeController::class, 'download']);
+    });
+
     // ── SUPER ADMIN ──────────────────────────────────────────────────────────
     Route::prefix('admin')->middleware('role:Super Admin')->group(function () {
+
+        Route::get('/students/classes', [StudentController::class, 'classes']);
+        Route::get('/students/template', [StudentController::class, 'template']);
+        Route::post('/students/import', [StudentController::class, 'import']);
+        Route::apiResource('/students', StudentController::class)->only(['index', 'store', 'update', 'destroy']);
 
         // Users
         Route::get('/users', [UserController::class, 'index']);
